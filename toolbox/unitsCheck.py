@@ -3,7 +3,7 @@ import csv
 # THIS SCRIPT IS PURELY UTILITY
 # IT WAS USED TO LIST ALL THE DIFFERENT UNITS FOUND IN A CSV FILE
 
-outputFile2 = open('units_variety_check2.csv', 'w', newline='')
+outputFile2 = open('units_variety_check.csv', 'w', newline='')
 inputFile = 'kpi_without_dupes_unified.csv' # File with data that has no duplicates
 
 duplicates2 = []
