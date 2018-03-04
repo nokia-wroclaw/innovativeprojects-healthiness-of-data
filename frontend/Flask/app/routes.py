@@ -11,7 +11,7 @@ def index():
 
 
 # EXAMPLE OF THE URL FORMAT: /SGSN_2012a/2018-01-01/2018-02-01
-@app.route('/<string:name>/<string:startdate>/<string:enddate>/')
+@app.route('/<string:name>/<string:start_date>/<string:end_date>/')
 def get_name(start_date, end_date, name):
     get_data = get_data_from_cassandra(start_date, end_date, name)
     data_set = []
