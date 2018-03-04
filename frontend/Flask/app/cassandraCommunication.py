@@ -54,9 +54,6 @@ def get_data_from_cassandra(startdatestring, enddatestring, name):
                 # SO UNTIL WE COME UP WITH AN IDEA FOR THAT, WE WILL CALL FOR SGSN_2012A AND REMOVE LAST CHARACTER
                 name = name[:-1]
                 get_data = session.prepare('SELECT * FROM plmn_raw WHERE kpi_basename=? AND date > ? AND date < ?')
-                print(name)
-                print(start_date)
-                print(end_date)
                 data = session.execute(get_data, (name, start_date, end_date,))
                 print('Success')
                 return data
