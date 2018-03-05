@@ -4,7 +4,7 @@ sys.path.append(sys.path[0] + "/../../")
 from toolbox.kpiFileReader import kpi_get_collection_dictionary
 import datetime
 
-
+desiered_keys = ['kpi_basename', 'acronym', 'value']
 # Check if the URL name is in the KPI dictionary
 def check_name(name):
     dictionary = kpi_get_collection_dictionary()
@@ -53,17 +53,20 @@ def get_data_from_cassandra(start_date_string, end_date_string, name):
             # CALLING JUST SGSN_2012 WOULD RESULT IN FAILURE
             # SO UNTIL WE COME UP WITH AN IDEA FOR THAT, WE WILL CALL FOR SGSN_2012A AND REMOVE LAST CHARACTER
             name = name[:-1]
-            get_data = session.prepare('SELECT * FROM plmn_raw WHERE kpi_basename=? AND date > ? AND date < ? LIMIT 1')
+            get_data = session.prepare('SELECT * FROM plmn_raw WHERE kpi_basename=? AND date > ? AND date < ?')
             data = session.execute(get_data, (name, start_date, end_date,))
             copy = data
             for row in copy:
-                print(row)
+                # print(row)
+                tmp = {}
                 # print(dir(row))
                 # print(row._fields)
                 for attribute in row._fields:
-                    print(attribute, row.__getattribute__(attribute))
+                    if attribute in desiered_keys:
+                        tmp[attribute] = row.__getattribute__(attribute)
+                data_list.append(tmp)
             print('Success')
-            return data
+            return data_list
             # except: # IMPROVE THIS
             #     print('Exception')
             #     return False
