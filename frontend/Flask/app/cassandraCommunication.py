@@ -4,7 +4,7 @@ sys.path.append(sys.path[0] + "/../../")
 from toolbox.kpiFileReader import kpi_get_collection_dictionary
 import datetime
 
-desiered_keys = ['kpi_basename', 'acronym', 'value']
+desired_keys = ['kpi_basename', 'acronym', 'value']
 # Check if the URL name is in the KPI dictionary
 def check_name(name):
     dictionary = kpi_get_collection_dictionary()
