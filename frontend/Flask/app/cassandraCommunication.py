@@ -1,8 +1,8 @@
 from cassandra.cluster import Cluster
+import sys
+sys.path.append(sys.path[0] + "/../../")
 from toolbox.kpiFileReader import kpi_get_collection_dictionary
 import datetime
-import sys
-sys.path.append('../')
 
 
 # Check if the URL name is in the KPI dictionary
