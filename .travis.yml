@@ -3,5 +3,7 @@ python:
   - "3.6"
 install:
   - pip3 install pylint cassandra-driver
+cache:
+  - pip
 script:
   - for i in $(find . -name *.py); do echo $i; pylint $i; done
