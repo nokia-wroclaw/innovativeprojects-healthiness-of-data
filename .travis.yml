@@ -4,4 +4,4 @@ python:
 install:
   - pip3 install pylint cassandra-driver
 script:
-  - pylint $(find . -name *.py)
+  - for i in $(find . -name *.py); do echo $i; pylint $i; done
