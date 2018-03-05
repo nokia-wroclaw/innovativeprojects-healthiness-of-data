@@ -8,7 +8,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 
 def kpi_get_collection_dictionary():
     kpi_dictionary = {}
-    kpi_data_file = dir_path+'\kpi_out_merged_final.csv'
+    kpi_data_file = dir_path+'/kpi_out_merged_final.csv'
     with open(kpi_data_file, 'r') as row:
         kpi_reader = csv.reader(row)
         next(kpi_reader)
