@@ -198,7 +198,7 @@ def kpi_name_units_merge():
 # Key is the KPI name and it's value is array consisting of 3 values in this exact order: unit name, minimum value, maximum value
 def kpi_get_collection_dictionary():
     kpi_dictionary = {}
-    kpi_data_file = dir_path+'\kpi_out_merged_final.csv'
+    kpi_data_file = dir_path+'/kpi_out_merged_final.csv'
     with open(kpi_data_file, 'r') as row:
         kpi_reader = csv.reader(row)
         next(kpi_reader)
