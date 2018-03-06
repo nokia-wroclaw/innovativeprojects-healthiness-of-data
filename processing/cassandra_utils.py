@@ -1,9 +1,13 @@
+"""
+This module will be interfacing db for data mining
+"""
 from cassandra.cluster import Cluster
 
-
-# Function that creates a dictionary from data stored in cassandra table.
-# @returns dictionary with kpi units and ranges
 def cassandra_get_unit_data():
+    """
+    Basing function to obtain units from db and return as dict
+    :return: dictionary of units
+    """
     kpi_dict = {}
     cassandra_cluster = Cluster()
     session = cassandra_cluster.connect('pb2')
@@ -13,6 +17,3 @@ def cassandra_get_unit_data():
         kpi_dict[row[0]] = [row[1], row[2], row[3]]
 
     return kpi_dict
-
-
-# cassandra_get_unit_data()
