@@ -1,13 +1,16 @@
 from cassandra.cluster import Cluster
 import sys
 sys.path.append(sys.path[0] + "/../../")
-from toolbox.kpiFileReader import kpi_get_collection_dictionary
+from processing.cassandra_utils import cassandra_get_unit_data
 import datetime
 
-desired_keys = ['kpi_basename', 'acronym', 'value']
+
+# Modify this if you want more data passed to the template.
+desired_keys = ['kpi_basename', 'acronym', 'value', 'date']
+
 # Check if the URL name is in the KPI dictionary
 def check_name(name):
-    dictionary = kpi_get_collection_dictionary()
+    dictionary = cassandra_get_unit_data()
     if name.lower() not in dictionary and name.upper() not in dictionary:
         print('Wrong name')
         return False
@@ -15,13 +18,13 @@ def check_name(name):
         return True
 
 
-# Parse the date given in URL in format dd-mm-yyyy
+# Parse the date given in URL in format yyyy-mm-dd
 def parse_date(entry):
     year, month, date = map(int, entry.split('-'))
     return year, month, date
 
 
-# Check if the date given is real
+# Check if the date given is correct
 def check_date(year, month, day):
     try:
         new_date = datetime.datetime(year, month, day)
@@ -48,7 +51,9 @@ def get_data_from_cassandra(start_date_string, end_date_string, name):
             # try:
             cassandra_cluster = Cluster()
             session = cassandra_cluster.connect('pb2')
-            data_list =[]
+
+            data_list = []
+
             # THIS IS A WORKAROUND. NAME QUERY DOESN'T HAVE A KPI VERSION, JUST THE BASENAME.
             # CALLING JUST SGSN_2012 WOULD RESULT IN FAILURE
             # SO UNTIL WE COME UP WITH AN IDEA FOR THAT, WE WILL CALL FOR SGSN_2012A AND REMOVE LAST CHARACTER
@@ -62,13 +67,13 @@ def get_data_from_cassandra(start_date_string, end_date_string, name):
                 # print(dir(row))
                 # print(row._fields)
                 for attribute in row._fields:
-                    if attribute in desiered_keys:
+
+                    if attribute in desired_keys:
                         tmp[attribute] = row.__getattribute__(attribute)
                 data_list.append(tmp)
             print('Success')
-            return data_list
-            # except: # IMPROVE THIS
-            #     print('Exception')
-            #     return False
-
-#data = get_data_from_cassandra('2018-01-01', '2018-02-01', 'SGSN_2012a')
+            coverage = 0
+            for row in data_list:
+                coverage += row['value']
+            coverage = coverage / len(data_list)
+            return data_list, coverage
