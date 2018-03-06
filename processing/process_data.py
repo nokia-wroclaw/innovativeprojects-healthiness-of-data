@@ -94,25 +94,3 @@ for row in query_result:
 
 print(faulty_keys)
 print(kpi_dictionary)
-"""
-CREATE TABLE IF NOT EXISTS plmn_raw_date (
-  kpi_name TEXT,
-  kpi_basename TEXT,
-  kpi_version TEXT,
-  cord_id BIGINT,
-  acronym TEXT,
-  date TIMESTAMP,
-  value DOUBLE,
-  PRIMARY KEY (date, kpi_basename, cord_id, acronym, kpi_name)
-) WITH CLUSTERING ORDER BY (kpi_basename DESC) AND 
-COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS'};
-  
-CREATE TABLE IF NOT EXISTS kpi_units (
-  kpi_name TEXT,
-  unit TEXT,
-  min DOUBLE,
-  max DOUBLE,
-  PRIMARY KEY (kpi_name)
-) WITH COMPACTION={'class':'DateTieredCompactionStrategy'};
-
-"""
