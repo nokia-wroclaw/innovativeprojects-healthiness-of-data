@@ -3,7 +3,7 @@ python:
   - "3.6"
 install:
   - pip3 install pylint cassandra-driver Flask
-  - sudo apt -y install pylint3
+  - sudo apt update && sudo apt -y install pylint3
 cache:
   - pip
 script:
