@@ -6,4 +6,4 @@ install:
 cache:
   - pip
 script:
-  - for i in $(find . -name *.py); do echo $i; pylint $i; done
+  - for i in $(find . -name *.py); do echo $i; pylint -d C0103 $i; done
