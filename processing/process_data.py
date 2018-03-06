@@ -79,11 +79,12 @@ def get_values_from_dictionary(name, diction):
 
 cassandra_cluster = Cluster()
 session = cassandra_cluster.connect('pb2')
-query = session.prepare('SELECT * FROM plmn_raw_date WHERE date=?')
-new_date = datetime.datetime(2018, 2, 1)
+query = session.prepare('SELECT * FROM plmn_raw_date WHERE date=?') # This will be replaced with an object mapper in the future.
+new_date = datetime.datetime(2018, 2, 1) # select all entries from a day.
 print(new_date)
 query_result = session.execute(query, (new_date,)) # Gets all data from database
 
+# IF THE VALUE IS FAULTY PRINT IT.
 for row in query_result:
     if not is_value_in_range(row) and row[4] not in faulty_keys:
         print(row)
