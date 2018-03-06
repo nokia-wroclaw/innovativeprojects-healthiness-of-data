@@ -60,20 +60,22 @@ def get_data_from_cassandra(start_date_string, end_date_string, name):
             name = name[:-1]
             get_data = session.prepare('SELECT * FROM plmn_raw WHERE kpi_basename=? AND date > ? AND date < ?')
             data = session.execute(get_data, (name, start_date, end_date,))
+            days = (end_date - start_date).days
+            day_list = []
+            print(days)
             copy = data
             for row in copy:
-                # print(row)
+                if row[1] not in day_list:
+                    day_list.append(row[1])
                 tmp = {}
-                # print(dir(row))
-                # print(row._fields)
                 for attribute in row._fields:
 
                     if attribute in desired_keys:
                         tmp[attribute] = row.__getattribute__(attribute)
                 data_list.append(tmp)
             print('Success')
-            coverage = 0
-            for row in data_list:
-                coverage += row['value']
-            coverage = coverage / len(data_list)
+            coverage = {}
+            coverage['all_days'] = days
+            coverage['missing_days'] = days - len(day_list) - 1
+            coverage['val'] = (len(day_list) + 1) / days * 100
             return data_list, coverage

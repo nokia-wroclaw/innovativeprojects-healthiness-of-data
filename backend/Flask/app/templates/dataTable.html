@@ -7,7 +7,9 @@
 
     <body>
     <h1>Data gathered.</h1>
-    <h2>Coverage: {{ cov }}</h2>
+    <h2>Date range: {{ cov.all_days }} days</h2>
+    <h2>Missing dates: {{ cov.missing_days }} days</h2>
+    <h2>Coverage: {{ cov.val }} %</h2>
         <table border="1">
             <tr>
                 <th>kpi_basename</th>
