@@ -2,8 +2,9 @@ language: python
 python:
   - "3.6"
 install:
-  - pip3 install pylint3 cassandra-driver Flask
+  - pip3 install pylint cassandra-driver Flask
+  - apt -y install pylint3
 cache:
   - pip
 script:
-  - for i in $(find . -name *.py); do echo $i; pylint -d C0103 $i; done
+  - for i in $(find . -name *.py); do echo $i; pylint3 -d C0103 $i; done
