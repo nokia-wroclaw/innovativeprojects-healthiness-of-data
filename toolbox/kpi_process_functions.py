@@ -1,5 +1,9 @@
 import csv
+import os
+from cassandra.query import BatchStatement
+from cassandra.cluster import Cluster
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 kpi_input_raw_file = 'kpi_units.csv'
 kpi_input_units_file = 'unit_range.csv'
 kpi_out_unique_names_file = 'kpi_out_no_name_duplicates.csv'
@@ -190,11 +194,45 @@ def kpi_name_units_merge():
         print("File %s not found" % kpi_out_merged)
 
 
-"""Uncomment this and run this script to create ready files.
+# This creates a dictionary for easy look-ups on units.
+# Key is the KPI name and it's value is array consisting of 3 values in this exact order: unit name, minimum value, maximum value
+def kpi_get_collection_dictionary():
+    kpi_dictionary = {}
+    kpi_data_file = dir_path+'\kpi_out_merged_final.csv'
+    with open(kpi_data_file, 'r') as row:
+        kpi_reader = csv.reader(row)
+        next(kpi_reader)
+        for readerRow in kpi_reader:
+            kpi_dictionary[readerRow[0]] = readerRow[1:4]
+    return kpi_dictionary
 
+
+# This function inserts the final merged file into table in the database.
+def kpi_insert_into_database():
+    cassandra_cluster = Cluster()
+    session = cassandra_cluster.connect('pb2')
+    insert_unit = session.prepare('INSERT INTO kpi_units (kpi_name, unit, min, max) VALUES (?, ?, ?, ?)')
+    #batch = BatchStatement()
+    kpi_dict = kpi_get_collection_dictionary()
+    for key in kpi_dict:
+        min_val = kpi_dict[key][1]
+        max_val = kpi_dict[key][2]
+        if not min_val: # Check for nulls.
+            min_val = None
+        else:
+            min_val = float(min_val)
+        if not max_val:
+            max_val = None
+        else:
+            max_val = float(max_val)
+        # THIS SHOULD BE CHANGED TO BATCH STATEMENTS FOR BETTER PERFORMANCE.
+        session.execute(insert_unit, (key, kpi_dict[key][0], min_val, max_val,))
+
+
+# Functions to fully process the raw files.
 kpi_check_name_duplicates()
 kpi_check_unit_discrepancies()
 kpi_units_unify()
 kpi_check_units_variety()
 kpi_name_units_merge()
-"""
+kpi_insert_into_database()
