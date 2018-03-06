@@ -32,4 +32,3 @@ and then
 COPY plmn_raw_date FROM 'file.csv'
 
 When the tables are ready, run the kpi_process_functions.py script from toolbox.
->>>>>>> 3_name_find_function
