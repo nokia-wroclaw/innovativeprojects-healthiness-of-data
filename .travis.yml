@@ -1,8 +1,4 @@
 language: python
-before_install:
-  - sudo add-apt-repository ppa:chris-lea/pylint -y
-  - sudo apt-get -qq update
-  - sudo apt-get install -y pylint3
 python:
   - "3.6"
 install:
@@ -10,4 +6,4 @@ install:
 cache:
   - pip
 script:
-  - for i in $(find . -name *.py); do echo $i; pylint3 -d C0103 $i; done
+  - for i in $(find . -name *.py); do echo $i; pylint -d C0103 $i; done
