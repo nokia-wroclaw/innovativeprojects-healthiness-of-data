@@ -6,10 +6,23 @@
     </head>
 
     <body>
-        <ul>
+    <h1>Data gathered.</h1>
+    <h2>Coverage: {{ cov }}</h2>
+        <table border="1">
+            <tr>
+                <th>kpi_basename</th>
+                <th>acronym</th>
+                <th>value</th>
+                <th>date</th>
+            </tr>
             {% for data_row in data %}
-            <li> {{ data_row }} </li>
+            <tr>
+                <th > {{ data_row.kpi_basename }} </th>
+                <th> {{ data_row.acronym }} </th>
+                <th> {{ data_row.value }} </th>
+                <th> {{ data_row.date }} </th>
+            </tr>
             {% endfor %}
-        </ul>
+        </table>
     </body>
 </html>
