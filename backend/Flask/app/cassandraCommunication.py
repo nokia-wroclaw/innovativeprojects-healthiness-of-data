@@ -4,9 +4,9 @@ sys.path.append(sys.path[0] + "/../../")
 from processing.cassandra_utils import cassandra_get_unit_data
 import datetime
 
+
 # Modify this if you want more data passed to the template.
 desired_keys = ['kpi_basename', 'acronym', 'value', 'date']
-
 
 # Check if the URL name is in the KPI dictionary
 def check_name(name):
@@ -51,7 +51,9 @@ def get_data_from_cassandra(start_date_string, end_date_string, name):
             # try:
             cassandra_cluster = Cluster()
             session = cassandra_cluster.connect('pb2')
+
             data_list = []
+
             # THIS IS A WORKAROUND. NAME QUERY DOESN'T HAVE A KPI VERSION, JUST THE BASENAME.
             # CALLING JUST SGSN_2012 WOULD RESULT IN FAILURE
             # SO UNTIL WE COME UP WITH AN IDEA FOR THAT, WE WILL CALL FOR SGSN_2012A AND REMOVE LAST CHARACTER
@@ -65,6 +67,7 @@ def get_data_from_cassandra(start_date_string, end_date_string, name):
                 # print(dir(row))
                 # print(row._fields)
                 for attribute in row._fields:
+
                     if attribute in desired_keys:
                         tmp[attribute] = row.__getattribute__(attribute)
                 data_list.append(tmp)
