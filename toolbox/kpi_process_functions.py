@@ -234,7 +234,7 @@ def kpi_insert_into_database():
             max_val = None
         else:
             max_val = float(max_val)
-        session.execute(insert_unit, (key, kpi_dict[key][0], min_val, max_val,))
+        session.execute(insert_unit, (key.lower(), kpi_dict[key][0], min_val, max_val,))
 
 
 # Functions to fully process the raw files.
