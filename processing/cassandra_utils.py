@@ -14,6 +14,6 @@ def cassandra_get_unit_data():
     query = session.prepare('SELECT * FROM kpi_units')
     query_data = session.execute(query)
     for row in query_data:
-        kpi_dict[row[0]] = [row[1], row[2], row[3]]
+        kpi_dict[row[1]] = [row[0], row[2], row[3], row[4]]
 
     return kpi_dict

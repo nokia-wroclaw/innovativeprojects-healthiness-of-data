@@ -43,6 +43,7 @@ class PlmnRawCord(Model):
 
 
 class KpiUnits(Model):
+    kpi_basename = columns.Text(primary_key=True)
     kpi_name = columns.Text(primary_key=True)
     max = columns.Double()
     min = columns.Double()

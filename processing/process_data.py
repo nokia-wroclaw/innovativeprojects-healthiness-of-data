@@ -22,6 +22,7 @@ print(cord_id_list)
 
 kpi_dictionary = cassandra_get_unit_data()
 print(kpi_dictionary)
+print(len(kpi_dictionary))
 faulty_keys = {}    # This is for testing purposes to store the keys that are not in dictionary.
 
 letter_list = list(string.ascii_lowercase)
@@ -38,18 +39,18 @@ def is_value_in_range(query_row):
     # Take the range values from the dictionary with 4th key which is kpi_name in the table
     kpi_temp = query_row.kpi_name.lower()
 
-    min_value, max_value = get_values_from_dictionary(kpi_temp, kpi_dictionary)
+    min_value, max_value = get_values_from_dictionary(kpi_temp)
 
     if kpi_temp in faulty_keys:
         return False
     else:
         if min_value is False and max_value is False:     # Name not found in the dictionary
-            if not find_best_kpi_match(kpi_temp, kpi_dictionary):
+            if not find_best_kpi_match(query_row.kpi_basename.lower()):
                 MissingKpis.create(kpi_basename=query_row.kpi_basename, kpi_name=kpi_temp)
                 faulty_keys[kpi_temp] = True
                 return False
             else:
-                min_value, max_value = get_values_from_dictionary(kpi_temp, kpi_dictionary)
+                min_value, max_value = get_values_from_dictionary(kpi_temp)
                 return compare(min_value, max_value, query_row.value)
         return compare(min_value, max_value, query_row.value)
 
@@ -68,45 +69,41 @@ def compare(min_val, max_val, real_val):
     elif not min_val and not max_val:
         return True
     elif min_val and not max_val:
-        return real_val > min_val
+        return real_val >= min_val
     elif not min_val and max_val:
-        return real_val < max_val
+        return real_val <= max_val
 
 
-def get_values_from_dictionary(name, diction):
+def get_values_from_dictionary(name):
     """
     dictionary reader
     :param name: kpi_name we are looking for
     :param diction: reference to dictionary in which to search for
     :return: false if not found in dictionary, else min and max values
     """
-    if name in diction:
-        return diction[name][1], diction[name][0]
+    if name in kpi_dictionary:
+        return kpi_dictionary[name][2], kpi_dictionary[name][1]
     else:
         return False, False
 
 
-def find_best_kpi_match(name, diction):
+def find_best_kpi_match(basename):
     """
     kpi closest version finder
-    :param name: kpi_name we want to find closest match
-    :param diction: dictionary which to append if value is found
+    :param basename: kpi_name we want to find closest match
     :return: false if no close match found else the latest version of the param provided
     """
-    find_version = KpiUnits.objects(kpi_name=name+'a')
-    if not find_version:
+    #print("searching for new kpi")
+    find_version = KpiUnits.objects(kpi_basename=basename)
+    if len(find_version) == 0:
         return False
     else:
-        for letter in letter_list:
-            new_version = KpiUnits.objects(kpi_name=name+letter)
-            if not new_version:
-                for row_version in find_version:
-                    diction[row_version.kpi_name][0] = row_version.max
-                    diction[row_version.kpi_name][1] = row_version.min
-                    diction[row_version.kpi_name][2] = row_version.unit
-                    return True
-            else:
-                find_version = new_version
+        ver = find_version[len(find_version)-1]
+        KpiUnits.create(kpi_basename=ver.kpi_basename, kpi_name=ver.kpi_basename, max=ver.max, min=ver.min, unit=ver.unit)
+        kpi_dictionary[basename] = [ver.kpi_name, ver.max, ver.min, ver.unit]
+        print(basename, kpi_dictionary[basename])
+
+
 
 
 connection.setup(['127.0.0.1'], "pb2")
@@ -145,6 +142,8 @@ while min_date > limit_date:
             PlmnProcessed.batch(good_queries).create(kpi_basename=row.kpi_basename, date=row.date, cord_id=row.cord_id,
                                                      acronym=row.acronym, kpi_name=row.kpi_name,
                                                      kpi_version=row.kpi_version, value=row.value)
+        elif row.kpi_name.lower() not in faulty_keys:
+            print(row, row.value, kpi_dictionary[row.kpi_name.lower()][2], kpi_dictionary[row.kpi_name.lower()][1])
 
     good_queries.execute()
     write_time_end = time.time()

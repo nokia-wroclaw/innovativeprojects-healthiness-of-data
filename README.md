@@ -4,6 +4,42 @@
 
 To properly run the script first you need the following tables in cassandra:
 
+First you need a database with the original entries:
+
+CREATE KEYSPACE IF NOT EXISTS pb2
+
+  WITH REPLICATION = {'class':'SimpleStrategy', 'replication_factor':5};
+
+USE pb2;
+
+CREATE TABLE IF NOT EXISTS plmn_raw (
+
+  kpi_name TEXT,
+
+  kpi_basename TEXT,
+
+  kpi_version TEXT,
+
+  cord_id BIGINT,
+
+  acronym TEXT,
+
+  date TIMESTAMP,
+
+  value DOUBLE,
+
+  PRIMARY KEY (kpi_basename, date, cord_id, acronym, kpi_name)
+
+) WITH CLUSTERING ORDER BY (date DESC) AND
+
+  COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS'};
+
+And load the data into it:
+
+copy plmn_raw from 'original_data_file.csv';
+
+Then you need tables to store processed items:
+
 CREATE TABLE IF NOT EXISTS plmn_raw_cord (
 
   kpi_name TEXT,
@@ -24,9 +60,13 @@ CREATE TABLE IF NOT EXISTS plmn_raw_cord (
 
 ) WITH COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS'};
 
+
 and
 
+
 CREATE TABLE IF NOT EXISTS kpi_units (
+
+  kpi_basename TEXT,
 
   kpi_name TEXT,
 
@@ -36,16 +76,17 @@ CREATE TABLE IF NOT EXISTS kpi_units (
 
   max DOUBLE,
 
-  PRIMARY KEY (kpi_name)
+  PRIMARY KEY (kpi_basename, kpi_name)
 
 ) WITH COMPACTION={'class':'DateTieredCompactionStrategy'};
+
 
 Then you need to export the data from the original table with the following command:
 
 COPY plmn_raw (cord_id, date, kpi_basename, acronym, kpi_name, kpi_version, value) TO 'file.csv'
 and then
 
-COPY plmn_raw_date FROM 'file.csv'
+COPY plmn_raw_cord FROM 'file.csv'
 
 When the tables are ready, run the kpi_process_functions.py script from toolbox.
 
