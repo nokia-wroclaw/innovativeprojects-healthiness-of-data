@@ -1,6 +1,7 @@
 print "Great job"
-#from app import app
 
+import cassandra
+from app import app
 # RUN THIS SCRIPT OR THE FOLLOWING COMMANDS:
 # COMMAND HAS TO BE EXECUTED FROM THE DIRECTORY OF THIS FILE.
 # LINUX: export FLASK_APP=coverage.py
