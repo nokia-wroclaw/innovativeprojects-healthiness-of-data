@@ -32,6 +32,16 @@ class PlmnBadEntries(Model):
     value = columns.Double()
 
 
+class PlmnKeyNotFound(Model):
+    kpi_basename = columns.Text(primary_key=True)
+    date = columns.DateTime(primary_key=True)
+    cord_id = columns.BigInt(primary_key=True)
+    acronym = columns.Text(primary_key=True)
+    kpi_name = columns.Text(primary_key=True)
+    kpi_version = columns.Text()
+    value = columns.Double()
+
+
 class PlmnRawCord(Model):
     cord_id = columns.BigInt(primary_key=True)
     date = columns.DateTime(primary_key=True)
@@ -51,6 +61,6 @@ class KpiUnits(Model):
 
 
 class MissingKpis(Model):
-    kpi_name = columns.Text(primary_key=True)
     kpi_basename = columns.Text(primary_key=True)
-    kpi_version = columns.Text(primary_key=True)
+    kpi_name = columns.Text(primary_key=True)
+    kpi_version = columns.Text()

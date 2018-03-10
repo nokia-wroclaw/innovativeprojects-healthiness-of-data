@@ -138,6 +138,29 @@ CREATE TABLE IF NOT EXISTS plmn_bad_entries (
   COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS'};
 
 
+CREATE TABLE IF NOT EXISTS plmn_key_not_found (
+
+  kpi_name TEXT,
+
+  kpi_basename TEXT,
+
+  kpi_version TEXT,
+
+  cord_id BIGINT,
+
+  acronym TEXT,
+
+  date TIMESTAMP,
+
+  value DOUBLE,
+
+  PRIMARY KEY (kpi_basename, date, cord_id, acronym, kpi_name)
+
+) WITH CLUSTERING ORDER BY (date DESC) AND
+
+  COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS'};
+
+
 CREATE TABLE IF NOT EXISTS missing_kpis (
   kpi_name TEXT,
 
@@ -148,3 +171,7 @@ CREATE TABLE IF NOT EXISTS missing_kpis (
   PRIMARY KEY (kpi_basename, kpi_name)
 
 ) WITH COMPACTION={'class':'DateTieredCompactionStrategy'};
+
+IMPORTANT!!
+
+Increase batch limit size to 50000 kb in cassandra.yaml config file.

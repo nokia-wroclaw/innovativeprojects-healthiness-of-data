@@ -14,20 +14,17 @@ from toolbox.cassandra_object_mapper_models import PlmnBadEntries
 from toolbox.cassandra_object_mapper_models import KpiUnits
 from toolbox.cassandra_object_mapper_models import MissingKpis
 from toolbox.cassandra_object_mapper_models import PlmnProcessed
+from toolbox.cassandra_object_mapper_models import PlmnKeyNotFound
 from toolbox.cord_ids import get_cord_id_list
 sys.path.append(sys.path[0] + "/../../")
 
 cord_id_list = get_cord_id_list()
-print(cord_id_list)
 
 kpi_dictionary = cassandra_get_unit_data()
-print(kpi_dictionary)
-print(len(kpi_dictionary))
-faulty_keys = {}    # This is for testing purposes to store the keys that are not in dictionary.
+faulty_keys = {}
 
 letter_list = list(string.ascii_lowercase)
 letter_list = letter_list[1:len(letter_list)]
-print(letter_list)
 
 
 def is_value_in_range(query_row):
@@ -36,17 +33,14 @@ def is_value_in_range(query_row):
     :param query_row: row of db to be checked
     :return: bool value whether it is ok or not
     """
-    # Take the range values from the dictionary with 4th key which is kpi_name in the table
     kpi_temp = query_row.kpi_name.lower()
-
     min_value, max_value = get_values_from_dictionary(kpi_temp)
-
     if kpi_temp in faulty_keys:
         return False
     else:
-        if min_value is False and max_value is False:     # Name not found in the dictionary
+        if min_value is False and max_value is False:
             if not find_best_kpi_match(query_row.kpi_basename.lower()):
-                MissingKpis.create(kpi_basename=query_row.kpi_basename, kpi_name=kpi_temp)
+                MissingKpis.create(kpi_basename=query_row.kpi_basename.lower(), kpi_name=kpi_temp, kpi_version=query_row.kpi_version)
                 faulty_keys[kpi_temp] = True
                 return False
             else:
@@ -78,7 +72,6 @@ def get_values_from_dictionary(name):
     """
     dictionary reader
     :param name: kpi_name we are looking for
-    :param diction: reference to dictionary in which to search for
     :return: false if not found in dictionary, else min and max values
     """
     if name in kpi_dictionary:
@@ -90,140 +83,67 @@ def get_values_from_dictionary(name):
 def find_best_kpi_match(basename):
     """
     kpi closest version finder
-    :param basename: kpi_name we want to find closest match
+    :param basename: kpi_basename we want to find closest match
     :return: false if no close match found else the latest version of the param provided
     """
-    #print("searching for new kpi")
     find_version = KpiUnits.objects(kpi_basename=basename)
     if len(find_version) == 0:
         return False
     else:
         ver = find_version[len(find_version)-1]
-        KpiUnits.create(kpi_basename=ver.kpi_basename, kpi_name=ver.kpi_basename, max=ver.max, min=ver.min, unit=ver.unit)
+        KpiUnits.create(kpi_basename=ver.kpi_basename, kpi_name=ver.kpi_basename,
+                        max=ver.max, min=ver.min, unit=ver.unit)
         kpi_dictionary[basename] = [ver.kpi_name, ver.max, ver.min, ver.unit]
-        print(basename, kpi_dictionary[basename])
-
-
+        return True
 
 
 connection.setup(['127.0.0.1'], "pb2")
-step = datetime.timedelta(days=3)
+step = datetime.timedelta(days=15)
 
 limit_date = datetime.datetime(2002, 1, 1)
-min_date = datetime.datetime(2018, 3, 28)
-max_date = datetime.datetime(2018, 3, 31)
-#rows_processed = 0
+log_file = open('logs.log', 'w')
+total_time = 0
+for cord in cord_id_list:
+    min_date = datetime.datetime(2018, 3, 16)
+    max_date = datetime.datetime(2018, 3, 31)
+    start_time = time.time()
+    while min_date > limit_date:
+        good_queries = BatchQuery()
+        bad_queries = BatchQuery()
+        keys_not_found_queries = BatchQuery()
 
-reading_time = 0
-writing_time = 0
-processing_time = 0
+        res = PlmnRawCord.objects.filter(cord_id=cord).filter(date__gt=min_date).filter(date__lte=max_date)
 
-total_time = time.time()
-while min_date > limit_date:
-    good_queries = BatchQuery()
+        for row in res:
+            if is_value_in_range(row):
+                PlmnProcessed.batch(good_queries).create(kpi_basename=row.kpi_basename,
+                                                         date=row.date, cord_id=row.cord_id,
+                                                         acronym=row.acronym, kpi_name=row.kpi_name,
+                                                         kpi_version=row.kpi_version, value=row.value)
+            elif row.kpi_name.lower() not in faulty_keys:
+                PlmnBadEntries.batch(bad_queries).create(kpi_basename=row.kpi_basename,
+                                                         date=row.date, cord_id=row.cord_id,
+                                                         acronym=row.acronym, kpi_name=row.kpi_name,
+                                                         kpi_version=row.kpi_version, value=row.value)
+            else:
+                PlmnKeyNotFound.batch(keys_not_found_queries).create(kpi_basename=row.kpi_basename,
+                                                                     date=row.date, cord_id=row.cord_id,
+                                                                     acronym=row.acronym, kpi_name=row.kpi_name,
+                                                                     kpi_version=row.kpi_version, value=row.value)
+        try:
+            bad_queries.execute()
+            keys_not_found_queries.execute()
+            good_queries.execute()
+        except Exception as e:
+            log_file.write(str(e))
+            pass
 
-    read_time_start = time.time()
-    res = PlmnRawCord.objects.filter(cord_id=20).filter(date__gt=min_date).filter(date__lte=max_date)
-    read_time_end = time.time()
-    reading_time += read_time_end - read_time_start
+        min_date -= step
+        max_date -= step
 
-    #rows_processed += len(res)
-    #print("Rows processed %s " % rows_processed)
-    print(min_date)
+    end_time = time.time()
+    total_time += (end_time - start_time)
+    print("Cord_id %s processed in %s" % (cord, (end_time - start_time)))
+    log_file.write("Cord %s processed \n" % cord)
+    print("Total processing time %s" % total_time)
 
-    write_time_start = time.time()
-    for row in res:
-        processing_time_start = time.time()
-        check_val = is_value_in_range(row)
-        processing_time_end = time.time()
-        processing_time += processing_time_end - processing_time_start
-
-        if check_val:
-            PlmnProcessed.batch(good_queries).create(kpi_basename=row.kpi_basename, date=row.date, cord_id=row.cord_id,
-                                                     acronym=row.acronym, kpi_name=row.kpi_name,
-                                                     kpi_version=row.kpi_version, value=row.value)
-        elif row.kpi_name.lower() not in faulty_keys:
-            print(row, row.value, kpi_dictionary[row.kpi_name.lower()][2], kpi_dictionary[row.kpi_name.lower()][1])
-
-    good_queries.execute()
-    write_time_end = time.time()
-    writing_time += write_time_end - write_time_start# 100 h
-
-    min_date -= step
-    max_date -= step
-
-end_time = time.time()
-print("Total time: %s" % (end_time - total_time))
-print("Fetching data time: %s" % reading_time)
-print("Writing data time (includes processing): %s" % writing_time)
-print("Processing data time: %s" % processing_time)
-print("Date step: %s" % step)
-
-
-"""
-while min_date > limit_date:
-    #start_month = time.time()
-    good_queries = BatchQuery()
-    bad_queries = BatchQuery()
-    res_filtered = res.filter(date__in=[min_date, max_date])
-    for row in res:
-        if not is_value_in_range(row) and row.kpi_name.lower() not in faulty_keys:
-            #print(row, row.value)
-            PlmnBadEntries.batch(bad_queries).create(kpi_basename=row.kpi_basename, date=row.date, cord_id=row.cord_id,
-                                 acronym=row.acronym, kpi_name=row.kpi_name, kpi_version=row.kpi_version, value=row.value)
-        else:
-            PlmnProcessed.batch(good_queries).create(kpi_basename=row.kpi_basename, date=row.date, cord_id=row.cord_id,
-                                 acronym=row.acronym, kpi_name=row.kpi_name, kpi_version=row.kpi_version, value=row.value)
-    min_date -= step
-    max_date -= step
-    good_queries.execute()
-    bad_queries.execute()
-    #end_month = time.time()
-    #print("%s processed in %s" % (min_date, (end_month-start_month)))
-
-    end = time.time()
-    #print("%s processed in %s" % (20, (end-start)))
-    print("Processed total of %s rows in %s s" % (rows_processed, (end-total_time)))
-"""
-"""
-# NO BATCHES
-limit_date = datetime.datetime(2002, 1, 1)
-rows_processed = 0
-reading_time = 0
-comparing_time = 0
-writing_time = 0
-total_time = time.time()
-cord = 20
-start = time.time()
-min_date = datetime.datetime(2018, 3, 1)
-max_date = datetime.datetime(2018, 4, 1)
-read_time_start = time.time()
-res = PlmnRawCord.objects(cord_id=cord)
-read_time_end = time.time()
-reading_time += read_time_end-read_time_start
-
-
-rows_processed+=len(res)
-for row in res:
-
-    check_time_start = time.time()
-    boolch = is_value_in_range(row)
-    check_time_end = time.time()
-    comparing_time += check_time_end-check_time_start
-
-    write_time_start = time.time()
-    if not boolch and row.kpi_name.lower() not in faulty_keys:
-        PlmnBadEntries.create(kpi_basename=row.kpi_basename, date=row.date, cord_id=row.cord_id,
-                             acronym=row.acronym, kpi_name=row.kpi_name, kpi_version=row.kpi_version, value=row.value)
-    else:
-        PlmnProcessed.create(kpi_basename=row.kpi_basename, date=row.date, cord_id=row.cord_id,
-                             acronym=row.acronym, kpi_name=row.kpi_name, kpi_version=row.kpi_version, value=row.value)
-    write_time_end = time.time()
-    writing_time+=write_time_end-write_time_start
-
-end = time.time()
-print("%s processed in %s" % (cord, (end-start)))
-print("Processed total of %s rows in %s s" % (rows_processed, (end-total_time)))
-print("Reading time: %s" % reading_time)
-print("Comparing time: %s" % comparing_time)
-print("Writing time: %s" % writing_time)"""
