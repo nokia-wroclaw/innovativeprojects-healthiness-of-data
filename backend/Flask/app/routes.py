@@ -1,13 +1,13 @@
 """
 Routing file required by flask
 """
-from flask import render_template
 from app import app
-from .cassandra_communication import get_data_from_cassandra
+from flask import request
+from flask import abort
+from .calculate_data import get_cord_data
+import json
 
 
-# Decorators for the function below.
-# Whenever the / or /index address is invoked, the index() function will run.
 @app.route('/')
 @app.route('/index')
 def index():
@@ -15,23 +15,16 @@ def index():
     return "Hello World!"
 
 
-# EXAMPLE OF THE URL FORMAT: /SGSN_2012a/2018-01-01/2018-02-01
-@app.route('/<string:name>/<string:start_date>/<string:end_date>/')
-def get_name(start_date, end_date, name):
-    """
-    Function that prepares data for table
-    :param start_date:
-    :param end_date:
-    :param name: kpi basename
-    :return: html table to be deployed on website
-    """
-    get_data, coverage = get_data_from_cassandra(start_date, end_date, name)
-    data_set = []
+# EXAMPLE OF THE URL FORMAT: /api/operators/117?date_start=2016-01-01&date_end=2018-04-01&kpi_basename=SGSN_2012
+@app.route('/api/operators/<int:cord_id>', methods=['GET'])
+def get_name(cord_id):
+    options = {}
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+    kpi_basename = request.args.get('kpi_basename')
 
-    # PLACEHOLDER FOR TESTS. THIS WILL BE CHANGED.
-    for row in get_data:
-        data_set.append(row)
-
-    # THIS WILL HAVE TO BE CHANGED TO RENDER A TEMPLATE LIKE ONE BELOW. NOT FINISHED YET.
-    return render_template('dataTable.html', data=data_set, cov=coverage)
-    # TO ADD: ERROR HANDLING FOR EMPTY DATA.
+    data = get_cord_data(date_start, date_end, kpi_basename, cord=cord_id, acronym=False)
+    if not data:
+        return json.dumps({"Success": False})
+    else:
+        return json.dumps(data)
