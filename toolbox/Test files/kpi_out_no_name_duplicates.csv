@@ -22,8 +22,6 @@ ava_1h,%
 ava_68,%
 blck_1,%
 ava_129,%
-blck_32,%
-blck_33,%
 blck_33a,%
 blck_33b,%
 blck_5a,%
@@ -32,7 +30,6 @@ blck_8h,%
 blck_8i,%
 csf_1,%
 dap_7a,min/GB
-dap_7b,min/GB
 dap_9,min/GB
 dcr_5,%
 dcr_5a,%
@@ -40,7 +37,6 @@ dcr_5b,%
 dcr_5c,%
 dcr_8k,%
 dlq_2a,%
-frl_8a,%
 frl_8b,%
 gbip_6,%
 gbip_8,%
@@ -59,11 +55,8 @@ nccr_13,%
 nccr_13a,%
 nccr_13b,%
 sdr_4,%
-tbf_16,%
 tbf_16a,%
 tbf_16b,%
-tbf_36a,%
-tbf_38c,#
 tbf_38d,#
 tbf_61,%
 tbf_64,# / min
@@ -93,26 +86,15 @@ trf_205b,TSL(or erlang)
 trf_205d,TSL(or erlang)
 trf_208b,TSL(or erlang)
 trf_208c,TSL(or erlang)
-trf_212b,kB
 trf_212c,kB
-trf_213b,kB
 trf_213c,kB
 trf_214a,kB
-trf_214b,kB
-trf_215a,kB
-trf_231,#
 trf_231a,#
-trf_232,#
 trf_232a,#
-trf_233a,kbps/TSL
 trf_233c,kbps/TSL
 trf_234,kbps/TSL
-trf_234a,kbps/TSL
-trf_235a,kbps/TSL
 trf_235b,kbps/TSL
-trf_236,kbps/TSL
 trf_237b,E
-trf_237c,E
 trf_237d,E
 trf_242,%
 trf_242a,%
@@ -4311,17 +4293,6 @@ ntas_2369a,#
 ntas_2370a,%
 obgw_1140a,#
 obgw_2005a,Mbps
-flns_5001a,%
-flns_3377a,%
-flns_3448a,%
-flns_3293a,%
-flns_3117a,%
-flns_3452a,%
-flns_5055a,#
-flns_3143b,#
-flns_3216a,#
-flns_3245a,%
-flns_3247a,%
 cmm_5a,%
 cmm_69a,%
 cmm_78a,%
@@ -4675,22 +4646,16 @@ hssf_5020a,#/s
 hssf_5021a,#/s
 hssf_5022a,#/s
 isbc_1a,#
-isbc_2a,%
 isbc_3a,#
-isbc_4a,%
 isbc_5a,#
 isbc_6a,%
-isbc_6b,%
-isbc_7a,#
 isbc_8a,%
 isbc_8b,%
 isbc_9a,ms
-isbc_10a,s
 isbc_11a,%
 isbc_11b,%
 isbc_12a,%
 isbc_12b,%
-isbc_13a,%
 isbc_14a,%
 isbc_15a,%
 isbc_15b,%
@@ -4702,11 +4667,8 @@ isbc_18a,%
 isbc_18b,%
 isbc_19a,%
 isbc_19b,%
-isbc_20a,#
-isbc_21a,%
 isbc_22a,%
 isbc_23a,%
-isbc_24a,ms
 isbc_25a,ms
 isbc_26a,#
 isbc_27a,%
@@ -7330,7 +7292,6 @@ LTE_5800b,#
 LTE_5801d,#
 LTE_5801c,#
 LTE_5801b,#
-LTE_5804c,#
 LTE_5804b,#
 LTE_5839b,#
 LTE_5839a,#
@@ -7426,8 +7387,6 @@ LTE_5479a,ms
 LTE_6199a,ms
 LTE_6193a,kbit/s
 LTE_6194a,kbit/s
-LTE_5292d,kbit/s
-LTE_5289d,kbit/s
 LTE_5273a,#
 LTE_5273b,%
 LTE_6191a,%
@@ -7500,7 +7459,6 @@ LTE_6068a,#
 LTE_5480a,#
 LTE_5999a,#
 LTE_5800e,#
-LTE_5805d,#
 LTE_5559c,#
 LTE_5560c,#
 LTE_5561c,#
@@ -7707,7 +7665,6 @@ LTE_5812c,1/GByte
 LTE_5812b,1/GByte
 LTE_5029a,%
 LTE_5572f,%
-LTE_5572e,%
 LTE_5572d,%
 LTE_5572c,%
 LTE_5572b,%
@@ -7733,7 +7690,6 @@ LTE_5086b,%
 LTE_5086a,%
 LTE_5087b,%
 LTE_5087a,%
-LTE_5205b,#
 LTE_5205a,#
 LTE_5550b,#
 LTE_5550a,#
@@ -7750,7 +7706,6 @@ LTE_5206c,#
 LTE_5206b,#
 LTE_5206a,#
 LTE_5812a,
-LTE_5204c,%
 LTE_5204b,%
 LTE_5204a,%
 LTE_5553b,%
@@ -7937,7 +7892,6 @@ LTE_5220b,%
 LTE_5077a,%
 LTE_5752a,%
 LTE_5293b,kbit/s
-LTE_5293c,kbit/s
 LTE_5294b,kbit/s
 LTE_5294c,kbit/s
 LTE_5805c,#
@@ -8083,8 +8037,6 @@ LTE_5718a,%
 LTE_5720a,%
 LTE_5722a,%
 LTE_5714a,%
-LTE_5565a,#
-LTE_5562a,#
 LTE_5566a,%
 LTE_5563a,%
 LTE_5193a,%
@@ -8093,8 +8045,6 @@ LTE_5194a,%
 LTE_5191b,%
 LTE_5191a,%
 LTE_5190a,#
-LTE_5567a,%
-LTE_5564a,%
 LTE_5196a,#
 LTE_5197a,%
 LTE_5195a,%
@@ -8396,7 +8346,6 @@ LTE_5392b,%
 LTE_5391a,%
 LTE_5392c,%
 LTE_5218g,%
-LTE_5218f,%
 LTE_5218d,%
 LTE_5218e,%
 LTE_5218a,%
@@ -10511,60 +10460,20 @@ RNC_536a,#
 RNC_537a,#
 RNC_538a,#
 RNC_543a,#
-RNC_16a,kbps
-RNC_17a,kbps
-RNC_18a,kbps
-RNC_94b,%
-RNC_94c,%
 RNC_94d,%
-RNC_95b,%
-RNC_98c,%
-RNC_99c,%
-RNC_154b,%
 RNC_154c,%
-RNC_158a,%
-RNC_159a,%
-RNC_159b,%
-RNC_162b,kbps
-RNC_163b,kbps
-RNC_164b,kbps
-RNC_164c,kbps
-RNC_164d,kbps
 RNC_164e,kbps
-RNC_165b,kbps
-RNC_165c,kbps
-RNC_165d,kbps
 RNC_165e,kbps
 RNC_165f,kbps
-RNC_169b,%
 RNC_169c,%
-RNC_170a,kbps
-RNC_174a,%
-RNC_176a,%
 RNC_231a,%
 RNC_231b,%
-RNC_280a,E
-RNC_565a,%
-RNC_565b,%
-RNC_565c,%
 RNC_565d,%
 RNC_565e,%
-RNC_566b,%
-RNC_566c,%
 RNC_566d,%
-RNC_575a,%
-RNC_575b,%
 RNC_575c,%
-RNC_576a,%
-RNC_576b,%
 RNC_576c,%
-RNC_603a,cps
-RNC_606a,kbps
 RNC_606c,kbps
-RNC_607a,%
-RNC_607b,%
-RNC_611a,kbps
-RNC_613a,kbps
 RNC_722a,kbps
 RNC_732a,cps
 RNC_739b,kbit
@@ -12267,7 +12176,6 @@ RNC_1844c,#
 RNC_571b,%
 RNC_233c,%
 RNC_234c,%
-RNC_133b,%
 RNC_1845a,%
 RNC_1846a,%
 RNC_1847a,%
@@ -12922,7 +12830,6 @@ RNC_1899b,%
 RNC_2208a,%
 RNC_100d,%
 RNC_100e,%
-RNC_100c,%
 RNC_1028c,%
 RNC_1029c,%
 RNC_1030c,%
@@ -13001,7 +12908,6 @@ RNC_150d,%
 RNC_151c,%
 RNC_152c,%
 RNC_159c,%
-RNC_160c,%
 RNC_1665b,%
 RNC_1666b,%
 RNC_1667b,%
@@ -13382,7 +13288,6 @@ RNC_50e,%
 RNC_50f,%
 RNC_531a,#
 RNC_531b,#
-RNC_608a,Mbit
 RNC_614a,#
 RNC_646d,%
 RNC_647d,%
@@ -13862,7 +13767,6 @@ RNC_3266a,Packets
 RNC_3267a,Packets
 RNC_3268a,Packets
 RNC_3247a,#
-RNC_604a,%
 RNC_2809a,kbps
 RNC_1455b,kbps
 RNC604a,%
@@ -14027,7 +13931,6 @@ RNC_824a,#
 RNC_825a,#
 RNC_826a,#
 RNC_827a,#
-RNC_175a,%
 RNC_1255c,%
 RNC_2823a,%
 RNC_2825a,%
@@ -14236,7 +14139,6 @@ RNC_7017a,%
 RNC_7034a,%
 RNC_7035a,%
 RNC_5447a,Integer number
-RNC_612a,%
 RNC_614b,#
 RNC_7039a,kbps
 RNC_7038a,kbps
@@ -14260,7 +14162,6 @@ RNC_7051a,kbps
 RNC_7052a,kbps
 RNC_7053a,kbps
 RNC_926a,#
-RNC_605a,%
 RNC_5000a,%
 RNC_914b,%
 RNC_5001a,%
@@ -14328,7 +14229,6 @@ RNC_5564a,%
 RNC_5582a,%
 RNC_5562a,%
 RNC_5540a,%
-RNC_610a,%
 RNC_735a,%
 RNC_5311a,Integer number
 RNC_7000a,%
@@ -14347,9 +14247,6 @@ RNC_5015a,%
 RNC_943a,%
 RNC_5007a,%
 RNC_171b,%
-RNC_171a,%
-RNC_172a,%
-RNC_173a,%
 RNC_98d,%
 RNC_160d,%
 RNC_99e,%
@@ -14359,15 +14256,12 @@ RNC_174c,%
 RNC_174b,%
 RNC_175b,%
 RNC_176b,%
-RNC_156a,%
-RNC_97a,%
 RNC_5374a,kilobit
 RNC_95e,%
 RNC_95d,%
 RNC_734a,%
 RNC_5390a,%
 RNC_7033a,#
-RNC_79b,%
 RNC_5474a,Seconds
 RNC_5395a,%
 RNC_5305a,%
@@ -14597,7 +14491,6 @@ RNC_5489a,%
 RNC_5496a,%
 RNC_5495a,%
 RNC_5206a,%
-RNC_602a,%
 RNC_946b,Mbit
 RNC_945b,Mbit
 RNC_5471a,%
@@ -14623,13 +14516,11 @@ RNC_163c,Mbps
 RNC_165g,Mbps
 RNC_164f,Mbps
 RNC_162c,Mbps
-RNC_601a,%
 RNC_5449a,%
 RNC_280d,Ehr
 RNC_280c,Ehr
 RNC_280b,E
 RNC_102c,dBm
-RNC_102b,dBm
 RNC_1879c,kbit/s
 RNC_1879b,kbit/s
 RNC_5407a,%
@@ -14653,7 +14544,6 @@ RNC_5511a,%
 RNC_5537b,Integer number
 RNC_5537a,kBHCA
 RNC_101c,dBm
-RNC_101b,dBm
 RNC_5149c,Integer number
 RNC_5149b,Integer number
 RNC_5149a,Integer number
@@ -14707,7 +14597,6 @@ RNC_608c,Mbit
 RNC_608b,Mbit
 RNC_605b,%
 RNC_5000b,%
-RNC_609a,%
 RNC_5010a,%
 RNC_914c,%
 RNC_917a,%
@@ -14757,7 +14646,6 @@ RNC_300f,%
 RNC_5070a,Integer number
 RNC_5071a,%
 RNC_743a,#
-RNC_168a,%
 RNC_5066a,Integer number
 RNC_5069a,%
 RNC_728a,%
@@ -14774,7 +14662,6 @@ RNC_951b,Mbps
 RNC_5019a,Mbit
 RNC_5020a,Mbit
 RNC_729a,%
-RNC_544a,%
 RNC_5501a,%
 RNC_5500a,%
 RNC_740a,#
@@ -14796,7 +14683,6 @@ RNC_5058a,min
 RNC_5034a,%
 RNC_5059a,min
 RNC_177c,dBm
-RNC_177b,-100.0*dBm
 RNC_5446a,Integer number
 RNC_5586a,Integer number
 RNC_5450a,%
@@ -14838,7 +14724,6 @@ RNC_617a,#
 RNC_268a,#
 RNC_229a,#
 RNC_30a,%
-RNC_157a,%
 RNC_31a,%
 RNC_618a,%
 RNC_217g,%
@@ -14863,8 +14748,6 @@ RNC_5009b,%
 RNC_5094a,%
 RNC_5008a,%
 RNC_5009a,%
-RNC_192b,%
-RNC_195a,%
 RNC_5076a,%
 RNC_5077a,%
 RNC_5064a,Integer number
@@ -14894,7 +14777,6 @@ RNC_5093b,%
 RNC_5023a,%
 RNC_5037a,%
 RNC_745a,min
-RNC_96a,%
 SRAN_1a,MByte
 SRAN_2a,Mbit/s
 SRAN_3a,MByte
