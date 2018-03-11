@@ -8,6 +8,7 @@ cache:
 env:
   - IMAGE_NAME=testhost-11.03.2018-16.02
 script:
-  - python3 CI/run_instance.py
-  - python3 CI/execute_tests.py
+  - python3 CI/run_instance.py && python3 CI/execute_tests.py
   - python3 CI/terminate_instance.py
+notifications:
+  slack: innoprojectsummer2018:Me0KNpSZ1ES1OnWrwTUoD2Y7

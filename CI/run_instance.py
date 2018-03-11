@@ -14,7 +14,7 @@ srv = Droplet(token=os.environ["DO_TOKEN"], image=image, size="s-1vcpu-1gb", reg
               name=os.environ["TRAVIS_COMMIT"])
 srv.create()
 for i in range(1,12):
-    print(i)
+    print("Waitnig for droplet configuration; {} passed".format(i*10))
     if srv.get_actions()[0].status == 'completed':
         ip_addr = Droplet.get_object(api_token=os.environ["DO_TOKEN"], droplet_id=srv.id).ip_address
         print(ip_addr)
