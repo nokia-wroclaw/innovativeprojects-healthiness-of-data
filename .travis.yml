@@ -2,8 +2,14 @@ language: python
 python:
   - "3.6"
 install:
-  - pip3 install pylint cassandra-driver Flask python-digitalocean
+  - pip3 install python-digitalocean paramiko
 cache:
   - pip
+env:
+  - IMAGE_NAME=testhost-12.03.2018-14.30
 script:
-  - for i in $(find . -name *.py); do echo $i; pylint -d C0103 $i; done
+  - python3 CI/run_instance.py
+  - . ./run_instance_envs && python3 CI/execute_tests.py
+  - python3 CI/terminate_instance.py
+notifications:
+  slack: innoprojectsummer2018:Me0KNpSZ1ES1OnWrwTUoD2Y7
