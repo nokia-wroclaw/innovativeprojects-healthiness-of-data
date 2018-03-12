@@ -25,6 +25,6 @@ def get_name(cord_id):
 
     data = get_cord_data(date_start, date_end, kpi_basename, cord=cord_id, acronym=False)
     if not data:
-        return json.dumps({"Success": False})
+        return json.dumps({"success": False})
     else:
         return json.dumps(data)

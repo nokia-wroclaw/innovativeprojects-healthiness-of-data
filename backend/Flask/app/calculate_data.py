@@ -69,7 +69,7 @@ def get_cord_data(start_date, end_date, kpi, **options):
         coverage = {}
         distribution = {}
         all_values = []
-        data = {}
+        data = []
 
         for acronym in acronyms:
             all_values += values[acronym]
@@ -80,10 +80,10 @@ def get_cord_data(start_date, end_date, kpi, **options):
             deviation[acronym] = numpy.std(values[acronym], ddof=1)
             temp = numpy.histogram(values[acronym])
             distribution[acronym] = [temp[0].tolist(), temp[1].tolist()]
-            data[acronym] = {"mean": average[acronym], "max_val": max_value[acronym], "min_val": min_value[acronym],
+            data.append({"acronym": acronym, "mean": average[acronym], "max_val": max_value[acronym], "min_val": min_value[acronym],
                              "std_deviation": deviation[acronym], "coverage": coverage[acronym],
-                             "distribution": distribution[acronym]}
+                             "distribution": distribution[acronym]})
                              #"values": values[acronym], "dates": dates[acronym]}
         temp = numpy.histogram(all_values)
-        data['full_distribution'] = [temp[0].tolist(), temp[1].tolist()]
+        #data.append({"full_distribution": [temp[0].tolist(), temp[1].tolist()]})
         return data
