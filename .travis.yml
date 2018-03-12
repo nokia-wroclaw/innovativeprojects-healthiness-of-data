@@ -2,11 +2,11 @@ language: python
 python:
   - "3.6"
 install:
-  - pip3 install python-digitalocean
+  - pip3 install python-digitalocean paramiko
 cache:
   - pip
 env:
-  - IMAGE_NAME=testhost-11.03.2018-16.02
+  - IMAGE_NAME=testhost-12.03.2018-13.30
 script:
   - python3 CI/run_instance.py
   - . ./run_instance_envs && python3 CI/execute_tests.py
