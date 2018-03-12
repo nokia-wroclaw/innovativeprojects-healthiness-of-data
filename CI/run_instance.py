@@ -23,7 +23,7 @@ for i in range(1,12):
         f=open("run_instance_envs", 'w')
         f.write("export DROPLET_IP={}".format(ip_addr))
         f.close()
-        sleep(10)
+        sleep(25)
         exit(0)
     else:
         sleep(10)
