@@ -1,0 +1,30 @@
+.sidebar-enter {
+    opacity: 0.01;
+    width: 0px;
+}
+
+.sidebar-enter.sidebar-enter-active {
+    opacity: 1;
+    width: 200px;
+    transition: 700ms;
+}
+
+.sidebar-leave {
+    opacity: 1;
+    width: 200px;
+}
+
+.sidebar-leave.sidebar-leave-active {
+    opacity: 0.01;
+    width: 0px;
+    transition: 700ms;
+}
+
+.sidebar-appear {
+    opacity: 0.01;
+}
+
+.sidebar-appear.sidebar-appear-active {
+    opacity: 1;
+    transition: opacity .5s ease-in;
+}

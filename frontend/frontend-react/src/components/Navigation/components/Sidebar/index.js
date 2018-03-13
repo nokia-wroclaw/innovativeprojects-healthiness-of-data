@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import './style.css';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const Side = styled.div`
     display: inline-block;
@@ -8,6 +10,9 @@ const Side = styled.div`
     height: 100%;
     border-right: solid 2px #0099cc;
     color: #0099cc;
+    
+    .hide{
+    transition
 `;
 
 const SidebarButton = styled.div`
@@ -95,11 +100,18 @@ const SidebarButtonSub = styled.a`
             cursor: pointer;
             transition: transform 500 linear;
         }
+     }
 `;
 
 export const Sidebar = ({toggle_api_children, api_children_visibility}) => {
     return (
+
         <Side>
+            <ReactCSSTransitionGroup transitionName="sidebar_button"
+                                     transitionAppear={true}
+                                     transitionAppearTimeout={500}
+                                     transitionEnterTimeout={700}
+                                     transitionLeaveTimeout={700}>
             <SidebarButton
                 onClick = {toggle_api_children}
             >
@@ -110,6 +122,8 @@ export const Sidebar = ({toggle_api_children, api_children_visibility}) => {
                     <h1>Operators</h1>
                 </SidebarButtonSub>
             : null }
+            </ReactCSSTransitionGroup>
         </Side>
+
     );
 }

@@ -1,0 +1,30 @@
+.sidebar_button-enter {
+    opacity: 0.01;
+    transform: translateY(-50px);
+}
+
+.sidebar_button-enter.sidebar_button-enter-active {
+    opacity: 1;
+    transform: translateY(0px);
+    transition: 700ms;
+}
+
+.sidebar_button-leave {
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+.sidebar_button-leave.sidebar_button-leave-active {
+    opacity: 0.01;
+    transform: translateY(-50px);
+    transition: 700ms;
+}
+
+.sidebar_button-appear {
+    opacity: 0.01;
+}
+
+.sidebar_button-appear.sidebar_button-appear-active {
+    opacity: 1;
+    transition: opacity .5s ease-in;
+}

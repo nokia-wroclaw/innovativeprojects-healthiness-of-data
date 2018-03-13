@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {Header} from './components/Header';
 import {Sidebar} from './components/Sidebar';
+import './style.css';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 export default class Navigation extends Component {
 
@@ -43,6 +45,11 @@ export default class Navigation extends Component {
                     toggle_sidebar = {this.toggle_sidebar}
                 >
                 </Header>
+                <ReactCSSTransitionGroup transitionName="sidebar"
+                                         transitionAppear={true}
+                                         transitionAppearTimeout={500}
+                                         transitionEnterTimeout={700}
+                                         transitionLeaveTimeout={700}>
                 { sidebar_visibility ?
                     <Sidebar
                         api_children_visibility = {api_children_visibility}
@@ -50,6 +57,7 @@ export default class Navigation extends Component {
                     >
                     </Sidebar>
                 : null }
+                </ReactCSSTransitionGroup>
             </div>
         );
     }
