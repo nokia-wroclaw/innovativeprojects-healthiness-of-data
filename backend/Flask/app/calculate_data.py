@@ -56,6 +56,12 @@ def get_cord_data(start_date, end_date, kpi, **options):
             for row in result:
                 if row.acronym not in acronyms:
                     acronyms.append(row.acronym)
+
+                    """POPRAWIĆ TO WEDŁUG SUGESTII MATEUSZA!!!
+                    values[row.acronym] = values.get(row.acronym, []) + [row.value]
+dates[row.acronym] = dates.get(row.acronym, []) + [row.date.strftime('%d-%m-%Y')]
+s = set()
+"""
                 if row.acronym in values:
                     values[row.acronym].append(row.value)
                     dates[row.acronym].append(row.date.strftime('%d-%m-%Y'))
