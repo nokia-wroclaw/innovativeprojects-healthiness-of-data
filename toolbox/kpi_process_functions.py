@@ -1,7 +1,9 @@
 """Processor for kpi"""
 import csv
 import os
-from cassandra.cluster import Cluster
+import re
+from cassandra.cqlengine import connection
+from cassandra_object_mapper_models import KpiUnits
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 kpi_input_raw_file = 'kpi_units.csv'
@@ -191,12 +193,22 @@ def kpi_name_units_merge():
                     for unit_reader_row in unit_reader:
                         # Look up the unit from kpi file in the unit_range file.
                         if kpi_reader_row[1] == unit_reader_row[0]:
-                            write_row = [
-                                kpi_reader_row[0],
-                                unit_reader_row[0],
-                                unit_reader_row[1],
-                                unit_reader_row[2]]
-                            merged_writer.writerow(write_row)
+                            if re.match("^.*(\d[a-z])$", kpi_reader_row[0].lower()):
+                                write_row = [
+                                    kpi_reader_row[0].lower(),
+                                    kpi_reader_row[0].lower()[:-1],
+                                    unit_reader_row[0],
+                                    unit_reader_row[1],
+                                    unit_reader_row[2]]
+                                merged_writer.writerow(write_row)
+                            else:
+                                write_row = [
+                                    kpi_reader_row[0].lower(),
+                                    kpi_reader_row[0].lower(),
+                                    unit_reader_row[0],
+                                    unit_reader_row[1],
+                                    unit_reader_row[2]]
+                                merged_writer.writerow(write_row)
     except FileNotFoundError:
         print("File %s not found" % kpi_out_merged)
 
@@ -209,7 +221,7 @@ def kpi_get_collection_dictionary():
         kpi_reader = csv.reader(row)
         next(kpi_reader)
         for readerRow in kpi_reader:
-            kpi_dictionary[readerRow[0]] = readerRow[1:4]
+            kpi_dictionary[readerRow[0]] = readerRow[1:5]
     return kpi_dictionary
 
 
@@ -217,14 +229,12 @@ def kpi_insert_into_database():
     """Put kpi dict into db
        TODO: change session execute to batch statement for performance
     """
-    cassandra_cluster = Cluster()
-    session = cassandra_cluster.connect('pb2')
-    insert_unit = session.prepare(
-        'INSERT INTO kpi_units (kpi_name, unit, min, max) VALUES (?, ?, ?, ?)')
+    connection.setup(['127.0.0.1'], "pb2")
     kpi_dict = kpi_get_collection_dictionary()
+    print(kpi_dict)
     for key in kpi_dict:
-        min_val = kpi_dict[key][1]
-        max_val = kpi_dict[key][2]
+        min_val = kpi_dict[key][2]
+        max_val = kpi_dict[key][3]
         # Check for nulls.
         if not min_val:
             min_val = None
@@ -234,7 +244,7 @@ def kpi_insert_into_database():
             max_val = None
         else:
             max_val = float(max_val)
-        session.execute(insert_unit, (key, kpi_dict[key][0], min_val, max_val,))
+        KpiUnits.create(kpi_basename=kpi_dict[key][0], kpi_name=key, unit=kpi_dict[key][1], min=min_val, max=max_val)
 
 
 # Functions to fully process the raw files.
