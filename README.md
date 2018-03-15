@@ -8,6 +8,7 @@
 
     CREATE KEYSPACE IF NOT EXISTS pb2  
       WITH REPLICATION = {'class':'SimpleStrategy', 'replication_factor':5};  
+      
 **Switch to proper keyspace**  
 
     USE pb2;
@@ -45,6 +46,7 @@ COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS
     PRIMARY KEY (cord_id, date, kpi_basename, acronym, kpi_name)  
   ) WITH COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS'};
 ```
+
 **and**
 
 ```sql
@@ -57,10 +59,12 @@ CREATE TABLE IF NOT EXISTS kpi_units (
   PRIMARY KEY (kpi_basename, kpi_name)
 ) WITH COMPACTION={'class':'DateTieredCompactionStrategy'};
 ```
+
 **Then you need to export the data from the original table with the following command:**
 
-COPY plmn_raw (cord_id, date, kpi_basename, acronym, kpi_name, kpi_version, value) TO 'file.csv'
-and then
+    COPY plmn_raw (cord_id, date, kpi_basename, acronym, kpi_name, kpi_version, value) TO 'file.csv'
+
+**and then**
 
     COPY plmn_raw_cord FROM 'file.csv'
 
