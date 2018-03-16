@@ -2,6 +2,7 @@ import os
 from digitalocean import Manager, Droplet
 from time import sleep
 from time import time
+import paramiko
 
 connection = Manager(token=os.environ["DO_TOKEN"])
 key = []
@@ -18,12 +19,26 @@ for i in range(1,12):
     if srv.get_actions()[0].status == 'completed':
         stop = time()
         print("Instance provisioninng took {}. Saving envs to run_instance_envs.".format(stop-start))
+        start = time()
         ip_addr = Droplet.get_object(api_token=os.environ["DO_TOKEN"], droplet_id=srv.id).ip_address
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        while(True):
+            try:
+                client.connect(ip_addr, username="ci", password=os.environ["SSH_PASSWORD"],
+                               look_for_keys=False)
+                stdin, stdout, stderr = client.exec_command('ls -la')
+                break
+            except:
+                sleep(3)
+                pass
+            if(time()-start>120):
+                print("Instance creation fail")
+                exit(2)
         print(ip_addr)
         f=open("run_instance_envs", 'w')
         f.write("export DROPLET_IP={}".format(ip_addr))
         f.close()
-        sleep(25)
         exit(0)
     else:
         sleep(10)
