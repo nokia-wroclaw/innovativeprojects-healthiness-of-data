@@ -1,7 +1,7 @@
 """
 Routing file required by flask
 """
-from app import app
+from ..app import app
 from flask import request
 from flask import jsonify
 from .api_aggregate_functions import get_cord_data

@@ -2,120 +2,31 @@
 
 # innovativeprojects-healthiness-of-data
 
-**To properly run the script first you need the following tables in cassandra:**
-
-**First you need a database with the original entries:**
+**First setup a keyspace:**
 
     CREATE KEYSPACE IF NOT EXISTS pb2  
       WITH REPLICATION = {'class':'SimpleStrategy', 'replication_factor':5};  
-      
-**Switch to proper keyspace**  
 
-    USE pb2;
-**Create table for raw data**
 
-```sql
-CREATE TABLE IF NOT EXISTS plmn_raw (  
-  kpi_name TEXT,  
-  kpi_basename TEXT,  
-  kpi_version TEXT,  
-  cord_id BIGINT,  
-  acronym TEXT,  
-  date TIMESTAMP,  
-  value DOUBLE,  
-  PRIMARY KEY (kpi_basename, date, cord_id, acronym, kpi_name)
-) WITH CLUSTERING ORDER BY (date DESC) AND
-COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS'};
-```
-
-**And load the data into it:**
+**Then run the toolbox/create_cassandra_tables.py script to create all necessary database tables.
+Import raw data into plmn_raw with this command:**
 
     copy plmn_raw from 'original_data_file.csv';
-
-**Then you need tables to store processed items:**
-
-```sql
-  CREATE TABLE IF NOT EXISTS plmn_raw_cord (  
-    kpi_name TEXT,
-    kpi_basename TEXT,
-    kpi_version TEXT,
-    cord_id BIGINT,
-    acronym TEXT,
-    date TIMESTAMP,
-    value DOUBLE,
-    PRIMARY KEY (cord_id, date, kpi_basename, acronym, kpi_name)  
-  ) WITH COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS'};
-```
-
-**and**
-
-```sql
-CREATE TABLE IF NOT EXISTS kpi_units (
-  kpi_basename TEXT,
-  kpi_name TEXT,
-  unit TEXT,
-  min DOUBLE,
-  max DOUBLE,
-  PRIMARY KEY (kpi_basename, kpi_name)
-) WITH COMPACTION={'class':'DateTieredCompactionStrategy'};
-```
 
 **Then you need to export the data from the original table with the following command:**
 
     COPY plmn_raw (cord_id, date, kpi_basename, acronym, kpi_name, kpi_version, value) TO 'file.csv'
 
-**and then**
+**and load it into table with different primary keys.**
 
     COPY plmn_raw_cord FROM 'file.csv'
 
-**When the tables are ready, run the kpi_process_functions.py script from toolbox.**
+**Process the data by running processing/process_data.py script or load ready data into plmn_processed.
+Then export and load the data into second table like before.**
 
-**To process the data, following tables are needed:**
+    COPY plmn_processed (cord_id, date, kpi_basename, acronym, kpi_name, kpi_version, value) TO 'file.csv'
 
-```sql
-CREATE TABLE IF NOT EXISTS plmn_processed (
-  kpi_name TEXT,
-  kpi_basename TEXT,
-  kpi_version TEXT,
-  cord_id BIGINT,
-  acronym TEXT,
-  date TIMESTAMP,
-  value DOUBLE,
-  PRIMARY KEY (kpi_basename, date, cord_id, acronym, kpi_name)
-) WITH CLUSTERING ORDER BY (date DESC) AND
-  COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS'};
-
-CREATE TABLE IF NOT EXISTS plmn_bad_entries (
-  kpi_name TEXT,
-  kpi_basename TEXT,
-  kpi_version TEXT,
-  cord_id BIGINT,
-  acronym TEXT,
-  date TIMESTAMP,
-  value DOUBLE,
-  PRIMARY KEY (kpi_basename, date, cord_id, acronym, kpi_name)
-) WITH CLUSTERING ORDER BY (date DESC) AND
-  COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS'};
-
-CREATE TABLE IF NOT EXISTS plmn_key_not_found (
-  kpi_name TEXT,
-  kpi_basename TEXT,
-  kpi_version TEXT,
-  cord_id BIGINT,
-  acronym TEXT,
-  date TIMESTAMP,
-  value DOUBLE,
-  PRIMARY KEY (kpi_basename, date, cord_id, acronym, kpi_name)
-) WITH CLUSTERING ORDER BY (date DESC) AND
-  COMPACTION={'class':'DateTieredCompactionStrategy', 'timestamp_resolution':'DAYS'};
-
-CREATE TABLE IF NOT EXISTS missing_kpis (
-  kpi_name TEXT,
-  kpi_basename TEXT,
-  kpi_version TEXT,
-  PRIMARY KEY (kpi_basename, kpi_name)
-) WITH COMPACTION={'class':'DateTieredCompactionStrategy'};
-```
+    COPY plmn_processed_cord FROM 'file.csv'
 
 **IMPORTANT!!**
 
