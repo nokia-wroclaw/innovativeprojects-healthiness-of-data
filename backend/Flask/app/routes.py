@@ -3,7 +3,7 @@ Routing file required by flask
 """
 from flask import render_template
 from ..app import app
-from .cassandraCommunication import get_data_from_cassandra
+from .cassandra_communication import get_data_from_cassandra
 
 
 # Decorators for the function below.

@@ -4,20 +4,31 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { ExampleComponent } from './example/example.component';
-import {RestService} from './services/rest.service';
-
+import { RestService } from './services/rest.service';
+import { CoverageComponent } from './coverage/coverage.component';
+import { RouterModule } from '@angular/router';
+import { routes } from './routes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ExampleComponent
-  ],
-  imports: [
-    BrowserModule
-  ],
-  providers: [RestService],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent,
+		ExampleComponent,
+		CoverageComponent
+	],
+	imports: [
+		BrowserModule,
+		RouterModule.forRoot(routes),
+		FormsModule,
+		ReactiveFormsModule
+	],
+	exports: [
+		RouterModule
+	],
+	providers: [RestService],
+	bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
 
 

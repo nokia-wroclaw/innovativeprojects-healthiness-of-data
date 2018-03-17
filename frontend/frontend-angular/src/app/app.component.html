@@ -1,21 +1,3 @@
-<h1>Jakaś tam tabelka</h1>
-<table border="1" style="border-collapse: collapse;" >
-  <tr>
-    <th>kpi_basename</th>
-    <th>date</th>
-    <th>cord_id</th>
-    <th>acronym</th>
-    <th>kpi_name</th>
-    <th>kpi_version</th>
-    <th>value</th>
-  </tr>
-  <tr *ngFor="let row of example">
-    <td>{{row.kpi_basename}}</td>
-    <td>{{row.date}}</td>
-    <td>{{row.cord_id}}</td>
-    <td>{{row.acronym}}</td>
-    <td>{{row.kpi_name}}</td>
-    <td>{{row.kpi_version}}</td>
-    <td>{{row.value}}</td>
-  </tr>
-</table>
+<button (click)="redirectCoverage()">Przekieruj na coverage</button>
+<router-outlet></router-outlet>
+
