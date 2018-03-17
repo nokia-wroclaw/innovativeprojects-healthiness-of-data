@@ -6,7 +6,7 @@ install:
 cache:
   - pip
 env:
-  - IMAGE_NAME=testhost-12.03.2018-14.30
+  - IMAGE_NAME=testhost-16.03.2018-23.20
 script:
   - python3 CI/run_instance.py
   - . ./run_instance_envs && python3 CI/execute_tests.py
