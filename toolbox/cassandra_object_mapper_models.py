@@ -12,10 +12,30 @@ class PlmnRaw(Model):
     value = columns.Double()
 
 
+class PlmnRawCord(Model):
+    cord_id = columns.BigInt(primary_key=True)
+    date = columns.DateTime(primary_key=True)
+    kpi_basename = columns.Text(primary_key=True)
+    acronym = columns.Text(primary_key=True)
+    kpi_name = columns.Text(primary_key=True)
+    kpi_version = columns.Text()
+    value = columns.Double()
+
+
 class PlmnProcessed(Model):
     kpi_basename = columns.Text(primary_key=True)
     date = columns.DateTime(primary_key=True)
     cord_id = columns.BigInt(primary_key=True)
+    acronym = columns.Text(primary_key=True)
+    kpi_name = columns.Text(primary_key=True)
+    kpi_version = columns.Text()
+    value = columns.Double()
+
+
+class PlmnProcessedCord(Model):
+    cord_id = columns.BigInt(primary_key=True)
+    date = columns.DateTime(primary_key=True)
+    kpi_basename = columns.Text(primary_key=True)
     acronym = columns.Text(primary_key=True)
     kpi_name = columns.Text(primary_key=True)
     kpi_version = columns.Text()
@@ -42,16 +62,6 @@ class PlmnKeyNotFound(Model):
     value = columns.Double()
 
 
-class PlmnRawCord(Model):
-    cord_id = columns.BigInt(primary_key=True)
-    date = columns.DateTime(primary_key=True)
-    kpi_basename = columns.Text(primary_key=True)
-    acronym = columns.Text(primary_key=True)
-    kpi_name = columns.Text(primary_key=True)
-    kpi_version = columns.Text()
-    value = columns.Double()
-
-
 class KpiUnits(Model):
     kpi_basename = columns.Text(primary_key=True)
     kpi_name = columns.Text(primary_key=True)
@@ -64,3 +74,8 @@ class MissingKpis(Model):
     kpi_basename = columns.Text(primary_key=True)
     kpi_name = columns.Text(primary_key=True)
     kpi_version = columns.Text()
+
+
+class ClusterList(Model):
+    acronym = columns.Text(primary_key=True)
+    cord_id = columns.BigInt(primary_key=True)
