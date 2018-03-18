@@ -10,12 +10,15 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class CoverageComponent implements OnInit {
 
-	example: any;
 	coverageParams: FormGroup;
 	coverageData: any = [];
 
-	cordId: any;
-	coverage: any;
+	kpiBaseNames: any = [];
+	acronyms: any = [];
+	startDate: string;
+	endDate: string;
+	coverageTableLoaded: boolean = false;
+	coverageTableLoading: boolean = false;
 
 	constructor(private router: Router,
 				private restService: RestService,
@@ -24,51 +27,50 @@ export class CoverageComponent implements OnInit {
 
 	ngOnInit() {
 		this.initForm();
-		this.getExamples();
 	}
 
+	public getCoverage(coverageParams): void {
 
-	public getCoverage(coverageParams): void{
-		console.log('test parametrów z formularza:');
-		console.log(coverageParams.value.kpiBasename);
-		console.log(coverageParams.value.startDate);
-		console.log(coverageParams.value.endDate);
-		console.log(coverageParams.value.acronym);
+		this.coverageTableLoading = true;
+		this.startDate = coverageParams.value.startDate;
+		this.endDate = coverageParams.value.endDate;
+		let baseURL = 'api/clusters/coverage/?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
-		let startDate: string = coverageParams.value.startDate;
-		let endDate: string = coverageParams.value.endDate;
-		let kpiBasename: string = coverageParams.value.kpiBasename;
-		let acronym: string = coverageParams.value.acronym;
+		this.kpiBaseNames = coverageParams.value.kpiBaseNames.split(/[\s,]+/);
+		this.acronyms = coverageParams.value.acronyms.split(/[\s,]+/);
 
-		let url = 'api/clusters/coverage/?date_start=' + startDate + '&date_end=' + endDate + '&kpi_basename=' + kpiBasename + '&acronym=' + acronym;
-		let u = 'api/clusters/coverage/?date_start=2016-01-01&date_end=2018-12-01&kpi_basename=LTE_5644&acronym=serzhus';
-		console.log(url);
+		let kpiBaseNamesURL = '';
+		let acronymsURL = '';
+
+		this.kpiBaseNames.forEach((kpi) => {
+			kpiBaseNamesURL += '&kpi_basename=';
+			kpiBaseNamesURL += kpi;
+		});
+		this.acronyms.forEach((acr) => {
+			acronymsURL += '&acronym=';
+			acronymsURL += acr;
+		});
+
+		let url = baseURL + kpiBaseNamesURL;
+		url += acronymsURL;
+
 		this.restService.getAll(url).then(response => {
-			console.log('coverageData: ' + this.coverageData.length);
+			console.log('coverageData: ');
+			console.log(response.data);
+			this.coverageTableLoading = false;
 			this.coverageData = response.data;
-			console.log(response);
-			this.coverage = response.data[0].coverage;
-			this.cordId = response.data[0].cord_id;
-
+			this.coverageTableLoaded = true;
 		})
 
 	}
 
 	initForm() {
 		this.coverageParams = this.formBuilder.group({
-			kpiBasename: '',
 			startDate: '',
 			endDate: '',
-			acronym: ''
+			kpiBaseNames: '',
+			acronyms: ''
 		});
 	}
-
-	getExamples() {
-		let mock_data = require('../mock-data/example.json');
-		console.log('json');
-		console.log(mock_data);
-		this.example = mock_data;
-	}
-
 
 }

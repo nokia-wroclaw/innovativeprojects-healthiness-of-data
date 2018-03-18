@@ -3,47 +3,42 @@
 	<!--TODO dodac datepickery -->
 	<!--TODO regexpy dla formatu daty-->
 	<form (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
-		<div class="form-group">2016-01-01
-			<input formControlName="startDate" class="form-control" placeholder='start date'>
+		<div class="row">
+			<div class="col-2">
+				<div class="form-group">start date
+					<input id="startDate" formControlName="startDate" class="form-control" placeholder='start date'>
+					2015-01-01
+				</div>
+			</div>
+			<div class="col-2">
+				<div class="form-group">end date
+					<input id="endDate" formControlName="endDate" class="form-control" placeholder='end date'>
+					2018-01-01
+				</div>
+			</div>
 		</div>
-		<div class="form-group">2018-01-01
-			<input formControlName="endDate" class="form-control" placeholder='end date'>
-
+		<div class="form-group">kpi basename
+			<input id="kpiBaseNames" formControlName="kpiBaseNames" class="form-control" placeholder='kpiBaseNames'>
+			LTE_6042,HSSF_172,LTE_5644,FLNS_519
 		</div>
-		<div class="form-group">LTE_5644
-			<input formControlName="kpiBasename" class="form-control" placeholder='kpi_basename'>
+		<div class="form-group">acronym
+			<input id="acronyms" formControlName="acronyms" class="form-control" placeholder='acronyms'>
+			childott,drasheshu,  khuxel
 		</div>
-		<div class="form-group">serzhus
-			<input formControlName="acronym" class="form-control" placeholder='acronym'>
-
-		</div>
-		<button [type]="submit" class="btn btn-primary btn-block">Wyszukaj</button>
+		<button [type]="submit" class="btn btn-primary">Wyszukaj</button>
 	</form>
 </div>
 
-<h1 style="color: red;">Jakaś tam coverage, na razie z mocka</h1>
-
-<h1>cordId: {{cordId}}</h1>
-<h1>coverage: {{coverage}}</h1>
-
-<table border="1" style="border-collapse: collapse;">
+<h1>Coverage table</h1>
+<div *ngIf="coverageTableLoading" class="loader"></div>
+<table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
 	<tr>
-		<th>kpi_basename</th>
-		<th>acronym</th>
-		<th>value</th>
-		<th>date</th>
+		<th>xxxxxx</th>
+		<th *ngFor="let acr of acronyms">{{acr}}</th>
 	</tr>
-	<tr>
-		<th> SGSN_2012</th>
-		<th> breabuc</th>
-		<th> 136.839516882757</th>
-		<th> 2018-01-31 00:00:00</th>
-	</tr>
-	<tr *ngFor="let row of example.rows">
-		<td>{{ row.kpi_basename }}</td>
-		<td>{{ row.acronym }}</td>
-		<td>{{ row.value }}</td>
-		<td>{{ row.date }}</td>
+	<tr *ngFor="let kpi of kpiBaseNames; let i = index;">
+		<td>{{kpi}}</td>
+		<td *ngFor="let acr of acronyms; let j = index;">{{coverageData[((i+1) + kpiBaseNames.length*(j)) - 1].coverage}}</td>
 	</tr>
 </table>
 
