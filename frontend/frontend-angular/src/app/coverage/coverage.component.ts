@@ -43,12 +43,16 @@ export class CoverageComponent implements OnInit {
 		let acronymsURL = '';
 
 		this.kpiBaseNames.forEach((kpi) => {
-			kpiBaseNamesURL += '&kpi_basename=';
-			kpiBaseNamesURL += kpi;
+			if (kpi !== '') {
+				kpiBaseNamesURL += '&kpi_basename=';
+				kpiBaseNamesURL += kpi;
+			}
 		});
 		this.acronyms.forEach((acr) => {
-			acronymsURL += '&acronym=';
-			acronymsURL += acr;
+			if (acr !== '') {
+				acronymsURL += '&acronym=';
+				acronymsURL += acr;
+			}
 		});
 
 		let url = baseURL + kpiBaseNamesURL;
@@ -72,5 +76,6 @@ export class CoverageComponent implements OnInit {
 			acronyms: ''
 		});
 	}
+
 
 }

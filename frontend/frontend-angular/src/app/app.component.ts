@@ -12,8 +12,4 @@ export class AppComponent  {
 	constructor(private router: Router) {
 	}
 
-	redirectCoverage(){
-		this.router.navigate(['coverage']);
-	}
-
 }

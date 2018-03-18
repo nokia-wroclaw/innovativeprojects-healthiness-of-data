@@ -9,12 +9,14 @@ import { CoverageComponent } from './coverage/coverage.component';
 import { RouterModule } from '@angular/router';
 import { routes } from './routes';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HomepageComponent } from './homepage/homepage.component';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		ExampleComponent,
-		CoverageComponent
+		CoverageComponent,
+		HomepageComponent
 	],
 	imports: [
 		BrowserModule,
