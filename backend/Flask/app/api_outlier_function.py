@@ -82,10 +82,9 @@ def get_cluster_outlier(start_date, end_date, kpi_basename, acronym, threshold):
         for val in ready_data[i]["values"]:
             modified_z_scores.append(0.6745*(val - median)/median_absolute_deviation)
 
-        ready_data[i]["outliers"] = numpy.where(numpy.abs(modified_z_scores) > threshold)[0].tolist()
+        ready_data[i]["outliers"] = numpy.where(numpy.abs(modified_z_scores) > float(threshold))[0].tolist()
 
         for outlier in ready_data[i]["outliers"]:
             ready_data[i]["outlier_values"].append(ready_data[i]["values"][outlier])
 
-    print(ready_data)
     return ready_data

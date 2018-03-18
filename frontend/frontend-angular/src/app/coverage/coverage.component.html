@@ -3,14 +3,19 @@
 	<!--TODO dodac datepickery -->
 	<!--TODO regexpy dla formatu daty-->
 	<form (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
-		<div class="form-group">
-			<input formControlName="kpiBasename" class="form-control" placeholder='kpi_basename'>
-		</div>
-		<div class="form-group">
+		<div class="form-group">2016-01-01
 			<input formControlName="startDate" class="form-control" placeholder='start date'>
 		</div>
-		<div class="form-group">
+		<div class="form-group">2018-01-01
 			<input formControlName="endDate" class="form-control" placeholder='end date'>
+
+		</div>
+		<div class="form-group">LTE_5644
+			<input formControlName="kpiBasename" class="form-control" placeholder='kpi_basename'>
+		</div>
+		<div class="form-group">serzhus
+			<input formControlName="acronym" class="form-control" placeholder='acronym'>
+
 		</div>
 		<button [type]="submit" class="btn btn-primary btn-block">Wyszukaj</button>
 	</form>
@@ -18,10 +23,8 @@
 
 <h1 style="color: red;">Jakaś tam coverage, na razie z mocka</h1>
 
-<h1>Data gathered.</h1>
-<h2>Date range: 31 days</h2>
-<h2>Missing dates: 0 days</h2>
-<h2>Coverage: 100.0 %</h2>
+<h1>cordId: {{cordId}}</h1>
+<h1>coverage: {{coverage}}</h1>
 
 <table border="1" style="border-collapse: collapse;">
 	<tr>

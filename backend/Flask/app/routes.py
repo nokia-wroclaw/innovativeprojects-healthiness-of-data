@@ -27,7 +27,7 @@ def get_operator_aggregates(cord_id):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
     kpi_basename = request.args.get('kpi_basename')
-    histogram_bins = request.args.get('bins')   # DEFAULT 10
+    histogram_bins = request.args.get('bins')  # DEFAULT 10
 
     data = get_cord_data(date_start, date_end, kpi_basename, cord_id, hist_bins=histogram_bins)
     if not data:
@@ -67,6 +67,7 @@ def get_operator_coverages():
         return jsonify(data)
 
 
+# http://localhost:5000/api/clusters/coverage/?date_start=2016-01-01&date_end=2018-12-01&kpi_basename=LTE_5644&acronym=serzhus
 @app.route('/api/clusters/coverage/', methods=['GET'])
 def get_cluster_coverages():
     date_start = request.args.get('date_start')
@@ -95,13 +96,14 @@ def get_operator_outliers(cord_id):
         return jsonify(data)
 
 
+# http://localhost:5000/api/clusters/outliers/urdett?date_start=2016-01-01&date_end=2016-01-01&kpi_basename=LTE_5644&threshold=5
 @app.route('/api/clusters/outliers/<string:acronym>', methods=['GET'])
 def get_cluster_outliers(acronym):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
     kpi_basename = request.args.get('kpi_basename')
     threshold = request.args.get('threshold')
-
+    print(date_start)
     data = get_cluster_outlier(date_start, date_end, kpi_basename, acronym, threshold)
     if not data:
         return jsonify({"success": False})
