@@ -19,6 +19,8 @@ export class OutliersComponent implements OnInit {
 	startDate: any;
 	endDate: any;
 	outliersChartLoading: boolean = false;
+	fullData: any = [];
+	fullOutlierData: any = [];
 	private kpiBaseNames: string[];
 	private acronyms: string[];
 	private cordIds: string[];
@@ -27,6 +29,7 @@ export class OutliersComponent implements OnInit {
 	numericLabels: any = [];
 	colors: any = [];
 	outliersIndexes: any = [];
+	outliersValues: any = [];
 	colorsString: string = '';
 	myChart: any;
 
@@ -79,6 +82,7 @@ export class OutliersComponent implements OnInit {
 			console.log(response.data);
 			this.outliersChartLoading = false;
 			this.outliersData = response.data.values;
+			this.outliersValues = response.data.outlier_values;
 			this.outliersIndexes = response.data.outliers;
 			console.log(this.outliersIndexes);
 			this.generateDates();
@@ -106,20 +110,25 @@ export class OutliersComponent implements OnInit {
 		let ctx = document.getElementById("myChart");
 
 		this.myChart = new Chart(ctx, {
-			type: 'line',
+			type: 'scatter',
 			data: {
-				labels: this.numericLabels,
 				datasets: [{
-					label: 'Outliers chart',
-					data: this.outliersData,
-					backgroundColor:
-						'rgba(0, 0, 255, 1)',
-					borderColor: [
-						'rgba(0, 0, 255, 1)'
-					],
+          label: 'Outliers',
+          data: this.fullOutlierData,
+          backgroundColor: 'rgba(160, 0, 0, 1)',
+          borderColor: 'rgba(160, 0, 0, 1)',
+          borderWidth: 0.5,
+          fill: false
+        },{
+					label: 'Normal Data',
+					data: this.fullData,
+          backgroundColor: 'rgba(0, 0, 160, 1)',
+          borderColor: 'rgba(0, 0, 160, 1)',
 					borderWidth: 0.5,
-					fill: true
-				}]
+					fill: false
+				}
+
+				]
 			},
 			options: {
 				scales: {
@@ -128,12 +137,9 @@ export class OutliersComponent implements OnInit {
 							beginAtZero: false
 						}
 					}]
-				}, showLines: false
+				}
 			}
 		});
-		this.myChart.config.data.datasets[0].backgroundColor = this.colors;
-		console.log("chart generated!");
-
 
 	}
 
@@ -149,29 +155,18 @@ export class OutliersComponent implements OnInit {
 	}
 
 	generateLabels() {
-		for (let i = 1; i <= this.outliersData.length; i++) {
-			this.numericLabels.push(i);
-			this.colors.push('rgba(37, 165, 0, 1)');
+	  let x = 0;
+	  for (let i = 0; i < this.outliersData.length; i++) {
+	    if(i === this.outliersIndexes[x]){
+	      this.fullOutlierData.push({x: i, y: this.outliersData[i]});
+	      x += 1;
+      } else {
+        this.fullData.push({x: i, y: this.outliersData[i]});
+      }
 		}
-		console.log(this.numericLabels);
-		console.log('colors before marking');
-		console.log(this.colors);
-		this.markOutliers();
+    this.generateChart();
 
 	}
 
-	markOutliers() {
-		for (let i = 0; i < this.outliersIndexes.length; i++) {
-			this.colors[this.outliersIndexes[i]] = 'rgba(215, 0, 0, 1)';
-		}
-		console.log('colors after marking');
-		console.log(this.colors);
-
-		this.generateChart();
-	}
-
-	changeColor() {
-
-	}
 
 }
