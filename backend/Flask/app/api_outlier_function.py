@@ -48,10 +48,10 @@ def get_operator_outlier(start_date, end_date, kpi_basename, cord_id, threshold)
 def get_cluster_outlier(start_date, end_date, kpi_basename, acronym, threshold):
     start_date = parse_check_date(start_date)
     end_date = parse_check_date(end_date)
-
     if not start_date and not end_date:
         return False
     else:
+        first_date = start_date
         connection.setup(['127.0.0.1'], 'pb2')
         step = datetime.timedelta(days=1)
         ready_data = []
@@ -66,7 +66,7 @@ def get_cluster_outlier(start_date, end_date, kpi_basename, acronym, threshold):
                 start_date += step
                 for row in result:
                     ready_data[x]["values"].append(row.value)
-
+            start_date = first_date
             x += 1
 
     if not threshold:

@@ -21,15 +21,17 @@ def get_operator_coverage(start_date, end_date, cord_ids, kpis):
 
         for cord_id in cord_ids:
             for kpi in kpis:
+                dates = set()
                 data.append({"kpi_basename": kpi, "cord_id": cord_id, "coverage": []})
                 while start_date < end_date:
                     result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date).\
                                                        filter(kpi_basename=kpi)
                     start_date += step
                     for row in result:
-                        data[x]["coverage"].append(row.date)
-                data[x]["coverage"] = len(data[x]["coverage"]) / (end_date - first_date).days
+                        dates.add(row.date)
+                data[x]["coverage"] = len(dates) / (end_date - first_date).days
                 x += 1
+                start_date = first_date
 
         return data
 
@@ -57,6 +59,7 @@ def get_cluster_coverage(start_date, end_date, acronyms, kpis):
                         start_date += step
                         for result_row in result:
                             data[x]["coverage"].append(result_row.date)
+                    start_date = first_date
                     data[x]["coverage"] = len(data[x]["coverage"]) / (end_date - first_date).days
                     x += 1
 
