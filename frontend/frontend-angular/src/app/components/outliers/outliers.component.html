@@ -1,0 +1,43 @@
+<div class="row">
+	<div class="col-2"></div>
+	<div class=".col-xl-">
+		<h1>Outliers</h1>
+		<div>
+			<h2>Enter search parameters:</h2>
+			<!--TODO dodac datepickery -->
+			<!--TODO regexpy dla formatu daty-->
+			<form (ngSubmit)="getOutliers(outlierParams)" [formGroup]="outlierParams">
+				<div class="row">
+					<div class="col-3">
+						<div class="form-group">Start date:
+							<input id="startDate" formControlName="startDate" class="form-control" placeholder='start_date'>
+						</div>
+					</div>
+					<div class="col-3">
+						<div class="form-group">End date:
+							<input id="endDate" formControlName="endDate" class="form-control" placeholder='end_date'>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">Kpi basenames:
+					<input id="kpiBaseNames" formControlName="kpiBaseNames" class="form-control" placeholder='kpi_basenames'>
+					TRF_215
+				</div>
+				<div class="form-group">Acronyms:
+					<input id="acronyms" formControlName="acronyms" class="form-control" placeholder='acronyms'>
+				</div>
+				<div class="form-group">Cord ids:
+					<input id="cordIds" formControlName="cordIds" class="form-control" placeholder='cord_id'>
+					111
+				</div>
+				<button [type]="submit" class="btn btn-primary">Fetch Data</button>
+			</form>
+		</div>
+		<div style=" width: 1000px; height: 400px;">
+			<div *ngIf="outliersChartLoading" class="loader"></div>
+			<canvas  id="myChart" width="1000" height="400"></canvas>
+		</div>
+	</div>
+
+
+</div>

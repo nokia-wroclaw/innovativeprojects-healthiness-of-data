@@ -1,31 +1,32 @@
 <div class="row">
 	<div class="col-2"></div>
 	<div class=".col-xl-">
+		<h1>Coverage</h1>
 		<div>
 			<h2>Enter search parameters:</h2>
 			<!--TODO dodac datepickery -->
 			<!--TODO regexpy dla formatu daty-->
-			<form (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
+			<form name="coverageForm" (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
 				<div class="row">
-					<div class="col-3">
+					<div class="col-4">
 						<div class="form-group">Start date:
-							<input id="startDate" formControlName="startDate" class="form-control" placeholder='start_date'>
+							<input id="startDate" formControlName="startDate" class="form-control" placeholder='start_date' >
 							2015-01-01
 						</div>
 					</div>
-					<div class="col-3">
+					<div class="col-4">
 						<div class="form-group">End date:
-							<input id="endDate" formControlName="endDate" class="form-control" placeholder='end_date'>
+							<input id="endDate" formControlName="endDate" class="form-control" placeholder='end_date' >
 							2018-01-01
 						</div>
 					</div>
 				</div>
 				<div class="form-group">Kpi basenames:
-					<input id="kpiBaseNames" formControlName="kpiBaseNames" class="form-control" placeholder='kpi_basenames'>
+					<input id="kpiBaseNames" formControlName="kpiBaseNames" class="form-control" placeholder='kpi_basenames' >
 					LTE_6042,HSSF_172,LTE_5644,FLNS_519
 				</div>
 				<div class="form-group">Acronyms:
-					<input id="acronyms" formControlName="acronyms" class="form-control" placeholder='acronyms'>
+					<input id="acronyms" formControlName="acronyms" class="form-control" placeholder='acronyms' >
 					childott,drasheshu, khuxel
 				</div>
 				<button [type]="submit" class="btn btn-primary">Fetch Data</button>

@@ -3,26 +3,28 @@ import { NgModule } from '@angular/core';
 
 
 import { AppComponent } from './app.component';
-import { ExampleComponent } from './example/example.component';
 import { RestService } from './services/rest.service';
-import { CoverageComponent } from './coverage/coverage.component';
+import { CoverageComponent } from './components/coverage/coverage.component';
 import { RouterModule } from '@angular/router';
 import { routes } from './routes';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HomepageComponent } from './homepage/homepage.component';
+import { HomepageComponent } from './components/homepage/homepage.component';
+import { OutliersComponent } from './components/outliers/outliers.component';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
 	declarations: [
 		AppComponent,
-		ExampleComponent,
 		CoverageComponent,
-		HomepageComponent
+		HomepageComponent,
+		OutliersComponent
 	],
 	imports: [
 		BrowserModule,
 		RouterModule.forRoot(routes),
 		FormsModule,
-		ReactiveFormsModule
+		ReactiveFormsModule,
+		ChartModule
 	],
 	exports: [
 		RouterModule
@@ -32,5 +34,3 @@ import { HomepageComponent } from './homepage/homepage.component';
 })
 export class AppModule {
 }
-
-

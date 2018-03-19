@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { RestService } from '../services/rest.service';
+import { RestService } from '../../services/rest.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
+declare var Chart: any;
+
 @Component({
+	moduleId: module.id,
 	selector: 'app-coverage',
 	templateUrl: './coverage.component.html',
 	styleUrls: ['./coverage.component.css']
@@ -44,20 +47,17 @@ export class CoverageComponent implements OnInit {
 
 		this.kpiBaseNames.forEach((kpi) => {
 			if (kpi !== '') {
-				kpiBaseNamesURL += '&kpi_basename=';
-				kpiBaseNamesURL += kpi;
+				kpiBaseNamesURL += '&kpi_basename=' + kpi;
 			}
 		});
 		this.acronyms.forEach((acr) => {
 			if (acr !== '') {
-				acronymsURL += '&acronym=';
-				acronymsURL += acr;
+				acronymsURL += '&acronym=' + acr;
 			}
 		});
 
-		let url = baseURL + kpiBaseNamesURL;
-		url += acronymsURL;
-
+		let url = baseURL + kpiBaseNamesURL + acronymsURL;
+		console.log(url);
 		this.restService.getAll(url).then(response => {
 			console.log('coverageData: ');
 			console.log(response.data);

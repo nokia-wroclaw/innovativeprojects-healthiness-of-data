@@ -25,9 +25,13 @@
     "bootstrap": "^4.0.0",
     "chart.js": "^2.7.2",
     "core-js": "^2.4.1",
+    "moment": "^2.21.0",
     "ng": "0.0.0-rc6",
     "ngx-bootstrap": "^2.0.3",
+    "primeng": "^5.2.3",
     "rxjs": "^5.5.6",
+    "twix": "^1.2.1",
+    "zingchart": "^2.6.3",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
