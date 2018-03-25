@@ -1,0 +1,124 @@
+
+<form class="example-form" [formGroup]="coverageParams">
+
+
+	<mat-form-field class="example-full-width">
+		<mat-chip-list #chipList>
+			<mat-chip *ngFor="let chip of chips" [selectable]="selectable" [removable]="removable" (remove)="removeChip(chip)">
+				{{chip.name}}
+				<mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+			</mat-chip>
+
+			<input placeholder="Select option..."
+             [matChipInputFor]="chipList"
+             [matAutocomplete]="auto"
+             [matChipInputAddOnBlur]="addOnBlur"
+             matInput
+             [formControl]="autoCompleteChipList"
+             #chipInput/>
+		</mat-chip-list>
+
+		<mat-autocomplete #auto="matAutocomplete"
+                      (optionSelected)="addChip($event, chipInput)">
+			<mat-option *ngFor="let option of filteredOptions" [value]="option">
+				{{ option.name }}
+			</mat-option>
+		</mat-autocomplete>
+
+	</mat-form-field>
+
+  <!--<app-autocomplete-chips [formControl]="formControl" [controlName]="'kpiBaseNames'" [chipsFull]= "options"></app-autocomplete-chips>-->
+</form>
+
+
+<!--<form class="example-form">-->
+	<!--<mat-form-field class="example-full-width">-->
+		<!--<mat-chip-list #chipList>-->
+			<!--<mat-chip *ngFor="let chip of chips" [selectable]="selectable" [removable]="removable" (remove)="removeChip(chip)">-->
+				<!--{{chip.name}}-->
+				<!--<mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>-->
+			<!--</mat-chip>-->
+
+			<!--<input placeholder="Select option..."-->
+             <!--[matChipInputFor]="chipList"-->
+             <!--[matAutocomplete]="auto"-->
+             <!--[matChipInputAddOnBlur]="addOnBlur"-->
+             <!--matInput-->
+             <!--[formControl]="autoCompleteChipList"-->
+             <!--#chipInput/>-->
+		<!--</mat-chip-list>-->
+
+		<!--<mat-autocomplete #auto="matAutocomplete"-->
+                      <!--(optionSelected)="addChip($event, chipInput)">-->
+			<!--<mat-option *ngFor="let option of filteredOptions" [value]="option">-->
+				<!--{{ option.name }}-->
+			<!--</mat-option>-->
+		<!--</mat-autocomplete>-->
+
+	<!--</mat-form-field>-->
+<!--</form>-->
+
+
+<!--<div style="position: absolute;-->
+  <!--top: 5px; left: 170px;">-->
+  <!--<form class="example-form">-->
+    <!--<mat-form-field class="demo-chip-list">-->
+
+      <!--<mat-chip-list #chipList>-->
+        <!--<mat-chip *ngFor="let fruit of kpiBaseNames" [selectable]="selectable"-->
+                  <!--[removable]="removable" (remove)="remove(fruit)">-->
+          <!--{{fruit.name}}-->
+          <!--<mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>-->
+        <!--</mat-chip>-->
+
+        <!--<input placeholder="New fruit..."-->
+               <!--[matChipInputFor]="chipList"-->
+               <!--[matChipInputSeparatorKeyCodes]="separatorKeysCodes"-->
+               <!--[matChipInputAddOnBlur]="addOnBlur"-->
+               <!--(matChipInputTokenEnd)="add($event)"-->
+               <!--[matAutocomplete]="auto"-->
+               <!--[formControl]="con"-->
+               <!--matInput-->
+        <!--/>-->
+
+
+        <!--<mat-autocomplete #auto="matAutocomplete">-->
+          <!--<mat-option *ngFor="let state of filteredKpi | async" [value]="state.name">-->
+            <!--<span>{{ state.name }}</span> |-->
+          <!--</mat-option>-->
+        <!--</mat-autocomplete>-->
+
+
+      <!--</mat-chip-list>-->
+
+    <!--</mat-form-field>-->
+  <!--</form>-->
+
+
+  <!--<form class="example-form">-->
+    <!--<mat-form-field class="example-full-width">-->
+
+      <!--<input matInput placeholder="State" aria-label="State" [matAutocomplete]="auto" [formControl]="stateCtrl">-->
+
+
+      <!--<mat-autocomplete #auto="matAutocomplete">-->
+        <!--<mat-option *ngFor="let state of filteredStates | async" [value]="state.name">-->
+          <!--<span>{{ state.name }}</span> |-->
+        <!--</mat-option>-->
+      <!--</mat-autocomplete>-->
+
+
+    <!--</mat-form-field>-->
+
+    <!--<br/>-->
+
+    <!--<mat-slide-toggle-->
+      <!--[checked]="stateCtrl.disabled"-->
+      <!--(change)="stateCtrl.disabled ? stateCtrl.enable() : stateCtrl.disable()">-->
+      <!--Disable Input?-->
+    <!--</mat-slide-toggle>-->
+
+  <!--</form>-->
+
+
+<!--</div>-->

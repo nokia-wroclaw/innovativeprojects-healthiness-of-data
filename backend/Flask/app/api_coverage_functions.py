@@ -64,3 +64,6 @@ def get_cluster_coverage(start_date, end_date, acronyms, kpis):
                     x += 1
 
         return data
+
+def get_kpi_basenames():
+    connection.setup(['127.0.0.1'], 'pb2')

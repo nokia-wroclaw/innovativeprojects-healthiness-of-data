@@ -1,18 +1,16 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-	<img src="../assets/images/nokia-logo.png">
-	<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		<ul class="navbar-nav mr-auto">
-			<li class="nav-item active">
-				<a class="nav-link" href="homepage">Home</a>
-			</li>
-			<li class="nav-item active">
-				<a class="nav-link" href="coverage">Coverage</a>
-			</li>
-			<li class="nav-item active">
-				<a class="nav-link" href="outliers">Outliers</a>
-			</li>
-		</ul>
-	</div>
-</nav>
-<router-outlet></router-outlet>
+<mat-toolbar color="primary">
+  <img src="../assets/images/nokia-logo.png">
+  <a class="nav-link white" href="homepage">Home</a>
+  <a class="nav-link white" href="coverage">Coverage</a>
+  <a class="nav-link white" href="outliers">Outliers</a>
+  <a class="nav-link white" href="draft">Draft</a>
+</mat-toolbar>
+<mat-grid-list cols="6" rowHeight="1000px">
+  <mat-grid-tile [colspan]="6" [rowspan]="1">
+    <div style="position: absolute;
+  top: 5px; left: 170px;">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>
 <div class="fixed-bottom text-center">jakiś footer</div>

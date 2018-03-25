@@ -13,6 +13,9 @@ from .api_coverage_functions import get_cluster_coverage
 from .api_outlier_function import get_operator_outlier
 from .api_outlier_function import get_cluster_outlier
 
+from cassandra.query import named_tuple_factory
+from cassandra.cluster import Cluster
+
 
 @app.route('/')
 @app.route('/index')
@@ -111,3 +114,19 @@ def get_cluster_outliers(acronym):
         return jsonify({"success": False})
     else:
         return jsonify(data)
+
+
+@app.route('/api/clusters/kpi_basenames', methods=['GET'])
+def get_kpi_basenames():
+    cluster = Cluster(['127.0.0.1'])
+    session = cluster.connect('pb2')
+    session.row_factory = named_tuple_factory
+    rows = session.execute("SELECT DISTINCT kpi_basename FROM plmn_raw;")
+    print(rows)
+    kpi_basenames_list = []
+    i = 0
+    for row in rows:
+        kpi_basenames_list.insert(i, str(row.kpi_basename))
+        i += 1
+        print(row.kpi_basename)
+    return jsonify(kpi_basenames_list)
