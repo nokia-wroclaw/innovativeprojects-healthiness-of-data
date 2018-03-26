@@ -34,39 +34,35 @@ def get_cord_data(start_date, end_date, kpi, cord, **options):
 
         connection.setup(['127.0.0.1'], 'pb2')
         step = datetime.timedelta(days=1)
+        values = []
+        dates = []
         acronyms = set()
-        values = defaultdict(list)
-        dates = defaultdict(list)
 
         while start_date < end_date:
             result = PlmnProcessed.objects.filter(kpi_basename=kpi).filter(date=start_date).filter(cord_id=cord)
             start_date += step
             for row in result:
                 acronyms.add(row.acronym)
-                values[row.acronym].append(row.value)
-                dates[row.acronym].append(row.date.strftime('%d-%m-%Y'))
+                values.append(row.value)
+                dates.append(row.date.strftime('%d-%m-%Y')) # ZAMIAST TEGO MOZE BYc ZWYKlY LICZNIK dates += 1
 
-        max_value = {}
-        min_value = {}
-        average = {}
-        deviation = {}
-        coverage = {}
-        distribution = {}
-        all_values = []
-        data = []
+        average = numpy.mean(values)
+        max_value = max(values)
+        min_value = min(values)
+        coverage = len(dates)/(end_date - first_date).days/len(acronyms)
+        deviation = numpy.std(values, ddof=1)
+        temp = numpy.histogram(values, bins=histogram_bins)
+        distribution = [temp[0].tolist(), temp[1].tolist()]
 
-        for acronym in acronyms:
-            average[acronym] = numpy.mean(values[acronym])
-            max_value[acronym] = max(values[acronym])
-            min_value[acronym] = min(values[acronym])
-            coverage[acronym] = len(dates[acronym])/(end_date - first_date).days
-            deviation[acronym] = numpy.std(values[acronym], ddof=1)
-            temp = numpy.histogram(values[acronym], bins=histogram_bins)
-            distribution[acronym] = [temp[0].tolist(), temp[1].tolist()]
-
-            data.append({"acronym": acronym, "cord_id": cord, "mean": average[acronym], "max_val": max_value[acronym],
-                         "min_val": min_value[acronym], "std_deviation": deviation[acronym],
-                         "coverage": coverage[acronym], "distribution": distribution[acronym]})
+        data = {
+                "cord_id": cord,
+                "mean": average,
+                "max_val": max_value,
+                "min_val": min_value,
+                "std_deviation": deviation,
+                "coverage": coverage,
+                "distribution": distribution
+                }
 
         """ THIS PART CALCULATES THE FULL HISTOGRAM OF ALL DATA
             all_values += values[acronym]
@@ -121,7 +117,6 @@ def get_cluster_data(start_date, end_date, kpi, acronym, **options):
         deviation = {}
         coverage = {}
         distribution = {}
-        all_values = []
         data = []
 
         for cord in cord_ids:

@@ -132,12 +132,12 @@ export class OutliersComponent implements OnInit {
 			},
 			options: {
 				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero: false
-						}
-					}]
-				}
+          yAxes: [{
+            ticks: {
+              beginAtZero: false
+            }
+          }]
+        }
 			}
 		});
 

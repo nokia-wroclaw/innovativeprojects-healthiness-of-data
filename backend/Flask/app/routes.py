@@ -12,6 +12,7 @@ from .api_coverage_functions import get_operator_coverage
 from .api_coverage_functions import get_cluster_coverage
 from .api_outlier_function import get_operator_outlier
 from .api_outlier_function import get_cluster_outlier
+from .api_periodicity_functions import get_operator_periodicity
 
 
 @app.route('/')
@@ -98,6 +99,7 @@ def get_operator_outliers(cord_id):
         return jsonify(data)
 
 
+# ZMIENIĆ - DOBRAĆ JEDEN CORD
 # http://localhost:5000/api/clusters/outliers/urdett?date_start=2016-01-01&date_end=2016-01-01&kpi_basename=LTE_5644&threshold=5
 @app.route('/api/clusters/outliers/<string:acronym>', methods=['GET'])
 def get_cluster_outliers(acronym):
@@ -105,8 +107,21 @@ def get_cluster_outliers(acronym):
     date_end = request.args.get('date_end')
     kpi_basename = request.args.get('kpi_basename')
     threshold = request.args.get('threshold')
-    print(date_start)
+
     data = get_cluster_outlier(date_start, date_end, kpi_basename, acronym, threshold)
+    if not data:
+        return jsonify({"success": False})
+    else:
+        return jsonify(data)
+
+
+@app.route('/api/operators/periodicity/<int:cord_id>', methods=['GET'])
+def get_operator_periodicities(cord_id):
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+    kpi_basename = request.args.get('kpi_basename')
+
+    data = get_operator_periodicity(date_start, date_end, kpi_basename, cord_id)
     if not data:
         return jsonify({"success": False})
     else:
