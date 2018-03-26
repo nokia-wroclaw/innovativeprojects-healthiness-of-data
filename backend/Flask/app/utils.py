@@ -1,5 +1,6 @@
 from cassandra.cqlengine import connection
 from toolbox.cassandra_object_mapper_models import ClusterList
+from toolbox.cassandra_object_mapper_models import KpiUnits
 import datetime
 
 
@@ -30,3 +31,18 @@ def parse_check_date(entry):
     except:
         print('Unknown exception')
         return False
+
+
+def get_kpi_list():
+    """
+    Gets existing kpi list
+    :return: Kpi as list
+    """
+    connection.setup(['127.0.0.1'], 'pb2')
+
+    result = KpiUnits.objects.all()
+    kpi_list = set()
+    for row in result:
+        kpi_list.add(row.kpi_basename)
+
+    return kpi_list
