@@ -1,4 +1,5 @@
 from cassandra.cqlengine import connection
+from collections import defaultdict
 from toolbox.cassandra_object_mapper_models import ClusterList
 from toolbox.cassandra_object_mapper_models import KpiUnits
 import datetime
@@ -45,4 +46,34 @@ def get_kpi_list():
     for row in result:
         kpi_list.add(row.kpi_basename)
 
-    return kpi_list
+    return list(kpi_list)
+
+
+def get_acronym_list():
+    """
+    Gets all unique acronyms
+    :return: Acronym list
+    """
+    connection.setup(['127.0.0.1'], 'pb2')
+
+    result = ClusterList.objects.all()
+    acronym_set = set()
+    for row in result:
+        acronym_set.add(row.acronym)
+
+    return list(acronym_set)
+
+
+def get_cord_acronym_set():
+    """
+    Gets all cords and acronyms that belong to it.
+    :return: Cord: acronyms dictionary
+    """
+    connection.setup(['127.0.0.1'], 'pb2')
+
+    result = ClusterList.objects.all()
+    cord_dict = defaultdict(list)
+    for row in result:
+        cord_dict[row.cord_id].append(row.acronym)
+
+    return cord_dict

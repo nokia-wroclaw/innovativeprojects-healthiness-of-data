@@ -7,12 +7,14 @@ from ..app import app
 from flask import request
 from flask import jsonify
 from .utils import get_kpi_list
+from .utils import get_acronym_list
+from .utils import get_cord_acronym_set
 from .api_aggregate_functions import get_cord_data
 from .api_aggregate_functions import get_cluster_data
 from .api_coverage_functions import get_operator_coverage
 from .api_coverage_functions import get_cluster_coverage
 from .api_outlier_function import get_operator_outlier
-from .api_outlier_function import get_cluster_outlier
+# from .api_outlier_function import get_cluster_outlier
 from .api_periodicity_functions import get_operator_periodicity
 
 
@@ -86,14 +88,14 @@ def get_cluster_coverages():
         return jsonify(data)
 
 
-@app.route('/api/operators/outliers/<int:cord_id>', methods=['GET'])
-def get_operator_outliers(cord_id):
+@app.route('/api/operators/outliers/<int:cord_id>/<string:acronym>', methods=['GET'])
+def get_operator_outliers(cord_id, acronym):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
     kpi_basename = request.args.get('kpi_basename')
     threshold = request.args.get('threshold')
 
-    data = get_operator_outlier(date_start, date_end, kpi_basename, cord_id, threshold)
+    data = get_operator_outlier(date_start, date_end, kpi_basename, cord_id, acronym, threshold)
     if not data:
         return jsonify({"success": False})
     else:
@@ -102,18 +104,18 @@ def get_operator_outliers(cord_id):
 
 # ZMIENIĆ - DOBRAĆ JEDEN CORD
 # http://localhost:5000/api/clusters/outliers/urdett?date_start=2016-01-01&date_end=2016-01-01&kpi_basename=LTE_5644&threshold=5
-@app.route('/api/clusters/outliers/<string:acronym>', methods=['GET'])
-def get_cluster_outliers(acronym):
-    date_start = request.args.get('date_start')
-    date_end = request.args.get('date_end')
-    kpi_basename = request.args.get('kpi_basename')
-    threshold = request.args.get('threshold')
-
-    data = get_cluster_outlier(date_start, date_end, kpi_basename, acronym, threshold)
-    if not data:
-        return jsonify({"success": False})
-    else:
-        return jsonify(data)
+# @app.route('/api/clusters/outliers/<string:acronym>', methods=['GET'])
+# def get_cluster_outliers(acronym):
+#     date_start = request.args.get('date_start')
+#     date_end = request.args.get('date_end')
+#     kpi_basename = request.args.get('kpi_basename')
+#     threshold = request.args.get('threshold')
+#
+#     data = get_cluster_outlier(date_start, date_end, kpi_basename, acronym, threshold)
+#     if not data:
+#         return jsonify({"success": False})
+#     else:
+#         return jsonify(data)
 
 
 @app.route('/api/operators/periodicity/<int:cord_id>', methods=['GET'])
@@ -131,4 +133,14 @@ def get_operator_periodicities(cord_id):
 
 @app.route('/api/fetch_kpi_basenames', methods=['GET'])
 def get_kpi_basenames():
-    return jsonify(list(get_kpi_list()))
+    return jsonify(get_kpi_list())
+
+
+@app.route('/api/fetch_acronyms', methods=['GET'])
+def get_acronyms():
+    return jsonify(get_acronym_list())
+
+
+@app.route('/api/fetch_cord_acronym_set', methods=['GET'])
+def get_cord_acronyms_set():
+    return jsonify(get_cord_acronym_set())
