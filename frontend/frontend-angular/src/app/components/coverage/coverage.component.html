@@ -1,48 +1,104 @@
-<div class="row">
-	<div class="col-2"></div>
-	<div class=".col-xl-">
-		<h1>Coverage</h1>
-		<div>
-			<h2>Enter search parameters:</h2>
-			<!--TODO dodac datepickery -->
-			<!--TODO regexpy dla formatu daty-->
-			<form name="coverageForm" (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
-				<div class="row">
-					<div class="col-4">
-						<div class="form-group">Start date:
-							<input id="startDate" formControlName="startDate" class="form-control" placeholder='start_date' >
-							2015-01-01
-						</div>
-					</div>
-					<div class="col-4">
-						<div class="form-group">End date:
-							<input id="endDate" formControlName="endDate" class="form-control" placeholder='end_date' >
-							2018-01-01
-						</div>
-					</div>
-				</div>
-				<div class="form-group">Kpi basenames:
-					<input id="kpiBaseNames" formControlName="kpiBaseNames" class="form-control" placeholder='kpi_basenames' >
-					LTE_6042,HSSF_172,LTE_5644,FLNS_519
-				</div>
-				<div class="form-group">Acronyms:
-					<input id="acronyms" formControlName="acronyms" class="form-control" placeholder='acronyms' >
-					childott,drasheshu, khuxel
-				</div>
-				<button [type]="submit" class="btn btn-primary">Fetch Data</button>
-			</form>
-		</div>
-		<h1>Coverage table</h1>
-		<div *ngIf="coverageTableLoading" class="loader"></div>
-		<table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
-			<tr>
-				<th>xxxxxx</th>
-				<th *ngFor="let acr of acronyms">{{acr}}</th>
-			</tr>
-			<tr *ngFor="let kpi of kpiBaseNames; let i = index;">
-				<td>{{kpi}}</td>
-				<td *ngFor="let acr of acronyms; let j = index;">{{coverageData[((i+1) + kpiBaseNames.length*(j)) - 1].coverage}}</td>
-			</tr>
-		</table>
-	</div>
-</div>
+<h1>Coverage</h1>
+<mat-card>
+  <mat-list role="list">
+    <mat-list-item role="listitem">8/1/2015</mat-list-item>
+    <mat-list-item role="listitem">9/1/2015</mat-list-item>
+    <mat-list-item role="listitem">TRF_215</mat-list-item>
+    <mat-list-item role="listitem">strathatuk</mat-list-item>
+  </mat-list>
+
+</mat-card>
+<mat-card>
+  <h2>Enter search parameters:</h2>
+  <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
+
+    <mat-form-field>
+      <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Choose start date">
+      <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+      <mat-datepicker #startDate></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="Choose end date">
+      <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+      <mat-datepicker #endDate></mat-datepicker>
+    </mat-form-field>
+
+
+    <mat-form-field class="full-width">
+      <mat-chip-list #kpiList>
+        <mat-chip *ngFor="let chip of selectedKpiBasenames" [selectable]="selectable" [removable]="removable"
+                  (remove)="removeChipKpiBasename(chip)">
+          {{chip}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+
+        <input
+          formControlName="kpiBaseNames"
+          placeholder="Select kpi basename..."
+          [matChipInputFor]="kpiList"
+          [matAutocomplete]="autoKpi"
+          [matChipInputAddOnBlur]="addOnBlur"
+          matInput
+          #chipInputKpi
+          [formControl]="kpiBasenamesFormControl"
+        />
+
+      </mat-chip-list>
+      <mat-autocomplete #autoKpi="matAutocomplete" (optionSelected)="addChipKpiBasename($event, chipInputKpi)">
+        <mat-option *ngFor="let optionKpi of optionsKpiBasenames" [value]="optionKpi">
+          {{optionKpi}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-chip-list #acronymList>
+        <mat-chip *ngFor="let chip of selectedAcronyms" [selectable]="selectable" [removable]="removable"
+                  (remove)="removeChipAcronym(chip)">
+          {{chip}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+
+        <input
+          formControlName="acronyms"
+          placeholder="Select acronyms..."
+          [matChipInputFor]="acronymList"
+          [matAutocomplete]="autoAcr"
+          [matChipInputAddOnBlur]="addOnBlur"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          matInput
+          #chipInputAcronym
+          [formControl]="acronymsFormControl"
+
+        />
+        <!--(matChipInputTokenEnd)="add($event)"-->
+      </mat-chip-list>
+      <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChipAcronym($event, chipInputAcronym)">
+        <mat-option *ngFor="let optionAcr of optionsAcronyms" [value]="optionAcr">
+          {{optionAcr}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <button mat-raised-button [type]="submit">Fetch data</button>
+  </form>
+</mat-card>
+
+<mat-card>
+  <h2>Coverage table</h2>
+  <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
+  <table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
+    <tr>
+      <th>xxxxxx</th>
+      <th *ngFor="let acr of selectedAcronyms">{{acr}}</th>
+    </tr>
+    <tr *ngFor="let kpi of selectedKpiBasenames; let i = index;">
+      <td>{{kpi}}</td>
+      <td *ngFor="let acr of selectedAcronyms; let j = index;">{{coverageData[((i+1) +
+        selectedKpiBasenames.length*(j)) -
+        1].coverage}}
+      </td>
+    </tr>
+  </table>
+</mat-card>

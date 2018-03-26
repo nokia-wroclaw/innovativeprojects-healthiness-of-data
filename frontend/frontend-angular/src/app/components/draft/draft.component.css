@@ -1,11 +1,12 @@
-.row{
-  margin: 0 0 0 0;
-}
-.full-width {
+.demo-chip-list {
   width: 100%;
 }
 .example-form {
   min-width: 500px;
   max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
   width: 100%;
 }
