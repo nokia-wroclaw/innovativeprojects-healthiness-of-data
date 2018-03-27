@@ -48,6 +48,8 @@ import {
 import { DraftComponent } from './components/draft/draft.component';
 import { AutocompleteChipsComponent } from './components/shared/autocomplete-chips/autocomplete-chips.component';
 import { CacheDataComponent } from './components/shared/cache-data/cache-data.component';
+import { HistogramComponent } from './components/histogram/histogram.component';
+import { AggregatesComponent } from './components/aggregates/aggregates.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +59,9 @@ import { CacheDataComponent } from './components/shared/cache-data/cache-data.co
     OutliersComponent,
     DraftComponent,
     AutocompleteChipsComponent,
-    CacheDataComponent
+    CacheDataComponent,
+    HistogramComponent,
+    AggregatesComponent
   ],
   imports: [
     BrowserModule,

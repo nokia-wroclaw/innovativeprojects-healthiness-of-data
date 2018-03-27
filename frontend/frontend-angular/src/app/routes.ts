@@ -3,6 +3,8 @@ import {CoverageComponent} from './components/coverage/coverage.component';
 import {HomepageComponent} from './components/homepage/homepage.component';
 import {OutliersComponent} from './components/outliers/outliers.component';
 import {DraftComponent} from './components/draft/draft.component';
+import {AggregatesComponent} from './components/aggregates/aggregates.component';
+import {HistogramComponent} from './components/histogram/histogram.component';
 
 
 export const routes: Routes = [
@@ -11,4 +13,6 @@ export const routes: Routes = [
   {path: 'homepage', component: HomepageComponent},
   {path: 'outliers', component: OutliersComponent},
   {path: 'draft', component: DraftComponent},
+  {path: 'aggregates', component: AggregatesComponent},
+  {path: 'histogram', component: HistogramComponent},
 ];
