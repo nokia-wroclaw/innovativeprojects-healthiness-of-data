@@ -1,11 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {MatAutocompleteSelectedEvent} from '@angular/material';
+import {Subject} from 'rxjs/Subject';
 
-export class State {
-  constructor(public name: string) {
-  }
-}
+
+declare var Chart: any;
 
 @Component({
   selector: 'app-draft',
@@ -13,93 +11,71 @@ export class State {
   styleUrls: ['./draft.component.css']
 })
 export class DraftComponent implements OnInit {
-  visible = true;
-  selectable = true;
-  removable = true;
-  addOnBlur = true;
-  // Set up reactive formcontrol
-  autoCompleteChipList: FormControl = new FormControl();
-  coverageParams: FormGroup;
-  formControl: FormControl = new FormControl();
 
 
-  kpiBaseNames = [
-    {name: 'FLNS_519'},
-    {name: 'AVA_68'},
-    {name: 'TRF_215'},
-  ];
-  options = [
-    {name: 'FLNS_519'},
-    {name: 'AVA_68'},
-    {name: 'TRF_215'},
-    {name: 'FLNS_519'},
-    {name: 'AVA_68'},
-    {name: 'TRF_215'},
-    {name: 'FLNS_519'},
-    {name: 'AVA_68'},
-    {name: 'TRF_215'},
-    {name: 'FLNS_519'},
-    {name: 'AVA_68'},
-    {name: 'TRF_215'},
-  ];
+  myChart: any;
+  labels: any = [];
 
-
-  filteredOptions = [];
-  chips = [];
-
-  constructor(private formBuilder: FormBuilder) {
-
+  constructor(private fb: FormBuilder) {
   }
+
 
   ngOnInit() {
-    this.initForm();
+    this.generateDates();
+    this.generateChart();
+  }
 
-    // Set initial value of filteredOptions to all Options
-    this.filteredOptions = this.options;
-    // Subscribe to listen for changes to AutoComplete input and run filter
-    this.autoCompleteChipList.valueChanges.subscribe(val => {
-      this.filterOptions(val);
+
+  generateChart() {
+    console.log('generating chart...');
+    let chart = document.getElementById('myChart');
+    this.myChart = new Chart(chart, {
+      type: 'line',
+      data: {
+        labels: this.labels,
+        // labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        datasets: [{
+          label: 'Outliers',
+          data: [1, 2, 2.5, 1.7, 4.2, 6.9],
+          backgroundColor: 'rgba(160, 0, 0, 1)',
+          borderColor: 'rgba(160, 0, 0, 1)',
+          borderWidth: 0.5,
+          fill: false
+        }, {
+          label: 'Normal Data',
+          data: [4, 2.64, null , 3.8],
+          backgroundColor: 'rgba(0, 0, 160, 1)',
+          borderColor: 'rgba(0, 0, 160, 1)',
+          borderWidth: 0.5,
+          fill: false
+        }
+
+        ]
+      },
+      options: {
+        spanGaps: true,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: false,
+              stacked: true
+            }
+          }]
+        }
+      }
     });
+
   }
-
-
-  addChip(event: MatAutocompleteSelectedEvent, input: any): void {
-    // Define selection constant
-    const selection = event.option.value;
-    // Add chip for selected option
-    this.chips.push(selection);
-    // Remove selected option from available options and set filteredOptions
-    this.options = this.options.filter(obj => obj.name !== selection.name);
-    this.filteredOptions = this.options;
-    // Reset the autocomplete input text value
-    if (input) {
-      input.value = '';
+  generateDates() {
+    const moment = require('moment');
+    require('twix');
+    const itr = moment.twix(new Date('2018-01-01'), new Date('2018-01-14')).iterate('days');
+    while (itr.hasNext()) {
+      const fullDate = itr.next().toDate();
+      const day = fullDate.getFullYear() + '-' + (fullDate.getMonth() + 1) + '-' + fullDate.getDate();
+      this.labels.push(day);
     }
-    console.log('chips');
-    console.log(this.chips);
-  }
-
-  removeChip(chip: any): void {
-    // Find key of object in array
-    const index = this.chips.indexOf(chip);
-    // If key exists
-    if (index >= 0) {
-      // Remove key from chips array
-      this.chips.splice(index, 1);
-      // Add key to options array
-      this.options.push(chip);
-    }
-  }
-
-  filterOptions(ttt: string) {
-    // Set filteredOptions array to filtered options
-    this.filteredOptions = this.options
-      .filter(obj => obj.name.toLowerCase().indexOf(ttt.toString().toLowerCase()) === 0);
-  }
-
-  initForm() {
-    this.coverageParams = this.formBuilder.group({
-      kpiBaseNames: ''
-    });
+    console.log('dates: ' + this.labels.length);
+    console.log(this.labels);
   }
 }

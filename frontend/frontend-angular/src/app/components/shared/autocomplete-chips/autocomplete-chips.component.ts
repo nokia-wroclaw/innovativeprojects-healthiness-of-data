@@ -1,71 +1,79 @@
-import {Component, Injectable, OnInit, Input, Output} from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
-import {MatAutocompleteSelectedEvent} from '@angular/material';
+import {Component, OnInit} from '@angular/core';
+import {MatAutocompleteSelectedEvent, MatFormFieldControl} from '@angular/material';
+import {FormControl, NgControl} from '@angular/forms';
+import {Subject} from 'rxjs/Subject';
 
 
 @Component({
   selector: 'app-autocomplete-chips',
   templateUrl: './autocomplete-chips.component.html',
-  styleUrls: ['./autocomplete-chips.component.css']
+  styleUrls: ['./autocomplete-chips.component.css'],
+  providers: [{provide: MatFormFieldControl, useExisting: AutocompleteChipsComponent}]
 })
 
-export class AutocompleteChipsComponent implements OnInit {
+export class AutocompleteChipsComponent implements OnInit, MatFormFieldControl<AutocompleteChipsComponent> {
+  value: AutocompleteChipsComponent | null;
+  id: string;
+  placeholder: string;
+  ngControl: NgControl | null;
+  focused: boolean;
+  empty: boolean;
+  required: boolean;
+  disabled: boolean;
+  errorState: boolean;
 
-  @Input() chipsFull: any = [];
-  @Input() controlName: string;
-  @Output() chipsSelected: any = [];
-  chipsFiltered: any = [];
-@Input()  formControl;
-  coverageParams: FormGroup;
+
+  selectedChips: any = [];
+  allChips = ['childott', 'drasheshu', 'khuxel', 'bliulfux', 'strathatuk'];
+  optionsChips: any = [];
+  formControl: FormControl = new FormControl();
+
+  stateChanges = new Subject<void>();
+
+  visible = true;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
 
   constructor() {
+
+  }
+
+  setDescribedByIds(ids: string[]): void {
+  }
+
+  onContainerClick(event: MouseEvent): void {
   }
 
   ngOnInit() {
-    console.log('control name');
-    console.log(this.controlName);
-    // Set initial value of filteredOptions to all Options
-    this.chipsFiltered = this.chipsFull;
-    // Subscribe to listen for changes to AutoComplete input and run filter
+    this.optionsChips = this.allChips;
     this.formControl.valueChanges.subscribe(val => {
       this.filterOptions(val);
     });
   }
 
   addChip(event: MatAutocompleteSelectedEvent, input: any): void {
-    // Define selection constant
     const selection = event.option.value;
-    // Add chip for selected option
-    this.chipsSelected.push(selection);
-    // Remove selected option from available options and set filteredOptions
-    this.chipsFull = this.chipsFull.filter(obj => obj.name !== selection.name);
-    this.chipsFiltered = this.chipsFull;
-    // Reset the autocomplete input text value
+    this.selectedChips.push(selection);
+    this.allChips = this.allChips.filter(obj => obj !== selection);
+    this.optionsChips = this.allChips;
     if (input) {
       input.value = '';
     }
-    console.log('chips');
-    console.log(this.chipsSelected);
   }
 
   removeChip(chip: any): void {
-    // Find key of object in array
-    const index = this.chipsSelected.indexOf(chip);
-    // If key exists
+    const index = this.selectedChips.indexOf(chip);
     if (index >= 0) {
-      // Remove key from chips array
-      this.chipsSelected.splice(index, 1);
-      // Add key to options array
-      this.chipsFull.push(chip);
+      this.selectedChips.splice(index, 1);
+      this.allChips.push(chip);
     }
   }
 
-  filterOptions(ttt: string) {
-    // Set filteredOptions array to filtered options
-    this.chipsFiltered = this.chipsFull
-      .filter(obj => obj.name.toLowerCase().indexOf(ttt.toString().toLowerCase()) === 0);
+  filterOptions(opt: string) {
+    this.optionsChips = this.allChips
+      .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0);
   }
 
-
-
 }
+

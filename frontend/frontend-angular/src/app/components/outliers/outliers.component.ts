@@ -18,64 +18,54 @@ export class OutliersComponent implements OnInit {
 
   startDate: any;
   endDate: any;
-  outliersChartLoading: boolean = false;
+  outliersChartLoading = false;
+  outliersChartLoaded = false;
   fullData: any = [];
   fullOutlierData: any = [];
-  private kpiBaseNames: string[];
-  private acronyms: string[];
-  private cordIds: string[];
-  private outliersData: any = [];
-  private outliersChartLoaded: boolean = false;
-  numericLabels: any = [];
-  colors: any = [];
+  kpiBaseNames: string[];
+  acronym: string[];
+  cordId: string[];
+  outliersData: any = [];
+  outliersDates: any = [];
+
+  gapsFilled: any = [];
+
   outliersIndexes: any = [];
   outliersValues: any = [];
-  colorsString: string = '';
   myChart: any;
+
 
   constructor(private router: Router,
               private restService: RestService,
               private formBuilder: FormBuilder) {
-
   }
 
   ngOnInit() {
     this.initForm();
-
   }
 
   getOutliers(outliersParams) {
+    console.log('coverage params');
+    console.log(outliersParams);
     this.outliersChartLoading = true;
     this.startDate = outliersParams.value.startDate;
     this.endDate = outliersParams.value.endDate;
     this.kpiBaseNames = outliersParams.value.kpiBaseNames.split(/[\s,]+/);
-    this.acronyms = outliersParams.value.acronyms.split(/[\s,]+/);
-    this.cordIds = outliersParams.value.cordIds.split(/[\s,]+/);
-
-    let baseURL = 'api/operators/outliers/' + this.cordIds + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
-
+    this.cordId = outliersParams.value.cordId;
+    this.acronym = outliersParams.value.acronym;
+    this.startDate = this.parseDate(outliersParams.value.startDate);
+    this.endDate = this.parseDate(outliersParams.value.endDate);
+    const baseURL = 'api/operators/outliers/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
     let kpiBaseNamesURL = '';
-    let acronymsURL = '';
-    let cordIdsURL = '';
 
     this.kpiBaseNames.forEach((kpi) => {
       if (kpi !== '') {
         kpiBaseNamesURL += '&kpi_basename=' + kpi;
       }
     });
-    this.acronyms.forEach((acr) => {
-      if (acr !== '') {
-        acronymsURL += '&acronym=' + acr;
-      }
-    });
 
-    this.cordIds.forEach((cor) => {
-      if (cor !== '') {
-        cordIdsURL += '&cord_id=' + cor;
-      }
-    });
-    let url = baseURL + kpiBaseNamesURL + acronymsURL + cordIdsURL;
+    const url = baseURL + kpiBaseNamesURL;
     console.log(url);
     this.restService.getAll(url).then(response => {
       console.log('outliersData: ');
@@ -84,6 +74,7 @@ export class OutliersComponent implements OnInit {
       this.outliersData = response.data.values;
       this.outliersValues = response.data.outlier_values;
       this.outliersIndexes = response.data.outliers;
+      this.outliersDates = response.data.dates;
       console.log(this.outliersIndexes);
       this.generateDates();
 
@@ -100,16 +91,15 @@ export class OutliersComponent implements OnInit {
       startDate: '',
       endDate: '',
       kpiBaseNames: '',
-      acronyms: '',
-      cordIds: ''
+      acronym: '',
+      cordId: ''
     });
   }
 
   generateChart() {
     console.log('generating chart...');
-    let ctx = document.getElementById('myChart');
-
-    this.myChart = new Chart(ctx, {
+    let chart = document.getElementById('myChart');
+    this.myChart = new Chart(chart, {
       type: 'scatter',
       data: {
         datasets: [{
@@ -131,6 +121,7 @@ export class OutliersComponent implements OnInit {
         ]
       },
       options: {
+        spanGaps: true,
         scales: {
           yAxes: [{
             ticks: {
@@ -144,14 +135,16 @@ export class OutliersComponent implements OnInit {
   }
 
   generateDates() {
-    let moment = require('moment');
+    const moment = require('moment');
     require('twix');
-    let itr = moment.twix(new Date(this.startDate), new Date(this.endDate)).iterate('days');
+    const itr = moment.twix(new Date(this.startDate), new Date(this.endDate)).iterate('days');
     while (itr.hasNext()) {
-      let fullDate = itr.next().toDate();
-      let day = fullDate.getFullYear() + '-' + (fullDate.getMonth() + 1) + '-' + fullDate.getDate();
+      const fullDate = itr.next().toDate();
+      const day = fullDate.getFullYear() + '-' + (fullDate.getMonth() + 1) + '-' + fullDate.getDate();
       this.labels.push(day);
     }
+    console.log('dates: ' + this.labels.length);
+    console.log(this.labels);
   }
 
   generateLabels() {
@@ -168,5 +161,21 @@ export class OutliersComponent implements OnInit {
 
   }
 
+  parseDate(date: any): string {
+    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
+  }
+
+  fillGaps() {
+    for (let i = 0, j = 0; i < this.labels.length; i++) {
+      if (this.labels[i] === this.outliersDates[j]) {
+        this.gapsFilled.push(this.outliersValues[j]);
+        j++;
+      } else {
+        this.gapsFilled.push(null);
+      }
+    }
+    console.log('gaps filled:');
+    console.log(this.gapsFilled);
+  }
 
 }

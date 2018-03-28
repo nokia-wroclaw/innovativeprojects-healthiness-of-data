@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {RestService} from '../../services/rest.service';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
 import {CacheDataComponent} from '../shared/cache-data/cache-data.component';
 import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 
-import {ENTER, COMMA} from '@angular/cdk/keycodes';
+import {ENTER, COMMA, TAB} from '@angular/cdk/keycodes';
 
 @Component({
   moduleId: module.id,
@@ -33,14 +33,14 @@ export class CoverageComponent implements OnInit {
   coverageTableLoaded = false;
   coverageTableLoading = false;
 
-  separatorKeysCodes = [ENTER, COMMA];
+  separatorKeysCodes = [ENTER, COMMA, TAB];
 
-  selectedKpiBasenames: any = [];
+  selectedKpiBasenames: any = ['TRF_215', 'SGSN_2012'];
   allKpiBasenamesList: any = [];
   optionsKpiBasenames: any = [];
   kpiBasenamesFormControl: FormControl = new FormControl();
 
-  selectedAcronyms: any = [];
+  selectedAcronyms: any = ['strathatuk', 'drasheshu'];
   allAcronymslist = ['childott', 'drasheshu', 'khuxel', 'bliulfux', 'strathatuk'];
   optionsAcronyms: any = [];
   acronymsFormControl: FormControl = new FormControl();
@@ -81,9 +81,6 @@ export class CoverageComponent implements OnInit {
 
     const baseURL = 'api/clusters/coverage/?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
-    this.kpiBaseNames = coverageParams.value.kpiBaseNames.split(/[\s,]+/);
-    this.acronyms = coverageParams.value.acronyms.split(/[\s,]+/);
-
     const kpiBaseNamesURL = this.processArguments(this.selectedKpiBasenames, 'kpi_basename');
     const acronymsURL = this.processArguments(this.selectedAcronyms, 'acronym');
 
@@ -101,18 +98,17 @@ export class CoverageComponent implements OnInit {
 
   initForm() {
     this.coverageParams = this.formBuilder.group({
-      startDate: '',
+      startDate: ['', Validators],
       endDate: '',
-      kpiBaseNames: '',
-      acronyms: ''
+      kpiBaseNames: [this.selectedKpiBasenames],
+      acronyms: [this.selectedAcronyms]
     });
   }
 
   getKpiFull() {
     console.log('get kpi full');
-    this.restService.getAll('api/clusters/kpi_basenames').then(kpiFull => {
+    this.restService.getAll('api/fetch_kpi_basenames').then(kpiFull => {
       this.allKpiBasenamesList = kpiFull.data;
-      console.log(this.allKpiBasenamesList);
     });
   }
 
@@ -125,6 +121,7 @@ export class CoverageComponent implements OnInit {
     if (input) {
       input.value = '';
     }
+    this.coverageTableLoaded = false;
   }
 
   // add(event: MatChipInputEvent): void {
@@ -145,6 +142,7 @@ export class CoverageComponent implements OnInit {
       this.selectedKpiBasenames.splice(index, 1);
       this.allKpiBasenamesList.push(chip);
     }
+    this.coverageTableLoaded = false;
   }
 
   filterOptionsKpiBasename(opt: string) {
@@ -162,6 +160,7 @@ export class CoverageComponent implements OnInit {
     if (input) {
       input.value = '';
     }
+    this.coverageTableLoaded = false;
   }
 
   removeChipAcronym(chip: any): void {
@@ -170,6 +169,7 @@ export class CoverageComponent implements OnInit {
       this.selectedAcronyms.splice(index, 1);
       this.allAcronymslist.push(chip);
     }
+    this.coverageTableLoaded = false;
   }
 
   filterOptionsAcronym(opt: string) {
@@ -189,10 +189,7 @@ export class CoverageComponent implements OnInit {
   }
 
   parseDate(date: any): string {
-    console.log(date);
-    let d = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
-    console.log(d);
-    return d;
+    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
   }
 
 
