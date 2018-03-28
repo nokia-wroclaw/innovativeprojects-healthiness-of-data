@@ -15,7 +15,7 @@
     matInput
     #chipInput
     [formControl]="formControl"
-  />
+   required minlength="1" [(ngModel)]="model.chips" name="chips" #chips="ngModel"/>
   <!--(matChipInputTokenEnd)="add($event)"-->
 </mat-chip-list>
 <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChip($event, chipInput)">

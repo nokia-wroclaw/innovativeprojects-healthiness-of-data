@@ -18,27 +18,27 @@
   <form name="outliersForm" (ngSubmit)="getOutliers(outlierParams)" [formGroup]="outlierParams">
 
     <mat-form-field>
-      <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Choose start date">
+      <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Choose start date" required minlength="1" [(ngModel)]="model.startDate" name="statDate" #startDate="ngModel" >
       <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
       <mat-datepicker #startDate></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field>
-      <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="Choose end date">
+      <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="Choose end date" required minlength="1" [(ngModel)]="model.endDate" name="endDate" #endDate="ngModel" >
       <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
       <mat-datepicker #endDate></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field class="full-width">
-      <input matInput id="cordIds" formControlName="cordId" placeholder='cord_id'>
+      <input matInput id="cordIds" formControlName="cordId" placeholder='cord_id' required minlength="1" [(ngModel)]="model.cordId" name="cordId" #cordId="ngModel" >
     </mat-form-field>
 
     <mat-form-field class="full-width">
-      <input matInput id="acronym" formControlName="acronym" placeholder='acronym'>
+      <input matInput id="acronym" formControlName="acronym" placeholder='acronym' required minlength="1" [(ngModel)]="model.acronym" name="acronym" #acronym="ngModel">
     </mat-form-field>
 
     <mat-form-field class="full-width">
-      <input matInput id="kpiBaseNames" formControlName="kpiBaseNames" placeholder='kpi_basenames'>
+      <input matInput id="kpiBaseNames" formControlName="kpiBaseNames" placeholder='kpi_basenames' required minlength="1" [(ngModel)]="model.kpiBaseNames" name="kpiBaseNames" #kpiBaseNames="ngModel">
     </mat-form-field>
 
     <button mat-raised-button [type]="submit">Fetch data</button>
