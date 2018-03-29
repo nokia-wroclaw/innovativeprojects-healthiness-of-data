@@ -28,7 +28,7 @@ def autocorrelation(data):
 def get_operator_periodicity():
         fig = plt.figure()
         ax1 = fig.add_subplot(221)
-        x = (numpy.sin(10*numpy.linspace(10*numpy.pi, 12*numpy.pi, 1000)).tolist()+(2*numpy.random.rand(1400)-1).tolist())
+        x = (numpy.sin(10*numpy.linspace(10*numpy.pi, 12*numpy.pi, 1000)).tolist()+(numpy.sin(10*numpy.linspace(12*numpy.pi, 15*numpy.pi, 1000))))
         print(len(x))
         autocor, lag = autocorrelation(x)
         # #print(autocor)

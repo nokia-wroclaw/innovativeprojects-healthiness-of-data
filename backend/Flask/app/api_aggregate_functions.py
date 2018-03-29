@@ -64,11 +64,6 @@ def get_cord_data(start_date, end_date, kpi, cord, **options):
                 "distribution": distribution
                 }
 
-        """ THIS PART CALCULATES THE FULL HISTOGRAM OF ALL DATA
-            all_values += values[acronym]
-        temp = numpy.histogram(all_values)
-        data.append({"full_distribution": [temp[0].tolist(), temp[1].tolist()]})
-        """
         return data
 
 
@@ -132,9 +127,4 @@ def get_cluster_data(start_date, end_date, kpi, acronym, **options):
                          "min_val": min_value[cord], "std_deviation": deviation[cord],
                          "coverage": coverage[cord], "distribution": distribution[cord]})
 
-        """ THIS PART CALCULATES THE FULL HISTOGRAM OF ALL DATA
-            all_values += values[acronym]
-        temp = numpy.histogram(all_values)
-        data.append({"full_distribution": [temp[0].tolist(), temp[1].tolist()]})
-        """
         return data
