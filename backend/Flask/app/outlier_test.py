@@ -3,14 +3,14 @@ from cassandra.cqlengine import connection
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 import datetime
 from matplotlib import pyplot
+import numpy
 import pandas
-import statsmodels.api
 
 cord_id = 117
 acronym = 'breabuc'
 kpi_basename = 'SGSN_2012'
 start_date = '2017-01-01'
-end_date = '2018-03-01'
+end_date = '2018-06-01'
 
 first_date = start_date
 
@@ -31,11 +31,25 @@ while start_date < end_date:
 
 dataframe = pandas.DataFrame(frame_setup)
 dataframe = dataframe.set_index(['dates'])
-print(dataframe)
 
-# print(dataframe.isnull().sum())
 
-decomp = statsmodels.api.tsa.seasonal_decompose(dataframe, freq=1, model='multiplicative')
+window_sizes = [5, 10, 15]
+fig = pyplot.figure()
+x = 1
 
-decomp.plot()
+for window_size in window_sizes:
+    moving_mean = []
+    ax = fig.add_subplot(len(window_sizes),1,x)
+    x += 1
+    for i in range(0, dataframe.shape[0] - window_size):
+        moving_mean_temp = dataframe.iloc[i : i+window_size, -1]
+        moving_mean.append(numpy.median(moving_mean_temp))
+
+    moving_mean_dataframe = pandas.DataFrame({'values': moving_mean, 'dates': frame_setup['dates'][:-window_size]})
+    moving_mean_dataframe = moving_mean_dataframe.set_index(['dates'])
+
+    ax.plot(dataframe, marker='o', linestyle="None", markersize=2)
+    ax.plot(moving_mean_dataframe, color='r')
+    ax.set_title("Window size: %s" % window_size)
+
 pyplot.show()
