@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {RestService} from '../../services/rest.service';
+import {RestService} from '../../shared/services/rest.service';
 
 declare var Chart: any;
 
@@ -57,7 +57,7 @@ export class OutliersComponent implements OnInit {
     this.acronym = outliersParams.value.acronym;
     this.startDate = this.parseDate(outliersParams.value.startDate);
     this.endDate = this.parseDate(outliersParams.value.endDate);
-    const baseURL = 'api/operators/outliers/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
+    let baseURL = 'api/operators/outliers/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
     let kpiBaseNamesURL = '';
 
@@ -66,7 +66,7 @@ export class OutliersComponent implements OnInit {
         kpiBaseNamesURL += '&kpi_basename=' + kpi;
       }
     });
-    const url = baseURL + kpiBaseNamesURL;
+    let url = baseURL + kpiBaseNamesURL;
     if (outliersParams.value.threshold) {
       url += '&threshold=' + outliersParams.value.threshold;
     }
@@ -222,5 +222,4 @@ export class OutliersComponent implements OnInit {
   }
 
 }
-
 

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {RestService} from '../../../services/rest.service';
+import {RestService} from '../../services/rest.service';
 
 @Component({
   selector: 'app-cache-data',

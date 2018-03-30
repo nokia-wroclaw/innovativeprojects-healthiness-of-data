@@ -1,14 +1,16 @@
+import {Map2dComponent} from './components/map2d/map2d.component';
+import {PeriodicityComponent} from './components/periodicity/periodicity.component';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
 
 import {AppComponent} from './app.component';
-import {RestService} from './services/rest.service';
+import {RestService} from './shared/services/rest.service';
 import {CoverageComponent} from './components/coverage/coverage.component';
 import {RouterModule} from '@angular/router';
 import {routes} from './routes';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HomepageComponent} from './components/homepage/homepage.component';
+import {HomepageComponent} from './shared/components/homepage/homepage.component';
 import {OutliersComponent} from './components/outliers/outliers.component';
 import {ChartModule} from 'primeng/chart';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -28,7 +30,8 @@ import {
   MatIconModule,
   MatInputModule,
   MatListModule,
-  MatMenuModule, MatNativeDateModule,
+  MatMenuModule,
+  MatNativeDateModule,
   MatPaginatorModule,
   MatProgressBarModule,
   MatProgressSpinnerModule,
@@ -45,11 +48,13 @@ import {
   MatToolbarModule,
   MatTooltipModule
 } from '@angular/material';
-import { DraftComponent } from './components/draft/draft.component';
-import { AutocompleteChipsComponent } from './components/shared/autocomplete-chips/autocomplete-chips.component';
-import { CacheDataComponent } from './components/shared/cache-data/cache-data.component';
-import { HistogramComponent } from './components/histogram/histogram.component';
-import { AggregatesComponent } from './components/aggregates/aggregates.component';
+import {DraftComponent} from './components/draft/draft.component';
+import {AutocompleteChipsComponent} from './components/shared/autocomplete-chips/autocomplete-chips.component';
+import {CacheDataComponent} from './shared/components/cache-data/cache-data.component';
+import {TrendComponent} from './components/trend/trend.component';
+import {AggregatesHistogramComponent} from './components/aggregates-histogram/aggregates-histogram.component';
+import {AboutComponent} from './shared/components/about/about.component';
+
 
 @NgModule({
   declarations: [
@@ -60,8 +65,11 @@ import { AggregatesComponent } from './components/aggregates/aggregates.componen
     DraftComponent,
     AutocompleteChipsComponent,
     CacheDataComponent,
-    HistogramComponent,
-    AggregatesComponent
+    PeriodicityComponent,
+    Map2dComponent,
+    TrendComponent,
+    AggregatesHistogramComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
