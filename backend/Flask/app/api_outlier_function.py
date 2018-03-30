@@ -19,8 +19,8 @@ def get_operator_outlier(start_date, end_date, kpi_basename, cord_id, acronym, t
         ready_data = {"cord_id": cord_id, "acronym": acronym, "kpi_basename": kpi_basename, "values": [],
                       "outliers": [], "outlier_values": [], "dates": []}
         while start_date < end_date:
-            result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date)\
-                                               .filter(kpi_basename=kpi_basename).filter(acronym=acronym)
+            result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date) \
+                .filter(kpi_basename=kpi_basename).filter(acronym=acronym)
             start_date += step
             for row in result:
                 ready_data["values"].append(row.value)
@@ -33,12 +33,12 @@ def get_operator_outlier(start_date, end_date, kpi_basename, cord_id, acronym, t
     mad_values = []
     modified_z_scores = []
     for val in ready_data["values"]:
-        mad_values.append(numpy.abs(val-median))
+        mad_values.append(numpy.abs(val - median))
     median_absolute_deviation = numpy.median(mad_values)
     for val in ready_data["values"]:
-        modified_z_scores.append(0.6745*(val - median)/median_absolute_deviation)
+        modified_z_scores.append(0.6745 * (val - median) / median_absolute_deviation)
 
-    ready_data["outliers"] = numpy.where(numpy.abs(modified_z_scores) > threshold)[0].tolist()
+    ready_data["outliers"] = numpy.where(numpy.abs(modified_z_scores) > float(threshold))[0].tolist()
 
     for outlier in ready_data["outliers"]:
         ready_data["outlier_values"].append(ready_data["values"][outlier])

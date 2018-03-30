@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {RestService} from '../../services/rest.service';
 
@@ -13,27 +13,29 @@ declare var Chart: any;
 export class OutliersComponent implements OnInit {
 
   outlierParams: FormGroup;
-  data: any = [1, 2, 3, 4, 1, 1, 1, 2, 3, 1, 4, 5, 3, 1, 2, 3, 4, 1, 1, 1, 2, 3, 1, 4, 5, 3, 1, 2, 3, 4];
-  labels: any = [];
-
   startDate: any;
   endDate: any;
-  outliersChartLoading = false;
-  outliersChartLoaded = false;
-  fullData: any = [];
-  fullOutlierData: any = [];
   kpiBaseNames: string[];
   acronym: string[];
   cordId: string[];
-  outliersData: any = [];
-  outliersDates: any = [];
+  outliersChartLoading = false;
+  outliersChartLoaded = false;
 
-  gapsFilled: any = [];
 
-  outliersIndexes: any = [];
-  outliersValues: any = [];
-  myChart: any;
+  labels: any = [];
 
+  fullData: any = [];
+  fullOutlierData: any = [];
+
+  outlierData: any = [];
+  outlierDates: any = [];
+  outlierIndexes: any = [];
+  outlierValues: any = [];
+
+  outlierDatesFormatted: any = [];
+
+  dataGapsFilled: any = [];
+  outliersGapsFilled: any = [];
 
   constructor(private router: Router,
               private restService: RestService,
@@ -65,63 +67,90 @@ export class OutliersComponent implements OnInit {
       }
     });
 
-    const url = baseURL + kpiBaseNamesURL;
+
+    const url = baseURL + kpiBaseNamesURL + '&threshold=' + outliersParams.value.threshold;
     console.log(url);
     this.restService.getAll(url).then(response => {
-      console.log('outliersData: ');
+      console.log('outlierData: ');
       console.log(response.data);
       this.outliersChartLoading = false;
-      this.outliersData = response.data.values;
-      this.outliersValues = response.data.outlier_values;
-      this.outliersIndexes = response.data.outliers;
-      this.outliersDates = response.data.dates;
-      console.log(this.outliersIndexes);
-      this.generateDates();
+      this.outlierData = response.data.values;
+      this.outlierValues = response.data.outlier_values;
+      this.outlierIndexes = response.data.outliers;
+      this.outlierDates = response.data.dates;
 
+    }).then(() => {
+      this.generateDates();
     }).then(() => {
       this.generateLabels();
       this.outliersChartLoaded = true;
-      console.log(this.outliersData);
+      console.log(this.outlierData);
+    }).then(() => {
+      this.generateChart();
     });
 
   }
 
   initForm() {
     this.outlierParams = this.formBuilder.group({
-      startDate: '',
-      endDate: '',
-      kpiBaseNames: '',
-      acronym: '',
-      cordId: ''
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      kpiBaseNames: ['', Validators.required],
+      acronym: ['', Validators.required],
+      cordId: ['', Validators.required],
+      threshold: ''
     });
   }
 
   generateChart() {
     console.log('generating chart...');
     let chart = document.getElementById('myChart');
-    this.myChart = new Chart(chart, {
-      type: 'scatter',
+    let myChart = new Chart(chart, {
+      type: 'line',
       data: {
+        labels: this.labels,
         datasets: [{
-          label: 'Outliers',
-          data: this.fullOutlierData,
-          backgroundColor: 'rgba(160, 0, 0, 1)',
-          borderColor: 'rgba(160, 0, 0, 1)',
-          borderWidth: 0.5,
-          fill: false
-        }, {
           label: 'Normal Data',
-          data: this.fullData,
+          data: this.dataGapsFilled,
           backgroundColor: 'rgba(0, 0, 160, 1)',
           borderColor: 'rgba(0, 0, 160, 1)',
-          borderWidth: 0.5,
-          fill: false
-        }
-
-        ]
+          borderWidth: 1,
+          fill: false,
+          pointRadius: 0,
+          pointBorderWidth: 1,
+          options: {
+            spanGaps: true,
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: false
+                }
+              }]
+            }
+          }
+        }, {
+          label: 'Outliers',
+          data: this.outliersGapsFilled,
+          backgroundColor: 'rgba(160, 0, 0, 1)',
+          borderColor: 'rgba(160, 0, 0, 1)',
+          borderWidth: 1,
+          fill: false,
+          pointRadius: 2,
+          pointBorderWidth: 1,
+          options: {
+            spanGaps: false,
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: false
+                }
+              }]
+            }
+          }
+        }]
       },
       options: {
-        spanGaps: true,
+        spanGaps: false,
         scales: {
           yAxes: [{
             ticks: {
@@ -131,6 +160,8 @@ export class OutliersComponent implements OnInit {
         }
       }
     });
+    myChart.update();
+
 
   }
 
@@ -140,42 +171,55 @@ export class OutliersComponent implements OnInit {
     const itr = moment.twix(new Date(this.startDate), new Date(this.endDate)).iterate('days');
     while (itr.hasNext()) {
       const fullDate = itr.next().toDate();
-      const day = fullDate.getFullYear() + '-' + (fullDate.getMonth() + 1) + '-' + fullDate.getDate();
-      this.labels.push(day);
+      this.labels.push(this.parseDate(fullDate));
     }
-    console.log('dates: ' + this.labels.length);
-    console.log(this.labels);
+
+    for (let i = 0; i < this.outlierDates.length; i++) {
+      let newDate = new Date(this.outlierDates[i]);
+      this.outlierDatesFormatted.push(this.parseDate(newDate));
+    }
+    this.fillGaps();
   }
 
   generateLabels() {
     let x = 0;
-    for (let i = 0; i < this.outliersData.length; i++) {
-      if (i === this.outliersIndexes[x]) {
-        this.fullOutlierData.push({x: i, y: this.outliersData[i]});
+    for (let i = 0; i < this.outlierData.length; i++) {
+      if (i === this.outlierIndexes[x]) {
+        this.fullOutlierData.push({x: i, y: this.outlierData[i]});
         x += 1;
       } else {
-        this.fullData.push({x: i, y: this.outliersData[i]});
+        this.fullData.push({x: i, y: this.outlierData[i]});
       }
     }
-    this.generateChart();
-
   }
 
   parseDate(date: any): string {
-    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
+    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + (date.getDate() + 1)).slice(-2);
   }
 
   fillGaps() {
-    for (let i = 0, j = 0; i < this.labels.length; i++) {
-      if (this.labels[i] === this.outliersDates[j]) {
-        this.gapsFilled.push(this.outliersValues[j]);
+    console.log('values');
+    console.log(this.outlierValues);
+    for (let i = 0, j = 0, k = 0; i < this.labels.length; i++) {
+      if (this.labels[i] === this.outlierDatesFormatted[j]) {
+        this.dataGapsFilled.push(this.outlierData[j]);
         j++;
       } else {
-        this.gapsFilled.push(null);
+        this.dataGapsFilled.push(null);
+      }
+      if (this.outlierIndexes[k] === i) {
+        this.outliersGapsFilled.push(this.outlierValues[k]);
+        k++;
+      } else {
+        this.outliersGapsFilled.push(null);
       }
     }
     console.log('gaps filled:');
-    console.log(this.gapsFilled);
+    console.log(this.dataGapsFilled);
+    console.log('outliers filled');
+    console.log(this.outliersGapsFilled);
   }
 
 }
+
+

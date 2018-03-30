@@ -1,58 +1,53 @@
-<h1>Outliers</h1>
-<mat-card>
-  <mat-list role="link">
-    <mat-list-item role="listitem">
-      111
-    </mat-list-item>
-    <mat-list-item role="listitem">
-      dilfihess
-    </mat-list-item>
-    <mat-list-item role="listitem">
-      kpi_basename=SGSN_2012
-    </mat-list-item>
-  </mat-list>
-</mat-card>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav mode="side" opened style="width: 250px;">
+    <mat-card>
+    <h3>Search:</h3>
+    <form name="outliersForm" (ngSubmit)="getOutliers(outlierParams)" [formGroup]="outlierParams">
 
-<mat-card>
-  <h2>Enter search parameters:</h2>
-  <form name="outliersForm" (ngSubmit)="getOutliers(outlierParams)" [formGroup]="outlierParams">
+      <mat-form-field class="input-line">
+        <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Choose start date"
+               required>
+        <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+        <mat-datepicker #startDate></mat-datepicker>
+      </mat-form-field>
 
-    <mat-form-field>
-      <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Choose start date" required minlength="1" [(ngModel)]="model.startDate" name="statDate" #startDate="ngModel" >
-      <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
-      <mat-datepicker #startDate></mat-datepicker>
-    </mat-form-field>
+      <mat-form-field>
+        <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="Choose end date" required>
+        <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+        <mat-datepicker #endDate></mat-datepicker>
+      </mat-form-field>
 
-    <mat-form-field>
-      <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="Choose end date" required minlength="1" [(ngModel)]="model.endDate" name="endDate" #endDate="ngModel" >
-      <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
-      <mat-datepicker #endDate></mat-datepicker>
-    </mat-form-field>
+      <mat-form-field class="full-width">
+        <input matInput id="cordIds" formControlName="cordId" placeholder='cord_id: 111' required>
+      </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <input matInput id="cordIds" formControlName="cordId" placeholder='cord_id' required minlength="1" [(ngModel)]="model.cordId" name="cordId" #cordId="ngModel" >
-    </mat-form-field>
+      <mat-form-field class="full-width">
+        <input matInput id="acronym" formControlName="acronym" placeholder='acronym: dilfihess' required>
+      </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <input matInput id="acronym" formControlName="acronym" placeholder='acronym' required minlength="1" [(ngModel)]="model.acronym" name="acronym" #acronym="ngModel">
-    </mat-form-field>
+      <mat-form-field class="full-width">
+        <input matInput id="kpiBaseNames" formControlName="kpiBaseNames" placeholder='kpi_basenames: SGSN_2012' required>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <input matInput id="threshold" formControlName="threshold" placeholder='threshold default = 3.5'>
+      </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <input matInput id="kpiBaseNames" formControlName="kpiBaseNames" placeholder='kpi_basenames' required minlength="1" [(ngModel)]="model.kpiBaseNames" name="kpiBaseNames" #kpiBaseNames="ngModel">
-    </mat-form-field>
+      <button mat-raised-button [type]="submit" [disabled]="!outlierParams.valid">Fetch data</button>
+    </form>
+    </mat-card>
+  </mat-sidenav>
 
-    <button mat-raised-button [type]="submit">Fetch data</button>
-  </form>
-</mat-card>
+  <mat-sidenav-content>
+    <mat-card>
+      <h1>Outliers</h1>
+      <mat-card>
+        <h3>Chart goes here:</h3>
+        <mat-spinner *ngIf="outliersChartLoading"></mat-spinner>
+        <div style=" width: 1000px; height: 500px;">
+          <canvas id="myChart" width="1000" height="400"></canvas>
+        </div>
+      </mat-card>
 
-
-<mat-card>
-  <mat-spinner *ngIf="outliersChartLoading"></mat-spinner>
-  <!--<div *ngIf="outliersChartLoaded && !outliersChartLoading" style=" width: 1000px; height: 400px;">-->
-  <div  style=" width: 1000px; height: 500px;">
-    <canvas id="myChart" width="1000" height="400"></canvas>
-  </div>
-</mat-card>
-
-
-
+      </mat-card>
+  </mat-sidenav-content>
+</mat-sidenav-container>

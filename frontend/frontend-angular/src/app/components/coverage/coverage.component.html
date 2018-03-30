@@ -1,103 +1,117 @@
 <h1>Coverage</h1>
-<mat-card>
-  <mat-list role="list">
-    <mat-list-item role="listitem">8/1/2015</mat-list-item>
-    <mat-list-item role="listitem">9/1/2015</mat-list-item>
-    <mat-list-item role="listitem">TRF_215</mat-list-item>
-    <mat-list-item role="listitem">SGSN_2012</mat-list-item>
-    <mat-list-item role="listitem">strathatuk</mat-list-item>
-    <mat-list-item role="listitem">drasheshu</mat-list-item>
-  </mat-list>
-
-</mat-card>
-<mat-card>
-  <h2>Enter search parameters:</h2>
-  <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
-
-    <mat-form-field>
-      <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Choose start date" required minlength="1" [(ngModel)]="model.startDate" name="statDate" #startDate="ngModel">
-      <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
-      <mat-datepicker #startDate></mat-datepicker>
-    </mat-form-field>
-
-    <mat-form-field>
-      <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="Choose end date" required minlength="1" [(ngModel)]="model.endDate" name="endDate" #endDate="ngModel">
-      <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
-      <mat-datepicker #endDate></mat-datepicker>
-    </mat-form-field>
 
 
-    <mat-form-field class="full-width">
-      <mat-chip-list #kpiList>
-        <mat-chip *ngFor="let chip of selectedKpiBasenames" [selectable]="selectable" [removable]="removable"
-                  (remove)="removeChipKpiBasename(chip)">
-          {{chip}}
-          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-        </mat-chip>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav mode="side" opened style="width: 250px;">
+    <mat-card><h2>Search:</h2>
+      <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
 
-        <input formControlName="kpiBaseNames"
-               placeholder="Select kpi basename..."
-               [matChipInputFor]="kpiList"
-               [matAutocomplete]="autoKpi"
-               [matChipInputAddOnBlur]="addOnBlur"
-               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-               matInput
-               #chipInputKpi
-               [formControl]="kpiBasenamesFormControl"
-       required minlength="1" [(ngModel)]="model.kpiBaseNames" name="kpiBaseNames" #kpiBaseNames="ngModel" />
+        <mat-form-field>
+          <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Choose start date"
+                 required>
+          <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+          <mat-datepicker #startDate></mat-datepicker>
+        </mat-form-field>
 
-      </mat-chip-list>
-      <mat-autocomplete #autoKpi="matAutocomplete" (optionSelected)="addChipKpiBasename($event, chipInputKpi)">
-        <mat-option *ngFor="let optionKpi of optionsKpiBasenames" [value]="optionKpi">
-          {{optionKpi}}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
+        <mat-form-field>
+          <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="Choose end date" required>
+          <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+          <mat-datepicker #endDate></mat-datepicker>
+        </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <mat-chip-list #acronymList>
-        <mat-chip *ngFor="let chip of selectedAcronyms" [selectable]="selectable" [removable]="removable"
-                  (remove)="removeChipAcronym(chip)">
-          {{chip}}
-          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-        </mat-chip>
 
-        <input formControlName="acronyms"
-               placeholder="Select acronyms..."
-               [matChipInputFor]="acronymList"
-               [matAutocomplete]="autoAcr"
-               [matChipInputAddOnBlur]="addOnBlur"
-               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-               matInput
-               #chipInputAcronym
-               [formControl]="acronymsFormControl"
-         required minlength="1" [(ngModel)]="model.acronym" name="acronym" #acronym="ngModel" />
-        <!--(matChipInputTokenEnd)="add($event)"-->
-      </mat-chip-list>
-      <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChipAcronym($event, chipInputAcronym)">
-        <mat-option *ngFor="let optionAcr of optionsAcronyms" [value]="optionAcr">
-          {{optionAcr}}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-chip-list #kpiList>
+            <mat-chip *ngFor="let chip of selectedKpiBasenames" [selectable]="selectable" [removable]="removable"
+                      (remove)="removeChipKpiBasename(chip)">
+              {{chip}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
 
-    <button mat-raised-button [type]="submit">Fetch data</button>
-  </form>
-</mat-card>
+            <input formControlName="kpiBaseNames"
+                   placeholder="Select kpi basename..."
+                   [matChipInputFor]="kpiList"
+                   [matAutocomplete]="autoKpi"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   matInput
+                   #chipInputKpi
+                   [formControl]="kpiBasenamesFormControl"
+                   required/>
 
-<mat-card>
-  <h2>Coverage table</h2>
-  <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
-  <table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
-    <tr>
-      <th>xxxxxx</th>
-      <th *ngFor="let acr of selectedAcronyms">{{acr}}</th>
-    </tr>
-    <tr *ngFor="let kpi of selectedKpiBasenames; let i = index;">
-      <td>{{kpi}}</td>
-      <td *ngFor="let acr of selectedAcronyms; let j = index;">
-        {{coverageData[((i+1)+selectedKpiBasenames.length*(j))-1].coverage}}
-      </td>
-    </tr>
-  </table>
-</mat-card>
+          </mat-chip-list>
+          <mat-autocomplete #autoKpi="matAutocomplete" (optionSelected)="addChipKpiBasename($event, chipInputKpi)">
+            <mat-option *ngFor="let optionKpi of optionsKpiBasenames" [value]="optionKpi">
+              {{optionKpi}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-chip-list #acronymList>
+            <mat-chip *ngFor="let chip of selectedAcronyms" [selectable]="selectable" [removable]="removable"
+                      (remove)="removeChipAcronym(chip)">
+              {{chip}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+
+            <input formControlName="acronyms"
+                   placeholder="Select acronyms..."
+                   [matChipInputFor]="acronymList"
+                   [matAutocomplete]="autoAcr"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   matInput
+                   #chipInputAcronym
+                   [formControl]="acronymsFormControl"
+                   required/>
+            <!--(matChipInputTokenEnd)="add($event)"-->
+          </mat-chip-list>
+          <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChipAcronym($event, chipInputAcronym)">
+            <mat-option *ngFor="let optionAcr of optionsAcronyms" [value]="optionAcr">
+              {{optionAcr}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <button mat-raised-button [type]="submit" [disabled]="!coverageParams.valid">Fetch data</button>
+      </form>
+    </mat-card>
+
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-card>
+      <h1>Coverage</h1>
+      <mat-card>
+        <h2>Coverage table goes here:</h2>
+        <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
+        <table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
+          <tr>
+            <th>xxxxxx</th>
+            <th *ngFor="let acr of selectedAcronyms">{{acr}}</th>
+          </tr>
+          <tr *ngFor="let kpi of selectedKpiBasenames; let i = index;">
+            <td>{{kpi}}</td>
+            <td *ngFor="let acr of selectedAcronyms; let j = index;">
+              {{ (coverageData[((i+1)+selectedKpiBasenames.length*(j))-1].coverage * 100).toFixed(2)}}
+            </td>
+          </tr>
+        </table>
+      </mat-card>
+    </mat-card>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+<!--<mat-card>-->
+<!--<mat-list role="list">-->
+<!--<mat-list-item role="listitem">8/1/2015</mat-list-item>-->
+<!--<mat-list-item role="listitem">9/1/2015</mat-list-item>-->
+<!--<mat-list-item role="listitem">TRF_215</mat-list-item>-->
+<!--<mat-list-item role="listitem">SGSN_2012</mat-list-item>-->
+<!--<mat-list-item role="listitem">strathatuk</mat-list-item>-->
+<!--<mat-list-item role="listitem">drasheshu</mat-list-item>-->
+<!--</mat-list>-->
+
+<!--</mat-card>-->

@@ -98,8 +98,8 @@ export class CoverageComponent implements OnInit {
 
   initForm() {
     this.coverageParams = this.formBuilder.group({
-      startDate: ['', Validators],
-      endDate: '',
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
       kpiBaseNames: [this.selectedKpiBasenames],
       acronyms: [this.selectedAcronyms]
     });
