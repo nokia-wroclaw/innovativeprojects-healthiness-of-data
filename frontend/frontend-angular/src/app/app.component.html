@@ -2,7 +2,7 @@
   <img src="../assets/images/nokia-logo.png">
   <a class="nav-link white" href="homepage">Home</a>
   <a class="nav-link white" style="cursor: pointer;" [matMenuTriggerFor]="menu">Components</a>
-  <mat-menu #menu="matMenu">
+  <mat-menu #menu="matMenu" [overlapTrigger]="false">
     <a style="color: red;" mat-menu-item href="aggregatesandhistogram">Aggregates&Histogram</a>
     <a style="color: green;" mat-menu-item href="coverage">Coverage</a>
     <a style="color: green;" mat-menu-item href="outliers">Outliers</a>
@@ -14,10 +14,13 @@
   <a class="nav-link white" href="draft">Draft</a>
   <a class="nav-link white" href="about">About</a>
 
+
 </mat-toolbar>
-<mat-grid-list cols="6" rowHeight="1200px">
-  <mat-grid-tile [colspan]="6" [rowspan]="1">
+<!--<div class="d-flex text-center" style="min-height: 900px; max-height: 1200px; height: 1000px;">-->
+  <mat-grid-list cols="6" rowHeight="1000px">
+    <mat-grid-tile [colspan]="6" [rowspan]="1">
       <router-outlet></router-outlet>
-  </mat-grid-tile>
-</mat-grid-list>
+    </mat-grid-tile>
+  </mat-grid-list>
+<!--</div>-->
 <div class="fixed-bottom text-center">Healthiness of data 2018</div>
