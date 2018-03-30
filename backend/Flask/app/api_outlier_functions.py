@@ -53,5 +53,4 @@ def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshol
     for outlier in ready_data["outliers"]:
         ready_data["outlier_values"].append(ready_data["values"][outlier])
 
-    print(ready_data)
     return ready_data

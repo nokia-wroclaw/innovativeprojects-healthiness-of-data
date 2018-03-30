@@ -79,7 +79,7 @@ export class OutliersComponent implements OnInit {
     this.acronym = outliersParams.value.acronym;
     this.startDate = this.parseDate(outliersParams.value.startDate);
     this.endDate = this.parseDate(outliersParams.value.endDate);
-    let baseURL = 'api/operators/outliers/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
+    const baseURL = 'api/outliers/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
     let kpiBaseNamesURL = '';
 
