@@ -66,9 +66,10 @@ export class OutliersComponent implements OnInit {
         kpiBaseNamesURL += '&kpi_basename=' + kpi;
       }
     });
-
-
-    const url = baseURL + kpiBaseNamesURL + '&threshold=' + outliersParams.value.threshold;
+    const url = baseURL + kpiBaseNamesURL;
+    if (outliersParams.value.threshold) {
+      url += '&threshold=' + outliersParams.value.threshold;
+    }
     console.log(url);
     this.restService.getAll(url).then(response => {
       console.log('outlierData: ');
@@ -116,7 +117,7 @@ export class OutliersComponent implements OnInit {
           borderColor: 'rgba(0, 0, 160, 1)',
           borderWidth: 1,
           fill: false,
-          pointRadius: 0,
+          pointRadius: 1,
           pointBorderWidth: 1,
           options: {
             spanGaps: true,
