@@ -16,8 +16,8 @@
 
 
 </mat-toolbar>
-<!--<div class="d-flex text-center" style="min-height: 900px; max-height: 1200px; height: 1000px;">-->
-  <mat-grid-list cols="6" rowHeight="1000px">
+<!--<div  style="min-height: 900px; max-height: 1200px; height: calc(100vh - 64px);">-->
+  <mat-grid-list cols="6" rowHeight="calc(100vh - 64px)">
     <mat-grid-tile [colspan]="6" [rowspan]="1">
       <router-outlet></router-outlet>
     </mat-grid-tile>
