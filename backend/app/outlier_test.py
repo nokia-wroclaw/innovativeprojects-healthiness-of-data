@@ -1,4 +1,4 @@
-from backend.app import parse_check_date
+from backend.app.utils import parse_check_date
 from cassandra.cqlengine import connection
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 import datetime
