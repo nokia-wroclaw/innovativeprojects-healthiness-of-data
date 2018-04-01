@@ -1,4 +1,4 @@
-from backend.Flask.run_server import starter
+from backend.run_server import starter
 
 
 def main():

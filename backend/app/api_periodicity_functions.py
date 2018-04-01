@@ -2,12 +2,9 @@ import numpy
 import datetime
 from cassandra.cqlengine import connection
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
-from backend.Flask.app.utils import parse_check_date
-from backend.Flask.app.utils import fetch_cluster_cords
+from backend.app import parse_check_date
 import matplotlib.pyplot as plt
 from collections import defaultdict
-from scipy import signal
-from scipy.signal import argrelmax
 from toolbox.peakdetect import peakdetect
 
 

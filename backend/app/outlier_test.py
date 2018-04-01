@@ -1,10 +1,9 @@
-from backend.Flask.app.utils import parse_check_date
+from backend.app import parse_check_date
 from cassandra.cqlengine import connection
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 import datetime
 from matplotlib import pyplot
 import numpy
-import pandas
 
 cord_id = 117
 acronym = 'breabuc'

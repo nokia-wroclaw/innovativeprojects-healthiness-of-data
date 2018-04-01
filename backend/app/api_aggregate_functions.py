@@ -4,8 +4,8 @@ import numpy
 from collections import defaultdict
 from cassandra.cqlengine import connection
 from toolbox.cassandra_object_mapper_models import PlmnProcessed
-from backend.Flask.app.utils import parse_check_date
-from backend.Flask.app.utils import fetch_cluster_cords
+from backend.app import parse_check_date
+from backend.app import fetch_cluster_cords
 sys.path.append(sys.path[0] + "/../../")
 
 
