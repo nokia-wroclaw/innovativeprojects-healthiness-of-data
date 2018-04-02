@@ -1,4 +1,4 @@
-from toolbox.cassandra_object_mapper_models import ClusterList
+from cassandra_object_mapper_models import ClusterList
 import csv
 from cassandra.cqlengine import connection
 
