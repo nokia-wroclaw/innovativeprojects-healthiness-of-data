@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
   <img src="../assets/images/nokia-logo.png">
-  <a class="nav-link white" href="homepage">Home</a>
+  <a class="nav-link white" routerLink="/homepage" routerLinkActive="active">Home</a>
   <a class="nav-link white" style="cursor: pointer;" [matMenuTriggerFor]="menu">Components</a>
   <mat-menu #menu="matMenu" [overlapTrigger]="false">
     <a style="color: red;" mat-menu-item routerLink="/aggregatesandhistogram" routerLinkActive="active">Aggregates&Histogram</a>
