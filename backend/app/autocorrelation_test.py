@@ -1,13 +1,5 @@
 import numpy
-import datetime
-from cassandra.cqlengine import connection
-from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
-from backend.Flask.app.utils import parse_check_date
-from backend.Flask.app.utils import fetch_cluster_cords
 import matplotlib.pyplot as plt
-from collections import defaultdict
-from scipy import signal
-from scipy.signal import argrelmax
 from toolbox.peakdetect import peakdetect
 
 
@@ -28,7 +20,7 @@ def autocorrelation(data):
 def get_operator_periodicity():
         fig = plt.figure()
         ax1 = fig.add_subplot(221)
-        x = (numpy.sin(10*numpy.linspace(10*numpy.pi, 12*numpy.pi, 1000)).tolist()+(2*numpy.random.rand(1400)-1).tolist())
+        x = (numpy.sin(10*numpy.linspace(10*numpy.pi, 12*numpy.pi, 1000)).tolist()+(numpy.sin(10*numpy.linspace(12*numpy.pi, 15*numpy.pi, 1000))))
         print(len(x))
         autocor, lag = autocorrelation(x)
         # #print(autocor)
