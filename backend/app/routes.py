@@ -1,8 +1,7 @@
 from flasgger import Swagger
 
 from ..app import app
-from flask import request
-from flask import jsonify
+from flask import request, jsonify
 from .utils import get_kpi_list
 from .utils import get_acronym_list
 from .utils import get_cord_acronym_set
