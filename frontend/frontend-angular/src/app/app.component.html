@@ -3,12 +3,12 @@
   <a class="nav-link white" href="homepage">Home</a>
   <a class="nav-link white" style="cursor: pointer;" [matMenuTriggerFor]="menu">Components</a>
   <mat-menu #menu="matMenu" [overlapTrigger]="false">
-    <a style="color: red;" mat-menu-item href="aggregatesandhistogram">Aggregates&Histogram</a>
-    <a style="color: green;" mat-menu-item href="coverage">Coverage</a>
-    <a style="color: green;" mat-menu-item href="outliers">Outliers</a>
-    <a style="color: red;" mat-menu-item href="periodicity">Periodicity</a>
-    <a style="color: red;" mat-menu-item href="map2d">2D map</a>
-    <a style="color: red;" mat-menu-item href="trend">Trend</a>
+    <a style="color: red;" mat-menu-item routerLink="/aggregatesandhistogram" routerLinkActive="active">Aggregates&Histogram</a>
+    <a style="color: green;" mat-menu-item routerLink="/coverage" routerLinkActive="active">Coverage</a>
+    <a style="color: green;" mat-menu-item routerLink="/outliers" routerLinkActive="active">Outliers</a>
+    <a style="color: red;" mat-menu-item routerLink="/periodicity" routerLinkActive="active">Periodicity</a>
+    <a style="color: red;" mat-menu-item routerLink="/map2d" routerLinkActive="active">2D map</a>
+    <a style="color: red;" mat-menu-item routerLink="/trend" routerLinkActive="active">Trend</a>
 
   </mat-menu>
   <a class="nav-link white" href="draft">Draft</a>
