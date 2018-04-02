@@ -29,6 +29,7 @@ export class CoverageComponent implements OnInit {
   acronyms: any = [];
   startDate: string;
   endDate: string;
+  cordID: any;
 
   coverageTableLoaded = false;
   coverageTableLoading = false;
@@ -79,7 +80,7 @@ export class CoverageComponent implements OnInit {
     this.startDate = this.parseDate(coverageParams.value.startDate);
     this.endDate = this.parseDate(coverageParams.value.endDate);
 
-    const baseURL = 'api/clusters/coverage/?date_start=' + this.startDate + '&date_end=' + this.endDate;
+    const baseURL = 'api/coverage/'+this.cordID+'?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
     const kpiBaseNamesURL = this.processArguments(this.selectedKpiBasenames, 'kpi_basename');
     const acronymsURL = this.processArguments(this.selectedAcronyms, 'acronym');
