@@ -1,8 +1,12 @@
-from cassandra.cqlengine import connection
+import datetime
 from collections import defaultdict
+
+from cassandra.cluster import Cluster
+from cassandra.cqlengine import connection
+from cassandra.query import named_tuple_factory
+
 from toolbox.cassandra_object_mapper_models import ClusterList
 from toolbox.cassandra_object_mapper_models import KpiUnits
-import datetime
 
 
 def fetch_cluster_cords(cluster):
@@ -77,3 +81,20 @@ def get_cord_acronym_set():
         cord_dict[row.cord_id].append(row.acronym)
 
     return cord_dict
+
+
+def get_cord_id_list():
+    cluster = Cluster(['127.0.0.1'])
+    session = cluster.connect('pb2')
+    session.row_factory = named_tuple_factory
+    rows = session.execute("SELECT DISTINCT cord_id FROM plmn_processed_cord;")
+    print(rows)
+    cord_list = []
+    i = 0
+    for row in rows:
+        cord_list.insert(i, str(row.cord_id))
+        i += 1
+        print(row.cord_id)
+    cord_list.sort(key=int)
+    print(cord_list)
+    return cord_list

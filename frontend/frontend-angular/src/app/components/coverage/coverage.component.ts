@@ -100,6 +100,7 @@ export class CoverageComponent implements OnInit {
     this.coverageParams = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
+      cordId: ['', Validators.required],
       kpiBaseNames: [this.selectedKpiBasenames],
       acronyms: [this.selectedAcronyms]
     });
@@ -189,7 +190,7 @@ export class CoverageComponent implements OnInit {
   }
 
   parseDate(date: any): string {
-    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + date.getDate();
+    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2) ;
   }
 
 

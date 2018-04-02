@@ -9,6 +9,7 @@ from flask import jsonify
 from .utils import get_kpi_list
 from .utils import get_acronym_list
 from .utils import get_cord_acronym_set
+from .utils import get_cord_id_list
 from .api_aggregate_functions import get_cord_data
 from .api_aggregate_functions import get_cluster_data
 from .api_coverage_functions import get_operator_coverage
@@ -144,3 +145,8 @@ def get_acronyms():
 @app.route('/api/fetch_cord_acronym_set', methods=['GET'])
 def get_cord_acronyms_set():
     return jsonify(get_cord_acronym_set())
+
+
+@app.route('/api/fetch_cord_ids', methods=['GET'])
+def get_cord_ids():
+    return jsonify(get_cord_id_list())

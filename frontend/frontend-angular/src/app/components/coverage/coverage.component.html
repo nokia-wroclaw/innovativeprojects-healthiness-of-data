@@ -44,6 +44,12 @@
           </mat-autocomplete>
         </mat-form-field>
 
+        <mat-form-field>
+          <input formControlName="cordId"
+                 placeholder="Select cord id..."
+                 matInput required >
+        </mat-form-field>
+
         <mat-form-field class="full-width">
           <mat-chip-list #acronymList>
             <mat-chip *ngFor="let chip of selectedAcronyms" [selectable]="selectable" [removable]="removable"
