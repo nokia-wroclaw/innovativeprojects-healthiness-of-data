@@ -75,7 +75,7 @@ responses:
           items:
             type: string
           description: Dates of outlier values
-  404:
+  400:
     schema:
       properties:
         success:

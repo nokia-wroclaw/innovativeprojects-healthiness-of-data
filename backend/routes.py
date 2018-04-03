@@ -19,12 +19,9 @@ CORS(app)
 Swagger(app)
 
 
-@app.route('/api/operators/aggregates/<int:cord_id>', methods=['GET'])
 @swag_from('aggregates_operators.yml', validation=True)
+@app.route('/api/operators/aggregates/<int:cord_id>', methods=['GET'])
 def get_operator_aggregates(cord_id):
-    """
-
-    """
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
     kpi_basename = request.args.get('kpi_basename')
@@ -37,8 +34,8 @@ def get_operator_aggregates(cord_id):
         return jsonify(data)
 
 
-@app.route('/api/clusters/aggregates/<int:cord_id>/<string:acronym>', methods=['GET'])
 @swag_from('aggregates_clusters.yml', validation=True)
+@app.route('/api/clusters/aggregates/<int:cord_id>/<string:acronym>', methods=['GET'])
 def get_cluster_aggregates(cord_id, acronym):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -55,8 +52,8 @@ def get_cluster_aggregates(cord_id, acronym):
 """COVERAGE CALCULATING ENDPOINTS"""
 
 
-@app.route('/api/coverage/<int:cord_id>', methods=['GET'])
 @swag_from('coverage_clusters.yml', validation=True)
+@app.route('/api/coverage/<int:cord_id>', methods=['GET'])
 def get_operator_coverages(cord_id):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -70,8 +67,8 @@ def get_operator_coverages(cord_id):
         return jsonify(data)
 
 
-@app.route('/api/outliers/<int:cord_id>/<string:acronym>', methods=['GET'])
 @swag_from('outliers_clusters.yml', validation=True)
+@app.route('/api/outliers/<int:cord_id>/<string:acronym>', methods=['GET'])
 def get_operator_outliers(cord_id, acronym):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -118,3 +115,4 @@ def get_cord_ids():
     return jsonify(get_cord_id_list())
 
 app.run(host='127.0.0.1', port=5000, debug=True)
+

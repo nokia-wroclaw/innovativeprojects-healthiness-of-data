@@ -68,7 +68,7 @@ responses:
             type: array
             items:
               type: number
-  404:
+  400:
     schema:
       properties:
         success:
