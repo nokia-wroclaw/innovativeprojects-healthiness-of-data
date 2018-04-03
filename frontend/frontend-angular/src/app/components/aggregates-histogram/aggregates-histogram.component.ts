@@ -101,7 +101,7 @@ export class AggregatesHistogramComponent implements OnInit {
         console.log(response.data);
         console.log(response.data[0].distribution)
         this.histogramChartLoading = false;
-        this.histogramData = response.data[0].distribution[1];
+        this.histogramData = response.data[0];
         this.histogramValues = response.data[0].distribution[1];
         this.histogramIndexes = response.data[0].distribution[0];
         this.histogramDates = response.data[0].distribution[0];
@@ -129,10 +129,10 @@ export class AggregatesHistogramComponent implements OnInit {
   }
   updateChart(chart, label) {
     let ddd = chart.data = {
-      labels: this.labels,
+      labels: this.histogramIndexes,
       datasets: [{
         label: 'Normal Data',
-        data: this.dataGapsFilled,
+        data: this.histogramValues,
         backgroundColor: 'rgba(0, 0, 160, 1)',
         borderColor: 'rgba(0, 0, 160, 1)',
         borderWidth: 1,
@@ -172,7 +172,6 @@ export class AggregatesHistogramComponent implements OnInit {
       kpiBaseNames: ['', Validators.required],
       acronym: this.acronymControl,
       cordId: this.cordIdControl,
-      threshold: ''
     });
   }
   generateChart() {
@@ -181,29 +180,10 @@ export class AggregatesHistogramComponent implements OnInit {
     this.myChart = new Chart(this.chart, {
       type: 'bar',
       data: {
-        labels: this.labels,
-        datasets: [{
-          label: 'Normal Data',
-          data: this.dataGapsFilled,
-          backgroundColor: 'rgba(0, 0, 160, 1)',
-          borderColor: 'rgba(0, 0, 160, 1)',
-          borderWidth: 1,
-          fill: false,
-          pointRadius: 1,
-          pointBorderWidth: 1,
-          options: {
-            spanGaps: true,
-            scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: false
-                }
-              }]
-            }
-          }
-        }, {
+        labels: this.histogramIndexes,
+        datasets: [ {
           label: 'histograms',
-          data: this.histogramsGapsFilled,
+          data: this.histogramValues,
           backgroundColor: 'rgba(160, 0, 0, 1)',
           borderColor: 'rgba(160, 0, 0, 1)',
           borderWidth: 1,
