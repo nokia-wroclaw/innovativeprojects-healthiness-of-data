@@ -1,19 +1,21 @@
 from flasgger import Swagger, swag_from
 
-from ..app import app
+# from ..app import app
 from flask import Flask, request, jsonify
-from .utils import get_kpi_list
-from .utils import get_acronym_list
-from .utils import get_cord_acronym_set
-from .utils import get_cord_id_list
-from .api_aggregate_functions import get_cord_data
-from .api_aggregate_functions import get_cluster_data
-from .api_coverage_functions import calculate_coverage
-from .api_outlier_functions import find_outliers
-from .api_periodicity_functions import get_operator_periodicity
+from flask_cors import CORS
+from utils import get_kpi_list
+from utils import get_acronym_list
+from utils import get_cord_acronym_set
+from utils import get_cord_id_list
+from api_aggregate_functions import get_cord_data
+from api_aggregate_functions import get_cluster_data
+from api_coverage_functions import calculate_coverage
+from api_outlier_functions import find_outliers
+from api_periodicity_functions import get_operator_periodicity
 
 """AGGREGATE CALCULATING ENDPOINTS"""
 app = Flask(__name__)
+CORS(app)
 Swagger(app)
 
 
@@ -115,5 +117,4 @@ def get_cord_acronyms_set():
 def get_cord_ids():
     return jsonify(get_cord_id_list())
 
-
-app.run(debug=True)
+app.run(host='127.0.0.1', port=5000, debug=True)

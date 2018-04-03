@@ -1,12 +1,9 @@
 import datetime
-import sys
 import numpy
 from collections import defaultdict
 from cassandra.cqlengine import connection
 from toolbox.cassandra_object_mapper_models import PlmnProcessed
-from backend.app.utils import parse_check_date
-from backend.app.utils import fetch_cluster_cords
-sys.path.append(sys.path[0] + "/../../")
+from utils import parse_check_date
 
 
 def get_cord_data(start_date, end_date, kpi, cord, **options):

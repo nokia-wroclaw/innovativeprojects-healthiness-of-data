@@ -1,7 +1,7 @@
 import numpy
 import datetime
 from cassandra.cqlengine import connection
-from backend.app.utils import parse_check_date
+from utils import parse_check_date
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 
 
