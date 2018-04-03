@@ -1,0 +1,60 @@
+Coverage for clusters and kpis
+Returns coverages for provided acronyms and kpis belonging to provided cord_id.
+---
+tags:
+  - Coverage - clusters
+parameters:
+  - name: cord_id
+    in: path
+    type: integer
+    required: true
+    description: Operator identifier
+  - name: date_start
+    in: query
+    type: string
+    required: true
+    description: Start of data range for data
+  - name: date_end
+    in: query
+    type: string
+    required: true
+    description: End of data range for data
+  - name: kpi_basename
+    in: query
+    type: string
+    required: true
+    description: Fetch data for provided kpi basename
+  - name: acronym
+    in: query
+    type: string
+    required: true
+    description: Acronym belonging to provided cord_id
+responses:
+  200:
+    description: Coverage (dates for which data was found divided by all dates) for all acronyms and kpis provided.
+    schema:
+      id: cluster_coverage
+      type: array
+      items:
+        type: object
+        properties:
+          kpi_basename:
+            type: string
+            description: Coverage of this kpi basename
+          cord_id:
+            type: integer
+            description: Coverage of this operator identifier
+          acronym:
+            type: string
+            description: Coverage of this cluster name
+          coverage:
+            type: number
+            description: Coverage of provided parameters
+            minimum: 0
+            maximum: 1
+  404:
+    schema:
+      properties:
+        success:
+          type: boolean
+          default: false

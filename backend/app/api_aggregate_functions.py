@@ -67,7 +67,7 @@ def get_cord_data(start_date, end_date, kpi, cord, **options):
         return data
 
 
-def get_cluster_data(start_date, end_date, kpi, acronym, **options):
+def get_cluster_data(start_date, end_date, kpi, cord, acronym, **options):
     """
     Calculates all aggregates.
     :param start_date: beginning date of range
@@ -94,37 +94,32 @@ def get_cluster_data(start_date, end_date, kpi, acronym, **options):
         step = datetime.timedelta(days=1)
         values = defaultdict(list)
         dates = defaultdict(list)
-        cord_ids = set()
 
-        for cluster_row in fetch_cluster_cords(acronym):
-            cord_ids.add(cluster_row.cord_id)
-            while start_date < end_date:
-                result = PlmnProcessed.objects.filter(kpi_basename=kpi).filter(date=start_date).\
-                                               filter(cord_id=cluster_row.cord_id).filter(acronym=acronym)
-                start_date += step
-                for row in result:
-                    values[row.cord_id].append(row.value)
-                    dates[row.cord_id].append(row.date.strftime('%d-%m-%Y'))
+        while start_date < end_date:
+            result = PlmnProcessed.objects.filter(kpi_basename=kpi).filter(date=start_date).\
+                                           filter(cord_id=cord).filter(acronym=acronym)
+            start_date += step
+            for row in result:
+                values[cord].append(row.value)
+                dates[cord].append(row.date.strftime('%d-%m-%Y'))
 
-        max_value = {}
-        min_value = {}
-        average = {}
-        deviation = {}
-        coverage = {}
-        distribution = {}
-        data = []
+        average = numpy.mean(values[cord])
+        max_value = max(values[cord])
+        min_value = min(values[cord])
+        coverage = len(dates[cord]) / (end_date - first_date).days
+        deviation = numpy.std(values[cord], ddof=1)
+        temp = numpy.histogram(values[cord], bins=histogram_bins)
+        distribution = [temp[0].tolist(), temp[1].tolist()]
 
-        for cord in cord_ids:
-            average[cord] = numpy.mean(values[cord])
-            max_value[cord] = max(values[cord])
-            min_value[cord] = min(values[cord])
-            coverage[cord] = len(dates[cord]) / (end_date - first_date).days
-            deviation[cord] = numpy.std(values[cord], ddof=1)
-            temp = numpy.histogram(values[cord], bins=histogram_bins)
-            distribution[cord] = [temp[0].tolist(), temp[1].tolist()]
-
-            data.append({"acronym": acronym, "cord_id": cord, "mean": average[cord], "max_val": max_value[cord],
-                         "min_val": min_value[cord], "std_deviation": deviation[cord],
-                         "coverage": coverage[cord], "distribution": distribution[cord]})
+        data = {
+                "acronym": acronym,
+                "cord_id": cord,
+                "mean": average,
+                "max_val": max_value,
+                "min_val": min_value,
+                "std_deviation": deviation,
+                "coverage": coverage,
+                "distribution": distribution
+                }
 
         return data
