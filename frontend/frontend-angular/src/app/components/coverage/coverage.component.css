@@ -1,18 +1,6 @@
-.row{
-  margin: 0 0 0 0;
-}
 .full-width {
   width: 100%;
 }
-.input-line {
-  min-width: 500px;
-  max-width: 500px;
-  width: 100%;
-}
 .sidenav-container {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  height: 600px;
 }

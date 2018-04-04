@@ -29,7 +29,11 @@ export class OutliersComponent implements OnInit {
   filteredAcronyms: any = [];
   cordIdsFiltered: Observable<string[]>;
   acronymsFiltered: Observable<string[]>;
+  kpisFiltered: Observable<string[]>;
   labels: any = [];
+
+  allKpiBasenamesList: any = [];
+  optionsKpiBasenames: any = [];
 
   fullData: any = [];
   fullOutlierData: any = [];
@@ -40,6 +44,7 @@ export class OutliersComponent implements OnInit {
   outlierValues: any = [];
   cordIdControl = new FormControl('', [Validators.required]);
   acronymControl = new FormControl('', [Validators.required]);
+  kpiBasenamesFormControl = new FormControl('', [Validators.required]);
 
 
   outlierDatesFormatted: any = [];
@@ -48,7 +53,6 @@ export class OutliersComponent implements OnInit {
   outliersGapsFilled: any = [];
   chart;
   myChart;
-  chartCreated = false;
 
 
   constructor(private router: Router,
@@ -62,6 +66,7 @@ export class OutliersComponent implements OnInit {
     this.generateChart();
     this.getCordAcronymSet();
     this.getCordIdsList();
+    this.getKpiFull();
     this.cordIdControl.valueChanges.subscribe(cor => {
       this.filteredAcronyms = this.cordAcronymSet[cor];
     });
@@ -111,7 +116,6 @@ export class OutliersComponent implements OnInit {
     }).then(() => {
       this.generateLabels();
       this.outliersChartLoaded = true;
-      console.log(this.outlierData);
     }).then(() => {
       this.updateChart(this.myChart, this.labels);
     });
@@ -122,7 +126,7 @@ export class OutliersComponent implements OnInit {
     this.outlierParams = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      kpiBaseNames: ['', Validators.required],
+      kpiBaseNames: this.kpiBasenamesFormControl,
       acronym: this.acronymControl,
       cordId: this.cordIdControl,
       threshold: ''
@@ -199,19 +203,24 @@ export class OutliersComponent implements OnInit {
     this.restService.getAll('api/fetch_cord_ids').then((response) => {
       this.cordIdsList = response.data;
       this.cordIdsFiltered = this.cordIdControl.valueChanges
-      .pipe(startWith(''), map(val => this.filter(val, this.cordIdsList)));
+        .pipe(startWith(''), map(val => this.filter(val, this.cordIdsList)));
     });
   }
 
   filter(val: string, list: any): string[] {
     return list.filter(option =>
-      option.toLowerCase().indexOf(val.toLowerCase()) === 0);
+      option.toLowerCase().indexOf(val.toLowerCase()) === 0).slice(0, 50);
   }
 
+  getKpiFull() {
+    this.restService.getAll('api/fetch_kpi_basenames').then(kpiFull => {
+      this.allKpiBasenamesList = kpiFull.data;
+            this.kpisFiltered = this.kpiBasenamesFormControl.valueChanges
+        .pipe(startWith(''), map(val => this.filter(val, this.allKpiBasenamesList)));
+    });
+  }
 
   generateChart() {
-    console.log('generating chart...');
-
     this.myChart = new Chart(this.chart, {
       type: 'line',
       data: {
@@ -316,8 +325,9 @@ export class OutliersComponent implements OnInit {
       dataset.data.push(ddd);
     });
     chart.update();
-
+    console.log('chart updated');
   }
+
 
 }
 

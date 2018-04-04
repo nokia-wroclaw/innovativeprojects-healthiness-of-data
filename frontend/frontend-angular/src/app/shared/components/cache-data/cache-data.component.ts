@@ -15,27 +15,27 @@ export class CacheDataComponent implements OnInit {
   }
 
   setKpiBasenamesList(): any {
-    this.restService.getAll('api/clusters/kpi_basenames').then(kpiFull => {
-      localStorage.setItem('kpiBasenamesFullList', kpiFull.data);
-      console.log('downloaded kpi basenems list');
-      return kpiFull;
-    }).catch((error) => {
+    this.restService.getAll('api/fetch_kpi_basenames')
+      .then((kpiFull) => {
+        localStorage.setItem('kpiBasenamesFullList', kpiFull.data);
+        console.log('downloaded kpi basenems list');
+        return kpiFull;
+      }).catch((error) => {
       console.log(error);
     });
   }
 
   getKpiBasenamesList() {
-    console.log('local');
-
+    console.log('local kpi list');
     let kpiFull = localStorage.getItem('kpiBasenamesFullList');
-    console.log(kpiFull);
     if (kpiFull != null) {
-      return kpiFull;
+      return kpiFull.split(',');
     } else {
       kpiFull = this.setKpiBasenamesList();
     }
-    return kpiFull;
+    return kpiFull.split(',');
   }
 
 
 }
+

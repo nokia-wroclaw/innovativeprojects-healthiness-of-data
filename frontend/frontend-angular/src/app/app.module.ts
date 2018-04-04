@@ -148,7 +148,7 @@ import {AboutComponent} from './shared/components/about/about.component';
     MatPaginatorModule,
     MatNativeDateModule,
   ],
-  providers: [RestService],
+  providers: [RestService, CacheDataComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -1,10 +1,10 @@
-<mat-sidenav-container class="sidenav-container">
+<mat-sidenav-container class="sidenav-container" style=" height: 800px;">
   <mat-sidenav mode="side" opened style="width: 250px;">
     <mat-card>
       <h3>Search:</h3>
       <form name="outliersForm" (ngSubmit)="getOutliers(outlierParams)" [formGroup]="outlierParams">
 
-        <mat-form-field class="input-line">
+        <mat-form-field>
           <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Choose start date"
                  required>
           <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
@@ -29,7 +29,8 @@
 
         <mat-form-field class="full-width">
           <input matInput id="acronym" [formControl]="acronymControl" [formControlName]="'acronym'"
-                 placeholder='acronym: dilfihess' [matAutocomplete]="autoAcro" required>
+                 placeholder='acronym: dilfihess' [matAutocomplete]="autoAcro"
+                 required>
         </mat-form-field>
         <mat-autocomplete #autoAcro="matAutocomplete">
           <mat-option *ngFor="let option of acronymsFiltered | async" [value]="option">
@@ -38,9 +39,13 @@
         </mat-autocomplete>
 
         <mat-form-field class="full-width">
-          <input matInput id="kpiBaseNames" formControlName="kpiBaseNames" placeholder='kpi_basenames: SGSN_2012'
-                 required>
+          <input matInput id="kpiBaseNames" [formControlName]="'kpiBaseNames'" [formControl]="kpiBasenamesFormControl" placeholder='kpi_basenames: SGSN_2012' [matAutocomplete]="autoKpi" required>
         </mat-form-field>
+        <mat-autocomplete #autoKpi="matAutocomplete">
+          <mat-option *ngFor="let optionKpi of kpisFiltered | async" [value]="optionKpi">
+            {{optionKpi}}
+          </mat-option>
+        </mat-autocomplete>
 
         <mat-form-field class="full-width">
           <input matInput id="threshold" formControlName="threshold" placeholder='threshold default = 3.5'>
@@ -57,7 +62,7 @@
       <mat-card>
         <h3>Result chart:</h3>
         <mat-spinner *ngIf="outliersChartLoading"></mat-spinner>
-        <canvas id="myChart" width="1200" height="800"></canvas>
+        <canvas id="myChart" width="1000" height="400"></canvas>
       </mat-card>
 
     </mat-card>
