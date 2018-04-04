@@ -1,6 +1,4 @@
 from flasgger import Swagger, swag_from
-
-# from ..app import app
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from api_functions.utils import get_cord_id_list, get_cord_acronym_set, get_acronym_list, get_kpi_list
@@ -16,7 +14,7 @@ Swagger(app)
 
 
 @swag_from('api_docs/aggregates_operators.yml', validation=True)
-@app.route('/api/operators/aggregates/<int:cord_id>', methods=['GET'])
+@app.route('/api/operators/aggregates/<string:cord_id>', methods=['GET'])
 def get_operator_aggregates(cord_id):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -31,7 +29,7 @@ def get_operator_aggregates(cord_id):
 
 
 @swag_from('api_docs/aggregates_clusters.yml', validation=True)
-@app.route('/api/clusters/aggregates/<int:cord_id>/<string:acronym>', methods=['GET'])
+@app.route('/api/clusters/aggregates/<string:cord_id>/<string:acronym>', methods=['GET'])
 def get_cluster_aggregates(cord_id, acronym):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -49,17 +47,12 @@ def get_cluster_aggregates(cord_id, acronym):
 
 
 @swag_from('api_docs/coverage_clusters.yml', validation=True)
-@app.route('/api/coverage/<int:cord_id>', methods=['GET'])
+@app.route('/api/coverage/<string:cord_id>', methods=['GET'])
 def get_operator_coverages(cord_id):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
     kpis = request.args.getlist('kpi_basename')
     acronyms = request.args.getlist('acronym')
-    print(date_start)
-    print(date_end)
-    print(cord_id)
-    print(acronyms)
-    print(kpis)
 
     data = calculate_coverage(date_start, date_end, cord_id, acronyms, kpis)
     if not data:
@@ -69,7 +62,7 @@ def get_operator_coverages(cord_id):
 
 
 @swag_from('api_docs/outliers_clusters.yml', validation=True)
-@app.route('/api/outliers/<int:cord_id>/<string:acronym>', methods=['GET'])
+@app.route('/api/outliers/<string:cord_id>/<string:acronym>', methods=['GET'])
 def get_operator_outliers(cord_id, acronym):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -83,7 +76,7 @@ def get_operator_outliers(cord_id, acronym):
         return jsonify(data)
 
 
-@app.route('/api/operators/periodicity/<int:cord_id>', methods=['GET'])
+@app.route('/api/operators/periodicity/<string:cord_id>', methods=['GET'])
 def get_operator_periodicities(cord_id):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
@@ -115,5 +108,5 @@ def get_cord_acronyms_set():
 def get_cord_ids():
     return jsonify(get_cord_id_list())
 
-app.run(host='127.0.0.1', port=5000, debug=True)
 
+app.run(host='127.0.0.1', port=5000, debug=True)

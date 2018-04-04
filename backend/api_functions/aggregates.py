@@ -29,7 +29,7 @@ def get_cord_data(start_date, end_date, kpi, cord, **options):
         else:
             histogram_bins = int(histogram_bins)
 
-        connection.setup(['127.0.0.1'], 'pb2')
+        connection.setup(['145.239.87.179'], 'pb2')
         step = datetime.timedelta(days=1)
         values = []
         dates = []

@@ -21,7 +21,7 @@ def calculate_coverage(start_date, end_date, cord_id, acronyms, kpis):
     if not start_date and not end_date:
         return False
     else:
-        connection.setup(['127.0.0.1'], 'pb2')
+        connection.setup(['145.239.87.179'], 'pb2')
         step = datetime.timedelta(days=1)
         data = []
 

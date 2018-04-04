@@ -1,9 +1,11 @@
 import numpy
 import datetime
 from cassandra.cqlengine import connection
-from backend.app.utils import parse_check_date
+from backend.api_functions.utils import parse_check_date
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 from matplotlib import pyplot
+
+
 
 
 def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshold):
@@ -23,7 +25,7 @@ def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshol
     if not start_date and not end_date:
         return False
     else:
-        connection.setup(['127.0.0.1'], 'pb2')
+        connection.setup(['145.239.87.179'], 'pb2')
         first_date = start_date
         last_date = end_date
         step = datetime.timedelta(days=1)
@@ -64,8 +66,6 @@ def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshol
         for i in range(0, len(ready_data['values'])):
             moving_mean.append(numpy.median(temp_data[i:i + window_size]))
 
-
-
         if not threshold:
             threshold = 3.5
 
@@ -88,7 +88,7 @@ def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshol
 
         return ready_data, moving_mean
 
-ready_data, moving_mean = find_outliers('2015-01-03', '2018-04-01', 'SGSN_2012', 111, 'dilfihess', 3.5)
+ready_data, moving_mean = find_outliers('2015-01-03', '2018-04-01', 'SGSN_2012', 'Skuntank', 'dilfihess', 3.5)
 # 2015-01-03 / 2016-01-03
 fig = pyplot.figure()
 ax = fig.add_subplot(211)
@@ -96,7 +96,7 @@ ax.plot(ready_data['dates'], ready_data['values'], marker='o', linestyle='None',
 ax.plot(ready_data['dates'], moving_mean, color='r')
 ax.plot(ready_data["outlier_dates"], ready_data["outlier_values"], marker='x', linestyle='None', markersize=8)
 
-ready_data, moving_mean = find_outliers('2016-01-03', '2018-04-01', 'SGSN_2012', 111, 'dilfihess', 3.5)
+ready_data, moving_mean = find_outliers('2016-01-03', '2018-04-01', 'SGSN_2012', 'Skuntank', 'dilfihess', 3.5)
 ax2 = fig.add_subplot(212)
 ax2.plot(ready_data['dates'], ready_data['values'], marker='o', linestyle='None', markersize=2)
 ax2.plot(ready_data['dates'], moving_mean, color='r')
