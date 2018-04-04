@@ -3,7 +3,7 @@ import numpy
 from collections import defaultdict
 from cassandra.cqlengine import connection
 from toolbox.cassandra_object_mapper_models import PlmnProcessed
-from utils import parse_check_date
+from .utils import parse_check_date
 
 
 def get_cord_data(start_date, end_date, kpi, cord, **options):

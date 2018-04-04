@@ -6,3 +6,7 @@
 /venv
 
 \.vscode/
+
+toolbox/pokemon_functions/
+
+toolbox/csv_files/

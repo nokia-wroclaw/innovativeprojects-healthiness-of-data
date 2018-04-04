@@ -1,7 +1,7 @@
 import datetime
 from cassandra.cqlengine import connection
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
-from utils import parse_check_date
+from .utils import parse_check_date
 
 
 def calculate_coverage(start_date, end_date, cord_id, acronyms, kpis):

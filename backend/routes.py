@@ -3,15 +3,11 @@ from flasgger import Swagger, swag_from
 # from ..app import app
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from utils import get_kpi_list
-from utils import get_acronym_list
-from utils import get_cord_acronym_set
-from utils import get_cord_id_list
-from api_aggregate_functions import get_cord_data
-from api_aggregate_functions import get_cluster_data
-from api_coverage_functions import calculate_coverage
-from api_outlier_functions import find_outliers
-from api_periodicity_functions import get_operator_periodicity
+from api_functions.utils import get_cord_id_list, get_cord_acronym_set, get_acronym_list, get_kpi_list
+from api_functions.aggregates import get_cord_data, get_cluster_data
+from api_functions.coverage import calculate_coverage
+from api_functions.outliers import find_outliers
+from api_functions.decomposition import get_operator_periodicity
 
 """AGGREGATE CALCULATING ENDPOINTS"""
 app = Flask(__name__)
@@ -19,7 +15,7 @@ CORS(app)
 Swagger(app)
 
 
-@swag_from('aggregates_operators.yml', validation=True)
+@swag_from('api_docs/aggregates_operators.yml', validation=True)
 @app.route('/api/operators/aggregates/<int:cord_id>', methods=['GET'])
 def get_operator_aggregates(cord_id):
     date_start = request.args.get('date_start')
@@ -34,7 +30,7 @@ def get_operator_aggregates(cord_id):
         return jsonify(data)
 
 
-@swag_from('aggregates_clusters.yml', validation=True)
+@swag_from('api_docs/aggregates_clusters.yml', validation=True)
 @app.route('/api/clusters/aggregates/<int:cord_id>/<string:acronym>', methods=['GET'])
 def get_cluster_aggregates(cord_id, acronym):
     date_start = request.args.get('date_start')
@@ -52,7 +48,7 @@ def get_cluster_aggregates(cord_id, acronym):
 """COVERAGE CALCULATING ENDPOINTS"""
 
 
-@swag_from('coverage_clusters.yml', validation=True)
+@swag_from('api_docs/coverage_clusters.yml', validation=True)
 @app.route('/api/coverage/<int:cord_id>', methods=['GET'])
 def get_operator_coverages(cord_id):
     date_start = request.args.get('date_start')
@@ -72,7 +68,7 @@ def get_operator_coverages(cord_id):
         return jsonify(data)
 
 
-@swag_from('outliers_clusters.yml', validation=True)
+@swag_from('api_docs/outliers_clusters.yml', validation=True)
 @app.route('/api/outliers/<int:cord_id>/<string:acronym>', methods=['GET'])
 def get_operator_outliers(cord_id, acronym):
     date_start = request.args.get('date_start')

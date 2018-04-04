@@ -25,7 +25,7 @@ class PlmnRawCord(Model):
 class PlmnProcessed(Model):
     kpi_basename = columns.Text(primary_key=True)
     date = columns.DateTime(primary_key=True)
-    cord_id = columns.BigInt(primary_key=True)
+    cord_id = columns.Text(primary_key=True)
     acronym = columns.Text(primary_key=True)
     kpi_name = columns.Text(primary_key=True)
     kpi_version = columns.Text()
@@ -33,7 +33,7 @@ class PlmnProcessed(Model):
 
 
 class PlmnProcessedCord(Model):
-    cord_id = columns.BigInt(primary_key=True)
+    cord_id = columns.Text(primary_key=True)
     date = columns.DateTime(primary_key=True)
     kpi_basename = columns.Text(primary_key=True)
     acronym = columns.Text(primary_key=True)
@@ -78,4 +78,4 @@ class MissingKpis(Model):
 
 class ClusterList(Model):
     acronym = columns.Text(primary_key=True)
-    cord_id = columns.BigInt(primary_key=True)
+    cord_id = columns.Text(primary_key=True)
