@@ -49,11 +49,13 @@ import {
   MatTooltipModule
 } from '@angular/material';
 import {DraftComponent} from './components/draft/draft.component';
-import {AutocompleteChipsComponent} from './components/shared/autocomplete-chips/autocomplete-chips.component';
+import {AutocompleteChipsComponent} from './shared/components/autocomplete-chips/autocomplete-chips.component';
 import {CacheDataComponent} from './shared/components/cache-data/cache-data.component';
 import {TrendComponent} from './components/trend/trend.component';
 import {AggregatesHistogramComponent} from './components/aggregates-histogram/aggregates-histogram.component';
 import {AboutComponent} from './shared/components/about/about.component';
+import {SharedFunctionsService} from './shared/services/shared.functions.service';
+import { NotfoundComponent } from './shared/components/notfound/notfound.component';
 
 
 @NgModule({
@@ -69,7 +71,8 @@ import {AboutComponent} from './shared/components/about/about.component';
     Map2dComponent,
     TrendComponent,
     AggregatesHistogramComponent,
-    AboutComponent
+    AboutComponent,
+    NotfoundComponent
   ],
   imports: [
     BrowserModule,
@@ -148,7 +151,7 @@ import {AboutComponent} from './shared/components/about/about.component';
     MatPaginatorModule,
     MatNativeDateModule,
   ],
-  providers: [RestService],
+  providers: [RestService, CacheDataComponent, SharedFunctionsService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

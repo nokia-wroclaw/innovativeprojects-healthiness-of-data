@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {MenuItem} from 'primeng/api';
+import {CacheDataComponent} from './shared/components/cache-data/cache-data.component';
 
 
 @Component({
@@ -8,9 +7,11 @@ import {MenuItem} from 'primeng/api';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  ngOnInit(): void {
+  }
 
-  constructor() {
+  constructor(private cacheData: CacheDataComponent) {
   }
 
 }

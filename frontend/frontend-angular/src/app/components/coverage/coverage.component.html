@@ -1,4 +1,4 @@
-<mat-sidenav-container class="sidenav-container">
+<mat-sidenav-container class="sidenav-container" style=" height: 800px;">
   <mat-sidenav mode="side" opened style="width: 250px;">
     <mat-card><h2>Search:</h2>
       <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
@@ -47,7 +47,7 @@
         <mat-form-field>
           <input formControlName="cordId"
                  placeholder="Select cord id..."
-                 matInput required >
+                 matInput required>
         </mat-form-field>
 
         <mat-form-field class="full-width">
@@ -70,8 +70,8 @@
                    required/>
             <!--(matChipInputTokenEnd)="add($event)"-->
           </mat-chip-list>
-          <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChipAcronym($event, chipInputAcronym)">
-            <mat-option *ngFor="let optionAcr of optionsAcronyms" [value]="optionAcr">
+          <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChipAcronym($event, chipInputAcronym)" >
+            <mat-option *ngFor="let optionAcr of optionsAcronyms" [value]="optionAcr" >
               {{optionAcr}}
             </mat-option>
           </mat-autocomplete>
@@ -105,16 +105,3 @@
 
   </mat-sidenav-content>
 </mat-sidenav-container>
-
-
-<!--<mat-card>-->
-<!--<mat-list role="list">-->
-<!--<mat-list-item role="listitem">8/1/2015</mat-list-item>-->
-<!--<mat-list-item role="listitem">9/1/2015</mat-list-item>-->
-<!--<mat-list-item role="listitem">TRF_215</mat-list-item>-->
-<!--<mat-list-item role="listitem">SGSN_2012</mat-list-item>-->
-<!--<mat-list-item role="listitem">strathatuk</mat-list-item>-->
-<!--<mat-list-item role="listitem">drasheshu</mat-list-item>-->
-<!--</mat-list>-->
-
-<!--</mat-card>-->

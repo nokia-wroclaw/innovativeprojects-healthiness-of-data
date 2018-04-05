@@ -2,12 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {RestService} from '../../shared/services/rest.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
+import {MatAutocompleteSelectedEvent} from '@angular/material';
 import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
-import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 
-import {ENTER, COMMA, TAB} from '@angular/cdk/keycodes';
+import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
+import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
 
 @Component({
   moduleId: module.id,
@@ -54,7 +53,8 @@ export class CoverageComponent implements OnInit {
   constructor(private router: Router,
               private restService: RestService,
               private formBuilder: FormBuilder,
-              private cacheData: CacheDataComponent) {
+              private cacheData: CacheDataComponent,
+              private sharedFunctions: SharedFunctionsService) {
     // this.allKpiBasenamesList = this.cacheData.getKpiBasenamesList();
   }
 
@@ -77,10 +77,11 @@ export class CoverageComponent implements OnInit {
     console.log(coverageParams);
     this.coverageTableLoading = true;
 
-    this.startDate = this.parseDate(coverageParams.value.startDate);
-    this.endDate = this.parseDate(coverageParams.value.endDate);
+    this.startDate = this.sharedFunctions.parseDate(coverageParams.value.startDate);
+    this.endDate = this.sharedFunctions.parseDate(coverageParams.value.endDate);
+    this.cordID = this.coverageParams.value.cordId;
 
-    const baseURL = 'api/coverage/'+this.cordID+'?date_start=' + this.startDate + '&date_end=' + this.endDate;
+    const baseURL = 'api/coverage/' + this.cordID + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
     const kpiBaseNamesURL = this.processArguments(this.selectedKpiBasenames, 'kpi_basename');
     const acronymsURL = this.processArguments(this.selectedAcronyms, 'acronym');
@@ -108,11 +109,11 @@ export class CoverageComponent implements OnInit {
   }
 
   getKpiFull() {
-    console.log('get kpi full');
     this.restService.getAll('api/fetch_kpi_basenames').then(kpiFull => {
       this.allKpiBasenamesList = kpiFull.data;
     });
   }
+
 
   // kpi basenames
   addChipKpiBasename(event: MatAutocompleteSelectedEvent, input: any): void {
@@ -149,7 +150,7 @@ export class CoverageComponent implements OnInit {
 
   filterOptionsKpiBasename(opt: string) {
     this.optionsKpiBasenames = this.allKpiBasenamesList
-      .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0);
+      .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0).slice(0, 50);
   }
 
 
@@ -176,9 +177,8 @@ export class CoverageComponent implements OnInit {
 
   filterOptionsAcronym(opt: string) {
     this.optionsAcronyms = this.allAcronymslist
-      .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0);
+      .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0).slice(0, 50);
   }
-
 
   processArguments(argumentsList: string[], argumentName: string): string {
     let argURL = '';
@@ -190,12 +190,4 @@ export class CoverageComponent implements OnInit {
     return argURL;
   }
 
-  parseDate(date: any): string {
-    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2) ;
-  }
-
-
 }
-
-
-
