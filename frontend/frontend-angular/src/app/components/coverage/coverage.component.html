@@ -16,39 +16,19 @@
           <mat-datepicker #endDate></mat-datepicker>
         </mat-form-field>
 
-
-        <mat-form-field class="full-width">
-          <mat-chip-list #kpiList>
-            <mat-chip *ngFor="let chip of selectedKpiBasenames" [selectable]="selectable" [removable]="removable"
-                      (remove)="removeChipKpiBasename(chip)">
-              {{chip}}
-              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip>
-
-            <input formControlName="kpiBaseNames"
-                   placeholder="Select kpi basename..."
-                   [matChipInputFor]="kpiList"
-                   [matAutocomplete]="autoKpi"
-                   [matChipInputAddOnBlur]="addOnBlur"
-                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                   matInput
-                   #chipInputKpi
-                   [formControl]="kpiBasenamesFormControl"
-                   required/>
-
-          </mat-chip-list>
-          <mat-autocomplete #autoKpi="matAutocomplete" (optionSelected)="addChipKpiBasename($event, chipInputKpi)">
-            <mat-option *ngFor="let optionKpi of optionsKpiBasenames" [value]="optionKpi">
-              {{optionKpi}}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-
         <mat-form-field>
-          <input formControlName="cordId"
-                 placeholder="Select cord id..."
-                 matInput required>
+          <input [formControl]="cordIDFormControl"
+                 [formControlName]="'cordID'"
+                 placeholder="Select cord id"
+                 matInput
+                 [matAutocomplete]="autoCord"
+                 required>
         </mat-form-field>
+        <mat-autocomplete #autoCord="matAutocomplete">
+          <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-autocomplete>
 
         <mat-form-field class="full-width">
           <mat-chip-list #acronymList>
@@ -58,21 +38,49 @@
               <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
             </mat-chip>
 
-            <input formControlName="acronyms"
-                   placeholder="Select acronyms..."
+            <input [formControl]="acronymsFormControl"
+                   [formControlName]="'acronyms'"
+                   placeholder="Select acronyms"
                    [matChipInputFor]="acronymList"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                    [matAutocomplete]="autoAcr"
+                   matInput
+                   #chipInputAcronym
+                   required/>
+
+            <!--(matChipInputTokenEnd)="add($event)"-->
+          </mat-chip-list>
+          <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChipAcronym($event, chipInputAcronym)">
+            <mat-option *ngFor="let optionAcr of filteredAcronyms" [value]="optionAcr">
+              {{optionAcr}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-chip-list #kpiList>
+            <mat-chip *ngFor="let chip of selectedKpiBasenames" [selectable]="selectable" [removable]="removable"
+                      (remove)="removeChipKpiBasename(chip)">
+              {{chip}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+
+            <input [formControl]="kpiBasenamesFormControl"
+                   [formControlName]="'kpiBaseNames'"
+                   placeholder="Select kpi basenames"
+                   [matChipInputFor]="kpiList"
+                   [matAutocomplete]="autoKpi"
                    [matChipInputAddOnBlur]="addOnBlur"
                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                    matInput
-                   #chipInputAcronym
-                   [formControl]="acronymsFormControl"
+                   #chipInputKpi
                    required/>
-            <!--(matChipInputTokenEnd)="add($event)"-->
+
           </mat-chip-list>
-          <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChipAcronym($event, chipInputAcronym)" >
-            <mat-option *ngFor="let optionAcr of optionsAcronyms" [value]="optionAcr" >
-              {{optionAcr}}
+          <mat-autocomplete #autoKpi="matAutocomplete" (optionSelected)="addChipKpiBasename($event, chipInputKpi)">
+            <mat-option *ngFor="let optionKpi of filteredKpiBasenames" [value]="optionKpi">
+              {{optionKpi}}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>

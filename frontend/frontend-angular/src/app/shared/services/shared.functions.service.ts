@@ -14,4 +14,13 @@ export class SharedFunctionsService {
       option.toLowerCase().indexOf(value.toLowerCase()) === 0).slice(0, sliceSize);
   }
 
+  processArguments(argumentsList: string[], argumentName: string): string {
+    let argURL = '';
+    argumentsList.forEach((arg) => {
+      if (arg !== '') {
+        argURL += '&' + argumentName + '=' + arg;
+      }
+    });
+    return argURL;
+  }
 }

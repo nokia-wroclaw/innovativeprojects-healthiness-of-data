@@ -29,9 +29,9 @@ export class OutliersComponent implements OnInit {
   outlierParams: FormGroup;
   startDate: any;
   endDate: any;
-  kpiBaseNames: string[];
-  acronym: string[];
-  cordId: string[];
+  kpiBaseNames: any;
+  acronym: any;
+  cordID: any;
   outliersChartLoading = false;
   outliersChartLoaded = false;
 
@@ -59,15 +59,16 @@ export class OutliersComponent implements OnInit {
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cacheData: CacheDataComponent) {
+    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
+    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
+    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
   }
 
   ngOnInit() {
     this.initForm();
     this.chartElement = document.getElementById('myChart');
     this.generateChart();
-    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
-    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
-    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
+
 
     this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenamesFormControl);
     this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
@@ -84,33 +85,28 @@ export class OutliersComponent implements OnInit {
     this.outlierParams = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      kpiBaseNames: this.kpiBasenamesFormControl,
+      cordID: this.cordIDFormControl,
       acronym: this.acronymFormControl,
-      cordId: this.cordIDFormControl,
+      kpiBaseNames: this.kpiBasenamesFormControl,
       threshold: ''
     });
   }
 
   getOutliers(outliersParams) {
-    console.log('coverage params');
+    console.log('outliers params');
     console.log(outliersParams);
     this.outliersChartLoading = true;
     this.startDate = outliersParams.value.startDate;
     this.endDate = outliersParams.value.endDate;
-    this.kpiBaseNames = outliersParams.value.kpiBaseNames.split(/[\s,]+/);
-    this.cordId = outliersParams.value.cordId;
+    this.kpiBaseNames = outliersParams.value.kpiBaseNames; //.split(/[\s,]+/);
+    this.cordID = outliersParams.value.cordID;
     this.acronym = outliersParams.value.acronym;
     this.startDate = this.sharedFunctions.parseDate(outliersParams.value.startDate);
     this.endDate = this.sharedFunctions.parseDate(outliersParams.value.endDate);
-    const baseURL = 'api/outliers/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
+    const baseURL = 'api/outliers/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
-    let kpiBaseNamesURL = '';
+    let kpiBaseNamesURL = '&kpi_basename=' + this.kpiBaseNames.toUpperCase();
 
-    this.kpiBaseNames.forEach((kpi) => {
-      if (kpi !== '') {
-        kpiBaseNamesURL += '&kpi_basename=' + kpi;
-      }
-    });
     let url = baseURL + kpiBaseNamesURL;
     if (outliersParams.value.threshold) {
       url += '&threshold=' + outliersParams.value.threshold;

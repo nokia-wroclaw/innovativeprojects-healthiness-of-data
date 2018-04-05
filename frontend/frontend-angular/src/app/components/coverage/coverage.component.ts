@@ -7,6 +7,9 @@ import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.
 
 import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
 import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
+import {map} from 'rxjs/operators/map';
+import {startWith} from 'rxjs/operators/startWith';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   moduleId: module.id,
@@ -21,7 +24,17 @@ import {SharedFunctionsService} from '../../shared/services/shared.functions.ser
 })
 export class CoverageComponent implements OnInit {
 
-  coverageParams: FormGroup;
+
+  fullKpiBasenamesList: any = [];
+  fullCordIDsList: any = [];
+  fullCordIDsAcronymsSet: any = [];
+  acronymsByCordID: any = [];
+
+  filteredCordIDs: Observable<string[]>;
+  selectedKpiBasenames: any = ['TRF_215', 'SGSN_2012'];
+  filteredKpiBasenames: any = [];
+  filteredAcronyms: any = [];
+
   coverageData: any = [];
 
   kpiBaseNames: any = [];
@@ -35,16 +48,14 @@ export class CoverageComponent implements OnInit {
 
   separatorKeysCodes = [ENTER, COMMA, TAB];
 
-  selectedKpiBasenames: any = ['TRF_215', 'SGSN_2012'];
-  allKpiBasenamesList: any = [];
-  optionsKpiBasenames: any = [];
-  kpiBasenamesFormControl: FormControl = new FormControl();
 
   selectedAcronyms: any = ['strathatuk', 'drasheshu'];
-  allAcronymslist = ['childott', 'drasheshu', 'khuxel', 'bliulfux', 'strathatuk'];
-  optionsAcronyms: any = [];
-  acronymsFormControl: FormControl = new FormControl();
 
+
+  coverageParams: FormGroup;
+  cordIDFormControl = new FormControl('', [Validators.required]);
+  kpiBasenamesFormControl = new FormControl('', [Validators.required]);
+  acronymsFormControl: FormControl = new FormControl('', [Validators.required]);
 
   selectable = true;
   removable = true;
@@ -55,20 +66,33 @@ export class CoverageComponent implements OnInit {
               private formBuilder: FormBuilder,
               private cacheData: CacheDataComponent,
               private sharedFunctions: SharedFunctionsService) {
-    // this.allKpiBasenamesList = this.cacheData.getKpiBasenamesList();
+    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
+    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
   }
 
   ngOnInit() {
     this.initForm();
-    this.getKpiFull();
-    this.optionsKpiBasenames = this.allKpiBasenamesList;
+
+    this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
+
+    this.filteredKpiBasenames = this.fullKpiBasenamesList.slice(0, 50);
     this.kpiBasenamesFormControl.valueChanges.subscribe((val) => {
       this.filterOptionsKpiBasename(val);
     });
 
-    this.optionsAcronyms = this.allAcronymslist;
+    this.filteredAcronyms = this.acronymsByCordID.slice(0, 50);
     this.acronymsFormControl.valueChanges.subscribe(val => {
       this.filterOptionsAcronym(val);
+    });
+  }
+
+  initForm() {
+    this.coverageParams = this.formBuilder.group({
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      cordID: this.cordIDFormControl,
+      acronyms: [this.selectedAcronyms],
+      kpiBaseNames: [this.selectedKpiBasenames]
     });
   }
 
@@ -76,18 +100,18 @@ export class CoverageComponent implements OnInit {
     console.log('coverage params');
     console.log(coverageParams);
     this.coverageTableLoading = true;
-
     this.startDate = this.sharedFunctions.parseDate(coverageParams.value.startDate);
     this.endDate = this.sharedFunctions.parseDate(coverageParams.value.endDate);
-    this.cordID = this.coverageParams.value.cordId;
-
+    this.cordID = this.coverageParams.value.cordID;
+    console.log(this.cordID);
     const baseURL = 'api/coverage/' + this.cordID + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
+    this.selectedKpiBasenames = this.selectedKpiBasenames.map((e) => {
+      return e.toUpperCase();
+    });
+    const kpiBaseNamesURL = this.sharedFunctions.processArguments(this.selectedKpiBasenames, 'kpi_basename');
 
-    const kpiBaseNamesURL = this.processArguments(this.selectedKpiBasenames, 'kpi_basename');
-    const acronymsURL = this.processArguments(this.selectedAcronyms, 'acronym');
-
+    const acronymsURL = this.sharedFunctions.processArguments(this.selectedAcronyms, 'acronym');
     const url = baseURL + kpiBaseNamesURL + acronymsURL;
-    console.log(url);
     this.restService.getAll(url).then(response => {
       console.log('coverageData: ');
       console.log(response.data);
@@ -95,32 +119,19 @@ export class CoverageComponent implements OnInit {
       this.coverageData = response.data;
       this.coverageTableLoaded = true;
     });
-
   }
 
-  initForm() {
-    this.coverageParams = this.formBuilder.group({
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      cordId: ['', Validators.required],
-      kpiBaseNames: [this.selectedKpiBasenames],
-      acronyms: [this.selectedAcronyms]
-    });
+  setOnChange(full: any, formControl: FormControl): any {
+    return formControl.valueChanges
+      .pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
   }
-
-  getKpiFull() {
-    this.restService.getAll('api/fetch_kpi_basenames').then(kpiFull => {
-      this.allKpiBasenamesList = kpiFull.data;
-    });
-  }
-
 
   // kpi basenames
   addChipKpiBasename(event: MatAutocompleteSelectedEvent, input: any): void {
     const selection = event.option.value;
     this.selectedKpiBasenames.push(selection);
-    this.allKpiBasenamesList = this.allKpiBasenamesList.filter(obj => obj !== selection);
-    this.optionsKpiBasenames = this.allKpiBasenamesList;
+    this.fullKpiBasenamesList = this.fullKpiBasenamesList.filter(obj => obj !== selection);
+    this.filteredKpiBasenames = this.fullKpiBasenamesList.slice(0, 50);
     if (input) {
       input.value = '';
     }
@@ -143,13 +154,13 @@ export class CoverageComponent implements OnInit {
     const index = this.selectedKpiBasenames.indexOf(chip);
     if (index >= 0) {
       this.selectedKpiBasenames.splice(index, 1);
-      this.allKpiBasenamesList.push(chip);
+      this.fullKpiBasenamesList.push(chip);
     }
     this.coverageTableLoaded = false;
   }
 
   filterOptionsKpiBasename(opt: string) {
-    this.optionsKpiBasenames = this.allKpiBasenamesList
+    this.filteredKpiBasenames = this.fullKpiBasenamesList
       .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0).slice(0, 50);
   }
 
@@ -158,8 +169,8 @@ export class CoverageComponent implements OnInit {
   addChipAcronym(event: MatAutocompleteSelectedEvent, input: any): void {
     const selection = event.option.value;
     this.selectedAcronyms.push(selection);
-    this.allAcronymslist = this.allAcronymslist.filter(obj => obj !== selection);
-    this.optionsAcronyms = this.allAcronymslist;
+    this.acronymsByCordID = this.acronymsByCordID.filter(obj => obj !== selection);
+    this.filteredAcronyms = this.acronymsByCordID.slice(0, 50);
     if (input) {
       input.value = '';
     }
@@ -170,24 +181,14 @@ export class CoverageComponent implements OnInit {
     const index = this.selectedAcronyms.indexOf(chip);
     if (index >= 0) {
       this.selectedAcronyms.splice(index, 1);
-      this.allAcronymslist.push(chip);
+      this.acronymsByCordID.push(chip);
     }
     this.coverageTableLoaded = false;
   }
 
   filterOptionsAcronym(opt: string) {
-    this.optionsAcronyms = this.allAcronymslist
+    this.filteredAcronyms = this.acronymsByCordID
       .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0).slice(0, 50);
-  }
-
-  processArguments(argumentsList: string[], argumentName: string): string {
-    let argURL = '';
-    argumentsList.forEach((arg) => {
-      if (arg !== '') {
-        argURL += '&' + argumentName + '=' + arg;
-      }
-    });
-    return argURL;
   }
 
 }
