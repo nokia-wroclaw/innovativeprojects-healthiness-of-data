@@ -10,3 +10,7 @@
 toolbox/pokemon_functions/
 
 toolbox/csv_files/
+
+api_new_outlier_functions\.py
+
+decomposition_test\.py
