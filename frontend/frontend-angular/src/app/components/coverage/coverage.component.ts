@@ -6,6 +6,7 @@ import {MatAutocompleteSelectedEvent} from '@angular/material';
 import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
 
 import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
+import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
 
 @Component({
   moduleId: module.id,
@@ -52,7 +53,8 @@ export class CoverageComponent implements OnInit {
   constructor(private router: Router,
               private restService: RestService,
               private formBuilder: FormBuilder,
-              private cacheData: CacheDataComponent) {
+              private cacheData: CacheDataComponent,
+              private sharedFunctions: SharedFunctionsService) {
     // this.allKpiBasenamesList = this.cacheData.getKpiBasenamesList();
   }
 
@@ -75,8 +77,8 @@ export class CoverageComponent implements OnInit {
     console.log(coverageParams);
     this.coverageTableLoading = true;
 
-    this.startDate = this.parseDate(coverageParams.value.startDate);
-    this.endDate = this.parseDate(coverageParams.value.endDate);
+    this.startDate = this.sharedFunctions.parseDate(coverageParams.value.startDate);
+    this.endDate = this.sharedFunctions.parseDate(coverageParams.value.endDate);
     this.cordID = this.coverageParams.value.cordId;
 
     const baseURL = 'api/coverage/' + this.cordID + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
@@ -178,7 +180,6 @@ export class CoverageComponent implements OnInit {
       .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0).slice(0, 50);
   }
 
-
   processArguments(argumentsList: string[], argumentName: string): string {
     let argURL = '';
     argumentsList.forEach((arg) => {
@@ -188,10 +189,5 @@ export class CoverageComponent implements OnInit {
     });
     return argURL;
   }
-
-  parseDate(date: any): string {
-    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
-  }
-
 
 }

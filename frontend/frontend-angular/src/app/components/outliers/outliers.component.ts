@@ -5,6 +5,7 @@ import {RestService} from '../../shared/services/rest.service';
 import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
+import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
 
 declare var Chart: any;
 
@@ -57,7 +58,8 @@ export class OutliersComponent implements OnInit {
 
   constructor(private router: Router,
               private restService: RestService,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private sharedFunctions: SharedFunctionsService) {
   }
 
   ngOnInit() {
@@ -82,8 +84,8 @@ export class OutliersComponent implements OnInit {
     this.kpiBaseNames = outliersParams.value.kpiBaseNames.split(/[\s,]+/);
     this.cordId = outliersParams.value.cordId;
     this.acronym = outliersParams.value.acronym;
-    this.startDate = this.parseDate(outliersParams.value.startDate);
-    this.endDate = this.parseDate(outliersParams.value.endDate);
+    this.startDate = this.sharedFunctions.parseDate(outliersParams.value.startDate);
+    this.endDate = this.sharedFunctions.parseDate(outliersParams.value.endDate);
     const baseURL = 'api/outliers/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
     let kpiBaseNamesURL = '';
@@ -140,12 +142,11 @@ export class OutliersComponent implements OnInit {
     const itr = moment.twix(new Date(this.startDate), new Date(this.endDate)).iterate('days');
     while (itr.hasNext()) {
       const fullDate = itr.next().toDate();
-      this.labels.push(this.parseDate(fullDate));
+      this.labels.push(this.sharedFunctions.parseDate(fullDate));
     }
 
     for (let i = 0; i < this.outlierDates.length; i++) {
-      let newDate = new Date(this.outlierDates[i]);
-      this.outlierDatesFormatted.push(this.parseDate(newDate));
+      this.outlierDatesFormatted.push(this.sharedFunctions.parseDate(new Date(this.outlierDates[i])));
     }
     this.fillGaps();
   }
@@ -160,10 +161,6 @@ export class OutliersComponent implements OnInit {
         this.fullData.push({x: i, y: this.outlierData[i]});
       }
     }
-  }
-
-  parseDate(date: any): string {
-    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + (date.getDate())).slice(-2);
   }
 
   fillGaps() {
@@ -195,7 +192,7 @@ export class OutliersComponent implements OnInit {
     this.restService.getAll('api/fetch_cord_acronym_set').then((response) => {
       this.cordAcronymSet = response.data;
       this.acronymsFiltered = this.acronymControl.valueChanges
-        .pipe(startWith(''), map(val => this.filter(val, this.filteredAcronyms)));
+        .pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.filteredAcronyms, 50)));
     });
   }
 
@@ -203,20 +200,15 @@ export class OutliersComponent implements OnInit {
     this.restService.getAll('api/fetch_cord_ids').then((response) => {
       this.cordIdsList = response.data;
       this.cordIdsFiltered = this.cordIdControl.valueChanges
-        .pipe(startWith(''), map(val => this.filter(val, this.cordIdsList)));
+        .pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.cordIdsList, 100)));
     });
-  }
-
-  filter(val: string, list: any): string[] {
-    return list.filter(option =>
-      option.toLowerCase().indexOf(val.toLowerCase()) === 0).slice(0, 50);
   }
 
   getKpiFull() {
     this.restService.getAll('api/fetch_kpi_basenames').then(kpiFull => {
       this.allKpiBasenamesList = kpiFull.data;
-            this.kpisFiltered = this.kpiBasenamesFormControl.valueChanges
-        .pipe(startWith(''), map(val => this.filter(val, this.allKpiBasenamesList)));
+      this.kpisFiltered = this.kpiBasenamesFormControl.valueChanges
+        .pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.allKpiBasenamesList, 50)));
     });
   }
 

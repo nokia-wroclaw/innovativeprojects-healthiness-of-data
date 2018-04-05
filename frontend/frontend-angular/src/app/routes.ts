@@ -8,6 +8,7 @@ import {PeriodicityComponent} from './components/periodicity/periodicity.compone
 import {AggregatesHistogramComponent} from './components/aggregates-histogram/aggregates-histogram.component';
 import {TrendComponent} from './components/trend/trend.component';
 import {AboutComponent} from './shared/components/about/about.component';
+import {NotfoundComponent} from './shared/components/notfound/notfound.component';
 
 
 export const routes: Routes = [
@@ -22,6 +23,8 @@ export const routes: Routes = [
   {path: 'trend', component: TrendComponent},
 
   {path: 'about', component: AboutComponent},
+  {path: '**', component: NotfoundComponent},
 
   {path: 'draft', component: DraftComponent},
+
 ];
