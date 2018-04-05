@@ -1,7 +1,7 @@
 import datetime
 from cassandra.cqlengine import connection
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
-from backend.app.utils import parse_check_date
+from .utils import parse_check_date
 
 
 def calculate_coverage(start_date, end_date, cord_id, acronyms, kpis):
@@ -21,23 +21,28 @@ def calculate_coverage(start_date, end_date, cord_id, acronyms, kpis):
     if not start_date and not end_date:
         return False
     else:
-        connection.setup(['127.0.0.1'], 'pb2')
+        connection.setup(['145.239.87.179'], 'pb2')
         step = datetime.timedelta(days=1)
         data = []
-        x = 0
 
         for acronym in acronyms:
             for kpi in kpis:
                 dates = set()
-                data.append({"kpi_basename": kpi, "cord_id": cord_id, "acronym": acronym, "coverage": []})
+
                 while start_date < end_date:
                     result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date).\
                                                        filter(kpi_basename=kpi).filter(acronym=acronym)
                     start_date += step
                     for row in result:
                         dates.add(row.date)
-                data[x]["coverage"] = len(dates) / (end_date - first_date).days
-                x += 1
+
+                data.append({
+                            "kpi_basename": kpi,
+                             "cord_id": cord_id,
+                             "acronym": acronym,
+                             "coverage": len(dates)*1.0 / (end_date - first_date).days
+                             })
+
                 start_date = first_date
 
         return data

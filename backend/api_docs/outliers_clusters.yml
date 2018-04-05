@@ -1,0 +1,83 @@
+Outliers for operator, cluster and kpi
+Returns outliers for provided operator, cluster and kpi basename.
+---
+tags:
+  - Outliers - clusters
+parameters:
+  - name: cord_id
+    in: path
+    type: integer
+    required: true
+    description: Operator identifier
+  - name: date_start
+    in: query
+    type: string
+    required: true
+    description: Start of data range for data
+  - name: date_end
+    in: query
+    type: string
+    required: true
+    description: End of data range for data
+  - name: kpi_basename
+    in: query
+    type: string
+    required: true
+    description: Fetch data for provided kpi basename
+  - name: acronym
+    in: path
+    type: string
+    required: true
+    description: Acronym belonging to provided cord_id
+  - name: threshold
+    in: query
+    type: number
+    required: false
+    description: Cutoff threshold for outlier finding function
+responses:
+  200:
+    description: Outliers - array of all values and array of values marked as outliers.
+    schema:
+      id: cluster_outliers
+      type: object
+      properties:
+        kpi_basename:
+          type: string
+          description: Outliers of this kpi basename
+        cord_id:
+          type: integer
+          description: Outliers of this operator identifier
+        acronym:
+          type: string
+          description: Outliers of this cluster name
+        values:
+          type: array
+          items:
+            type: number
+          description: All values gathered for provided params.
+        outliers:
+          type: array
+          items:
+            type: integer
+          description: values array indices which are outliers.
+        outlier_values:
+          type: array
+          items:
+            type: number
+          description: All outlier values (values of indices taken from outliers array).
+        dates:
+          type: array
+          items:
+            type: string
+          description: All dates where gathered data was found.
+        outlier_dates:
+          type: array
+          items:
+            type: string
+          description: Dates of outlier values
+  400:
+    schema:
+      properties:
+        success:
+          type: boolean
+          default: false
