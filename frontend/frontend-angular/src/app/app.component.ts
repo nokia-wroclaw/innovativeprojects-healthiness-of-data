@@ -12,7 +12,6 @@ export class AppComponent implements OnInit {
   }
 
   constructor(private cacheData: CacheDataComponent) {
-    this.cacheData.setKpiBasenamesList();
   }
 
 }

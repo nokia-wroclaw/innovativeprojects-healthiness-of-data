@@ -6,6 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
+import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
 
 declare var Chart: any;
 
@@ -16,6 +17,15 @@ declare var Chart: any;
 })
 export class OutliersComponent implements OnInit {
 
+  fullKpiBasenamesList: any = [];
+  fullCordIDsList: any = [];
+  fullCordIDsAcronymsSet: any = [];
+  acronymsByCordID: any = [];
+
+  filteredKpiBasenames: Observable<string[]>;
+  filteredCordIDs: Observable<string[]>;
+  filteredAcronyms: Observable<string[]>;
+
   outlierParams: FormGroup;
   startDate: any;
   endDate: any;
@@ -25,26 +35,15 @@ export class OutliersComponent implements OnInit {
   outliersChartLoading = false;
   outliersChartLoaded = false;
 
-  cordAcronymSet: any = [];
-  cordIdsList: any = [];
-  filteredAcronyms: any = [];
-  cordIdsFiltered: Observable<string[]>;
-  acronymsFiltered: Observable<string[]>;
-  kpisFiltered: Observable<string[]>;
   labels: any = [];
-
-  allKpiBasenamesList: any = [];
-  optionsKpiBasenames: any = [];
-
-  fullData: any = [];
-  fullOutlierData: any = [];
 
   outlierData: any = [];
   outlierDates: any = [];
   outlierIndexes: any = [];
   outlierValues: any = [];
-  cordIdControl = new FormControl('', [Validators.required]);
-  acronymControl = new FormControl('', [Validators.required]);
+
+  cordIDFormControl = new FormControl('', [Validators.required]);
+  acronymFormControl = new FormControl('', [Validators.required]);
   kpiBasenamesFormControl = new FormControl('', [Validators.required]);
 
 
@@ -52,27 +51,44 @@ export class OutliersComponent implements OnInit {
 
   dataGapsFilled: any = [];
   outliersGapsFilled: any = [];
-  chart;
+  chartElement;
   myChart;
-
 
   constructor(private router: Router,
               private restService: RestService,
               private formBuilder: FormBuilder,
-              private sharedFunctions: SharedFunctionsService) {
+              private sharedFunctions: SharedFunctionsService,
+              private cacheData: CacheDataComponent) {
   }
 
   ngOnInit() {
     this.initForm();
-    this.chart = document.getElementById('myChart');
+    this.chartElement = document.getElementById('myChart');
     this.generateChart();
-    this.getCordAcronymSet();
-    this.getCordIdsList();
-    this.getKpiFull();
-    this.cordIdControl.valueChanges.subscribe(cor => {
-      this.filteredAcronyms = this.cordAcronymSet[cor];
+    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
+    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
+    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
+
+    this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenamesFormControl);
+    this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
+    // this.filteredAcronyms = this.setOnChange(this.acronymsByCordID, this.acronymFormControl);
+    this.filteredAcronyms = this.acronymFormControl.valueChanges.pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.acronymsByCordID, 50)));
+
+    this.cordIDFormControl.valueChanges.subscribe(cor => {
+      this.acronymsByCordID = this.fullCordIDsAcronymsSet[cor];
     });
 
+  }
+
+  initForm() {
+    this.outlierParams = this.formBuilder.group({
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      kpiBaseNames: this.kpiBasenamesFormControl,
+      acronym: this.acronymFormControl,
+      cordId: this.cordIDFormControl,
+      threshold: ''
+    });
   }
 
   getOutliers(outliersParams) {
@@ -99,7 +115,6 @@ export class OutliersComponent implements OnInit {
     if (outliersParams.value.threshold) {
       url += '&threshold=' + outliersParams.value.threshold;
     }
-    console.log(url);
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {
         console.log('outlierData: ');
@@ -116,7 +131,6 @@ export class OutliersComponent implements OnInit {
     }).then(() => {
       this.generateDates();
     }).then(() => {
-      this.generateLabels();
       this.outliersChartLoaded = true;
     }).then(() => {
       this.updateChart(this.myChart, this.labels);
@@ -124,43 +138,18 @@ export class OutliersComponent implements OnInit {
 
   }
 
-  initForm() {
-    this.outlierParams = this.formBuilder.group({
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      kpiBaseNames: this.kpiBasenamesFormControl,
-      acronym: this.acronymControl,
-      cordId: this.cordIdControl,
-      threshold: ''
-    });
-  }
-
-
   generateDates() {
     const moment = require('moment');
     require('twix');
     const itr = moment.twix(new Date(this.startDate), new Date(this.endDate)).iterate('days');
     while (itr.hasNext()) {
-      const fullDate = itr.next().toDate();
-      this.labels.push(this.sharedFunctions.parseDate(fullDate));
+      this.labels.push(this.sharedFunctions.parseDate(itr.next().toDate()));
     }
 
     for (let i = 0; i < this.outlierDates.length; i++) {
       this.outlierDatesFormatted.push(this.sharedFunctions.parseDate(new Date(this.outlierDates[i])));
     }
     this.fillGaps();
-  }
-
-  generateLabels() {
-    let x = 0;
-    for (let i = 0; i < this.outlierData.length; i++) {
-      if (i === this.outlierIndexes[x]) {
-        this.fullOutlierData.push({x: i, y: this.outlierData[i]});
-        x += 1;
-      } else {
-        this.fullData.push({x: i, y: this.outlierData[i]});
-      }
-    }
   }
 
   fillGaps() {
@@ -180,6 +169,11 @@ export class OutliersComponent implements OnInit {
     }
   }
 
+  setOnChange(full: any, formControl: FormControl): any {
+    return formControl.valueChanges
+      .pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
+  }
+
   clearPreviousChartData() {
     this.labels.length = 0;
     this.dataGapsFilled.length = 0;
@@ -188,32 +182,8 @@ export class OutliersComponent implements OnInit {
     console.log('previous chart data cleared');
   }
 
-  getCordAcronymSet() {
-    this.restService.getAll('api/fetch_cord_acronym_set').then((response) => {
-      this.cordAcronymSet = response.data;
-      this.acronymsFiltered = this.acronymControl.valueChanges
-        .pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.filteredAcronyms, 50)));
-    });
-  }
-
-  getCordIdsList() {
-    this.restService.getAll('api/fetch_cord_ids').then((response) => {
-      this.cordIdsList = response.data;
-      this.cordIdsFiltered = this.cordIdControl.valueChanges
-        .pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.cordIdsList, 100)));
-    });
-  }
-
-  getKpiFull() {
-    this.restService.getAll('api/fetch_kpi_basenames').then(kpiFull => {
-      this.allKpiBasenamesList = kpiFull.data;
-      this.kpisFiltered = this.kpiBasenamesFormControl.valueChanges
-        .pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.allKpiBasenamesList, 50)));
-    });
-  }
-
   generateChart() {
-    this.myChart = new Chart(this.chart, {
+    this.myChart = new Chart(this.chartElement, {
       type: 'line',
       data: {
         labels: this.labels,
@@ -283,7 +253,7 @@ export class OutliersComponent implements OnInit {
   }
 
   updateChart(chart, label) {
-    let ddd = chart.data = {
+    const newData = chart.data = {
       labels: this.labels,
       datasets: [{
         label: 'Normal Data',
@@ -314,12 +284,11 @@ export class OutliersComponent implements OnInit {
 
     chart.data.labels.push(label);
     chart.data.datasets.forEach((dataset) => {
-      dataset.data.push(ddd);
+      dataset.data.push(newData);
     });
     chart.update();
     console.log('chart updated');
   }
-
 
 }
 
