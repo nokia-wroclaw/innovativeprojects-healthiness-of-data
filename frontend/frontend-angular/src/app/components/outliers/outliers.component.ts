@@ -102,7 +102,7 @@ export class OutliersComponent implements OnInit {
     this.acronym = outliersParams.value.acronym;
     this.startDate = this.sharedFunctions.parseDate(outliersParams.value.startDate);
     this.endDate = this.sharedFunctions.parseDate(outliersParams.value.endDate);
-    const baseURL = 'api/outliers/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
+    const baseURL = '/api/outliers/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
     let kpiBaseNamesURL = '';
 
@@ -188,8 +188,7 @@ export class OutliersComponent implements OnInit {
       data: {
         labels: this.labels,
         datasets: [{
-          label: 'Normal Data',
-          data: this.dataGapsFilled,
+          label: 'Normal Data', 
           backgroundColor: 'rgba(0, 0, 160, 1)',
           borderColor: 'rgba(0, 0, 160, 1)',
           borderWidth: 1,

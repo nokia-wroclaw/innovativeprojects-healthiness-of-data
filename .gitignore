@@ -14,3 +14,5 @@ toolbox/csv_files/
 api_new_outlier_functions\.py
 
 decomposition_test\.py
+
+frontend/frontend-angular/src/app/config\.ts
