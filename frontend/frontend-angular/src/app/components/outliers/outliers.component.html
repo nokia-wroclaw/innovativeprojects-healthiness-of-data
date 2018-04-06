@@ -21,6 +21,7 @@
           <input [formControl]="cordIDFormControl"
                  [formControlName]="'cordID'"
                  placeholder='cord_id: 111'
+                 id="cordID"
                  matInput
                  [matAutocomplete]="autoCord"
                  required>
@@ -53,7 +54,7 @@
                  [matAutocomplete]="autoKpi"
                  required>
         </mat-form-field>
-        <mat-autocomplete #autoKpi="matAutocomplete">
+        <mat-autocomplete #autoKpi="matAutocomplete" >
           <mat-option *ngFor="let optionKpi of filteredKpiBasenames | async" [value]="optionKpi">
             {{optionKpi}}
           </mat-option>
@@ -63,7 +64,7 @@
           <input matInput id="threshold" formControlName="threshold" placeholder='threshold default = 3.5'>
         </mat-form-field>
 
-        <button mat-raised-button [type]="submit" [disabled]="!outlierParams.valid">Fetch data</button>
+        <button mat-raised-button color="primary" [type]="submit" [disabled]="!outlierParams.valid">Fetch data</button>
       </form>
     </mat-card>
   </mat-sidenav>

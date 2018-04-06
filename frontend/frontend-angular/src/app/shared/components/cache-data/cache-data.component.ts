@@ -34,7 +34,7 @@ export class CacheDataComponent implements OnInit {
 
   getKpiBasenamesList(): any {
     const item = localStorage.getItem('fullKpiBasenamesList');
-    if (item != null) {
+    if (item != null || item.substring(0, 9) !== '<!DOCTYPE') {
       return item.split(',');
     } else {
       this.setFullKpiBasenamesList().then((r) => {
@@ -56,7 +56,7 @@ export class CacheDataComponent implements OnInit {
 
   getFullCordIDsList(): any {
     const item = localStorage.getItem('fullCordIDsList');
-    if (item != null) {
+    if (item != null || item.substring(0, 9) !== '<!DOCTYPE') {
       return item.split(',');
     } else {
       this.setFullCordIDsList().then((r) => {
@@ -77,14 +77,20 @@ export class CacheDataComponent implements OnInit {
   }
 
   getFullCordIDsAcronymsSet(): any {
-    const item = JSON.parse(localStorage.getItem('fullCordIDsAcronymsSet'));
-    if (item != null) {
-      return item;
+    const item = localStorage.getItem('fullCordIDsAcronymsSet');
+    if (item != null || item.substring(0, 9) === '<!DOCTYPE') {
+      return JSON.parse(item);
     } else {
       this.setFullCordIDsAcronymsSet().then((r) => {
         return r;
       });
     }
+  }
+
+  clearLocalStorage() {
+    localStorage.removeItem('fullKpiBasenamesList');
+    localStorage.removeItem('fullCordIDsList');
+    localStorage.removeItem('fullCordIDsAcronymsSet');
   }
 
 }

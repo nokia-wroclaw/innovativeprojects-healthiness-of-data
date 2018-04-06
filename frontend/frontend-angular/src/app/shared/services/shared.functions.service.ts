@@ -1,9 +1,17 @@
 import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
+import {FormBuilder} from '@angular/forms';
+import {MatSnackBar} from '@angular/material';
+import {CacheDataComponent} from '../components/cache-data/cache-data.component';
+import {RestService} from './rest.service';
 
 
 @Injectable()
 export class SharedFunctionsService {
 
+
+  constructor(public snackBar: MatSnackBar) {
+  }
 
   parseDate(date: any): string {
     return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
@@ -22,5 +30,9 @@ export class SharedFunctionsService {
       }
     });
     return argURL;
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {});
   }
 }
