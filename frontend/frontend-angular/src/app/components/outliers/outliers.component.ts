@@ -7,6 +7,7 @@ import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
 import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
+import {MatSnackBar} from '@angular/material';
 
 declare var Chart: any;
 
@@ -29,9 +30,9 @@ export class OutliersComponent implements OnInit {
   outlierParams: FormGroup;
   startDate: any;
   endDate: any;
-  kpiBaseNames: string[];
-  acronym: string[];
-  cordId: string[];
+  kpiBaseName: any;
+  acronym: any;
+  cordID: any;
   outliersChartLoading = false;
   outliersChartLoaded = false;
 
@@ -59,59 +60,52 @@ export class OutliersComponent implements OnInit {
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cacheData: CacheDataComponent) {
+    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
+    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
+    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
   }
 
   ngOnInit() {
     this.initForm();
     this.chartElement = document.getElementById('myChart');
     this.generateChart();
-    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
-    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
-    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
+
 
     this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenamesFormControl);
     this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
     // this.filteredAcronyms = this.setOnChange(this.acronymsByCordID, this.acronymFormControl);
     this.filteredAcronyms = this.acronymFormControl.valueChanges.pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.acronymsByCordID, 50)));
 
-    this.cordIDFormControl.valueChanges.subscribe(cor => {
-      this.acronymsByCordID = this.fullCordIDsAcronymsSet[cor];
+    this.cordIDFormControl.valueChanges.subscribe((cord) => {
+      this.acronymsByCordID = this.fullCordIDsAcronymsSet[cord];
     });
-
   }
 
   initForm() {
     this.outlierParams = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      kpiBaseNames: this.kpiBasenamesFormControl,
+      cordID: this.cordIDFormControl,
       acronym: this.acronymFormControl,
-      cordId: this.cordIDFormControl,
+      kpiBaseNames: this.kpiBasenamesFormControl,
       threshold: ''
     });
   }
 
   getOutliers(outliersParams) {
-    console.log('coverage params');
+    console.log('outliers params');
     console.log(outliersParams);
     this.outliersChartLoading = true;
     this.startDate = outliersParams.value.startDate;
     this.endDate = outliersParams.value.endDate;
-    this.kpiBaseNames = outliersParams.value.kpiBaseNames.split(/[\s,]+/);
-    this.cordId = outliersParams.value.cordId;
+    this.kpiBaseName = outliersParams.value.kpiBaseNames;
+    this.cordID = outliersParams.value.cordID;
     this.acronym = outliersParams.value.acronym;
     this.startDate = this.sharedFunctions.parseDate(outliersParams.value.startDate);
     this.endDate = this.sharedFunctions.parseDate(outliersParams.value.endDate);
-    const baseURL = '/api/outliers/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
+    let url = 'api/outliers/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate
+      + '&kpi_basename=' + this.kpiBaseName.toUpperCase();
 
-    let kpiBaseNamesURL = '';
-
-    this.kpiBaseNames.forEach((kpi) => {
-      if (kpi !== '') {
-        kpiBaseNamesURL += '&kpi_basename=' + kpi;
-      }
-    });
-    let url = baseURL + kpiBaseNamesURL;
     if (outliersParams.value.threshold) {
       url += '&threshold=' + outliersParams.value.threshold;
     }
@@ -125,8 +119,8 @@ export class OutliersComponent implements OnInit {
         this.outlierIndexes = response.data.outliers;
         this.outlierDates = response.data.dates;
         this.clearPreviousChartData();
-      } else {
-
+      } else  {
+        this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
       }
     }).then(() => {
       this.generateDates();
@@ -135,7 +129,6 @@ export class OutliersComponent implements OnInit {
     }).then(() => {
       this.updateChart(this.myChart, this.labels);
     });
-
   }
 
   generateDates() {

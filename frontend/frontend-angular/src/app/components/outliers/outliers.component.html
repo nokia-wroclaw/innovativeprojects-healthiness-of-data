@@ -18,8 +18,13 @@
         </mat-form-field>
 
         <mat-form-field class="full-width">
-          <input matInput id="cordIds" [formControl]="cordIDFormControl" [formControlName]="'cordId'"
-                 placeholder='cord_id: 111' [matAutocomplete]="autoCord" required>
+          <input [formControl]="cordIDFormControl"
+                 [formControlName]="'cordID'"
+                 placeholder='cord_id: 111'
+                 id="cordID"
+                 matInput
+                 [matAutocomplete]="autoCord"
+                 required>
         </mat-form-field>
         <mat-autocomplete #autoCord="matAutocomplete">
           <mat-option *ngFor="let option of filteredCordIDs  | async" [value]="option">
@@ -28,8 +33,11 @@
         </mat-autocomplete>
 
         <mat-form-field class="full-width">
-          <input matInput id="acronym" [formControl]="acronymFormControl" [formControlName]="'acronym'"
-                 placeholder='acronym: dilfihess' [matAutocomplete]="autoAcro"
+          <input [formControl]="acronymFormControl"
+                 [formControlName]="'acronym'"
+                 matInput
+                 placeholder='acronym: dilfihess'
+                 [matAutocomplete]="autoAcro"
                  required>
         </mat-form-field>
         <mat-autocomplete #autoAcro="matAutocomplete">
@@ -39,9 +47,14 @@
         </mat-autocomplete>
 
         <mat-form-field class="full-width">
-          <input matInput id="kpiBaseNames" [formControlName]="'kpiBaseNames'" [formControl]="kpiBasenamesFormControl" placeholder='kpi_basenames: SGSN_2012' [matAutocomplete]="autoKpi" required>
+          <input [formControl]="kpiBasenamesFormControl"
+                 [formControlName]="'kpiBaseNames'"
+                 matInput
+                 placeholder='kpi_basenames: SGSN_2012'
+                 [matAutocomplete]="autoKpi"
+                 required>
         </mat-form-field>
-        <mat-autocomplete #autoKpi="matAutocomplete">
+        <mat-autocomplete #autoKpi="matAutocomplete" >
           <mat-option *ngFor="let optionKpi of filteredKpiBasenames | async" [value]="optionKpi">
             {{optionKpi}}
           </mat-option>
@@ -51,7 +64,7 @@
           <input matInput id="threshold" formControlName="threshold" placeholder='threshold default = 3.5'>
         </mat-form-field>
 
-        <button mat-raised-button [type]="submit" [disabled]="!outlierParams.valid">Fetch data</button>
+        <button mat-raised-button color="primary" [type]="submit" [disabled]="!outlierParams.valid">Fetch data</button>
       </form>
     </mat-card>
   </mat-sidenav>
