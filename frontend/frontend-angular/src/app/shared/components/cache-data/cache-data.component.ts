@@ -34,7 +34,7 @@ export class CacheDataComponent implements OnInit {
 
   getKpiBasenamesList(): any {
     const item = localStorage.getItem('fullKpiBasenamesList');
-    if (item != null || item.substring(0, 9) !== '<!DOCTYPE') {
+    if (item != null) {
       return item.split(',');
     } else {
       this.setFullKpiBasenamesList().then((r) => {
@@ -56,7 +56,7 @@ export class CacheDataComponent implements OnInit {
 
   getFullCordIDsList(): any {
     const item = localStorage.getItem('fullCordIDsList');
-    if (item != null || item.substring(0, 9) !== '<!DOCTYPE') {
+    if (item != null) {
       return item.split(',');
     } else {
       this.setFullCordIDsList().then((r) => {
@@ -78,7 +78,7 @@ export class CacheDataComponent implements OnInit {
 
   getFullCordIDsAcronymsSet(): any {
     const item = localStorage.getItem('fullCordIDsAcronymsSet');
-    if (item != null || item.substring(0, 9) === '<!DOCTYPE') {
+    if (item != null) {
       return JSON.parse(item);
     } else {
       this.setFullCordIDsAcronymsSet().then((r) => {
