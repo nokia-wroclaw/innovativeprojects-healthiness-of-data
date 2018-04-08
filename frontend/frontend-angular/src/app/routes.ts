@@ -9,6 +9,7 @@ import {AggregatesHistogramComponent} from './components/aggregates-histogram/ag
 import {TrendComponent} from './components/trend/trend.component';
 import {AboutComponent} from './shared/components/about/about.component';
 import {NotfoundComponent} from './shared/components/notfound/notfound.component';
+import {DecompositionComponent} from './components/decomposition/decomposition.component';
 
 
 export const routes: Routes = [
@@ -17,6 +18,7 @@ export const routes: Routes = [
 
   {path: 'aggregatesandhistogram', component: AggregatesHistogramComponent},
   {path: 'coverage', component: CoverageComponent},
+  {path: 'decomposition', component: DecompositionComponent},
   {path: 'outliers', component: OutliersComponent},
   {path: 'map2d', component: Map2dComponent},
   {path: 'periodicity', component: PeriodicityComponent},

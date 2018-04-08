@@ -56,6 +56,7 @@ import {AggregatesHistogramComponent} from './components/aggregates-histogram/ag
 import {AboutComponent} from './shared/components/about/about.component';
 import {SharedFunctionsService} from './shared/services/shared.functions.service';
 import { NotfoundComponent } from './shared/components/notfound/notfound.component';
+import { DecompositionComponent } from './components/decomposition/decomposition.component';
 
 
 @NgModule({
@@ -72,7 +73,8 @@ import { NotfoundComponent } from './shared/components/notfound/notfound.compone
     TrendComponent,
     AggregatesHistogramComponent,
     AboutComponent,
-    NotfoundComponent
+    NotfoundComponent,
+    DecompositionComponent
   ],
   imports: [
     BrowserModule,
