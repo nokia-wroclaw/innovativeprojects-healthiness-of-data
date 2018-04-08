@@ -18,7 +18,7 @@ export class AggregatesHistogramComponent implements OnInit {
   histogramParams: FormGroup
   startDate: any;
   endDate: any;
-  kpiBaseNames: string[];
+  kpiBaseName: string[];
   acronym: string[];
   cordId: string[];
   histogramChartLoading = false;
@@ -43,7 +43,6 @@ export class AggregatesHistogramComponent implements OnInit {
 
   histogramDatesFormatted: any = [];
 
-  dataGapsFilled: any = [];
   histogramsGapsFilled: any = [];
   chart;
   myChart;
@@ -76,24 +75,20 @@ export class AggregatesHistogramComponent implements OnInit {
     this.histogramChartLoading = true;
     this.startDate = this.histogramParams.value.startDate;
     this.endDate = this.histogramParams.value.endDate;
-    this.kpiBaseNames = this.histogramParams.value.kpiBaseNames.split(/[\s,]+/);
+    this.kpiBaseName = this.histogramParams.value.kpiBaseName;
     this.cordId = this.histogramParams.value.cordId;
     this.acronym = this.histogramParams.value.acronym;
     this.startDate = this.parseDate(this.histogramParams.value.startDate);
     this.endDate = this.parseDate(this.histogramParams.value.endDate);
-    const baseURL = 'api/clusters/aggregates' + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate + '&kpi_basename=' + this.kpiBaseNames;
+    const baseURL = 'api/clusters/aggregates' + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate + '&kpi_basename=' + this.kpiBaseName;
 
-    let kpiBaseNamesURL = '';
-
-    this.kpiBaseNames.forEach((kpi) => {
-      if (kpi !== '') {
-        kpiBaseNamesURL += '&kpi_basename=' + kpi;
-      }
-    });
-    let url = baseURL + kpiBaseNamesURL;
-    if (outliersParams.value.threshold) {
-      url += '&threshold=' + outliersParams.value.threshold;
-    }
+    // let kpiBaseNamesURL = '';
+    // kpiBaseNamesURL += '&kpi_basename=' + kpi;
+    // let url = baseURL + kpiBaseNamesURL;
+    // if (outliersParams.value.threshold) {
+    //   url += '&threshold=' + outliersParams.value.threshold;
+    // }
+    let url = baseURL;
     console.log(url);
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {
@@ -122,7 +117,6 @@ export class AggregatesHistogramComponent implements OnInit {
   }
   clearPreviousChartData() {
     this.labels.length = 0;
-    this.dataGapsFilled.length = 0;
     this.histogramsGapsFilled.length = 0;
     this.histogramDatesFormatted.length = 0;
     console.log('previous chart data cleared');
@@ -169,7 +163,7 @@ export class AggregatesHistogramComponent implements OnInit {
     this.histogramParams = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      kpiBaseNames: ['', Validators.required],
+      kpiBaseName: ['', Validators.required],
       acronym: this.acronymControl,
       cordId: this.cordIdControl,
     });
