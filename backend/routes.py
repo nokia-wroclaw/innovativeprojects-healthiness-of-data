@@ -6,8 +6,8 @@ from .api_functions.aggregates import get_cord_data, get_cluster_data
 from .api_functions.coverage import calculate_coverage
 from .api_functions.outliers import find_outliers
 from .api_functions.decomposition import get_operator_periodicity
+import yaml
 
-"""AGGREGATE CALCULATING ENDPOINTS"""
 app = Flask(__name__)
 CORS(app)
 Swagger(app)
@@ -43,9 +43,6 @@ def get_cluster_aggregates(cord_id, acronym):
         return jsonify(data)
 
 
-"""COVERAGE CALCULATING ENDPOINTS"""
-
-
 @swag_from('api_docs/coverage_clusters.yml', validation=True)
 @app.route('/api/coverage/<string:cord_id>', methods=['GET'])
 def get_operator_coverages(cord_id):
@@ -76,19 +73,6 @@ def get_operator_outliers(cord_id, acronym):
         return jsonify(data)
 
 
-@app.route('/api/operators/periodicity/<string:cord_id>', methods=['GET'])
-def get_operator_periodicities(cord_id):
-    date_start = request.args.get('date_start')
-    date_end = request.args.get('date_end')
-    kpi_basename = request.args.get('kpi_basename')
-
-    data = get_operator_periodicity(date_start, date_end, kpi_basename, cord_id)
-    if not data:
-        return jsonify({"success": False})
-    else:
-        return jsonify(data)
-
-
 @app.route('/api/fetch_kpi_basenames', methods=['GET'])
 def get_kpi_basenames():
     return jsonify(get_kpi_list())
@@ -108,5 +92,8 @@ def get_cord_acronyms_set():
 def get_cord_ids():
     return jsonify(get_cord_id_list())
 
+
 def starter():
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    with open("config.yml", 'r') as yml_file:
+        config = yaml.load(yml_file)['flask_options']
+    app.run(host=config['host_address'], port=config['host_port'], debug=config['debug_mode'])

@@ -22,7 +22,10 @@ def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshol
     if not start_date and not end_date:
         return False
     else:
-        connection.setup(['145.239.87.179'], 'pb2')
+        with open("config.yml", 'r') as yml_file:
+            config = yaml.load(yml_file)['database_options']
+
+        connection.setup([config['address']], config['keyspace'])
         step = datetime.timedelta(days=1)
 
         ready_data = {"cord_id": cord_id, "acronym": acronym, "kpi_basename": kpi_basename, "values": [],

@@ -21,7 +21,10 @@ def calculate_coverage(start_date, end_date, cord_id, acronyms, kpis):
     if not start_date and not end_date:
         return False
     else:
-        connection.setup(['145.239.87.179'], 'pb2')
+        with open("config.yml", 'r') as yml_file:
+            config = yaml.load(yml_file)['database_options']
+
+        connection.setup([config['address']], config['keyspace'])
         step = datetime.timedelta(days=1)
         data = []
 

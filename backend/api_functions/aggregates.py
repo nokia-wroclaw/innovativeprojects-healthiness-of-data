@@ -29,7 +29,10 @@ def get_cord_data(start_date, end_date, kpi, cord, **options):
         else:
             histogram_bins = int(histogram_bins)
 
-        connection.setup(['145.239.87.179'], 'pb2')
+        with open("config.yml", 'r') as yml_file:
+            config = yaml.load(yml_file)['database_options']
+
+        connection.setup([config['address']], config['keyspace'])
         step = datetime.timedelta(days=1)
         values = []
         dates = []
@@ -88,7 +91,10 @@ def get_cluster_data(start_date, end_date, kpi, cord, acronym, **options):
         else:
             histogram_bins = int(histogram_bins)
 
-        connection.setup(['127.0.0.1'], 'pb2')
+        with open("config.yml", 'r') as yml_file:
+            config = yaml.load(yml_file)['database_options']
+
+        connection.setup([config['address']], config['keyspace'])
         step = datetime.timedelta(days=1)
         values = defaultdict(list)
         dates = defaultdict(list)

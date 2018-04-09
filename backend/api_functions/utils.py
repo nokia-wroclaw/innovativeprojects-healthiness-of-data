@@ -15,7 +15,10 @@ def fetch_cluster_cords(cluster):
     :param cluster: cluster name, acronym
     :return: array of objects with provided cluster
     """
-    connection.setup(['127.0.0.1'], 'pb2')
+    with open("config.yml", 'r') as yml_file:
+        config = yaml.load(yml_file)['database_options']
+
+    connection.setup([config['address']], config['keyspace'])
     cluster_array = ClusterList.objects.filter(acronym=cluster)
     return cluster_array
 
@@ -43,7 +46,10 @@ def get_kpi_list():
     Gets existing kpi list
     :return: Kpi as list
     """
-    connection.setup(['145.239.87.179'], 'pb2')
+    with open("config.yml", 'r') as yml_file:
+        config = yaml.load(yml_file)['database_options']
+
+    connection.setup([config['address']], config['keyspace'])
 
     result = KpiUnits.objects.all()
     kpi_list = set()
@@ -58,7 +64,10 @@ def get_acronym_list():
     Gets all unique acronyms
     :return: Acronym list
     """
-    connection.setup(['145.239.87.179'], 'pb2')
+    with open("config.yml", 'r') as yml_file:
+        config = yaml.load(yml_file)['database_options']
+
+    connection.setup([config['address']], config['keyspace'])
 
     result = ClusterList.objects.all()
     acronym_set = set()
@@ -73,7 +82,10 @@ def get_cord_acronym_set():
     Gets all cords and acronyms that belong to it.
     :return: Cord: acronyms dictionary
     """
-    connection.setup(['145.239.87.179'], 'pb2')
+    with open("config.yml", 'r') as yml_file:
+        config = yaml.load(yml_file)['database_options']
+
+    connection.setup([config['address']], config['keyspace'])
 
     result = ClusterList.objects.all()
     cord_dict = defaultdict(list)
@@ -84,8 +96,11 @@ def get_cord_acronym_set():
 
 
 def get_cord_id_list():
-    cluster = Cluster(['145.239.87.179'])
-    session = cluster.connect('pb2')
+    with open("config.yml", 'r') as yml_file:
+        config = yaml.load(yml_file)['database_options']
+
+    cluster = Cluster([config['address']])
+    session = cluster.connect(config['keyspace'])
     session.row_factory = named_tuple_factory
     rows = session.execute("SELECT DISTINCT cord_id FROM plmn_processed_cord;")
     cord_list = []
