@@ -31,11 +31,22 @@ while start_date < end_date:
 
 dataframe = pandas.DataFrame(frame_setup)
 dataframe = dataframe.set_index(['dates'])
-print(dataframe)
 
-# print(dataframe.isnull().sum())
+decomp = statsmodels.api.tsa.seasonal_decompose(dataframe, freq=31, model='additive')
 
-decomp = statsmodels.api.tsa.seasonal_decompose(dataframe, freq=31, model='multiplicative')
+data = {"cord_id": cord_id,
+        "acronym": acronym,
+        "kpi_basename": kpi_basename,
+        "start_date": start_date,
+        "end_date": end_date,
+        "seasonal_values": decomp.seasonal['values'].tolist(),
+        "seasonal_dates": decomp.seasonal.index.tolist(),
+        "trend_values": decomp.trend['values'].tolist(),
+        "trend_dates": decomp.trend.index.tolist(),
+        "observed_values": decomp.observed['values'].tolist(),
+        "observed_dates": decomp.observed.index.tolist()
+        }
 
+# print(data)
 decomp.plot()
 pyplot.show()

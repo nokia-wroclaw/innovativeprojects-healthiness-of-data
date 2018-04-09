@@ -4,8 +4,6 @@ from collections import defaultdict
 from cassandra.cluster import Cluster
 from cassandra.cqlengine import connection
 from cassandra.query import named_tuple_factory
-import sys
-sys.path.append('../')
 
 from toolbox.cassandra_object_mapper_models import ClusterList
 from toolbox.cassandra_object_mapper_models import KpiUnits

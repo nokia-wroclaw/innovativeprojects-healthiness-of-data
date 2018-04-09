@@ -41,11 +41,14 @@ responses:
       id: operator_aggregates
       properties:
         cord_id:
-          type: integer
+          type: string
           description: Operator identifier
         acronym:
           type: string
           description: Cluster name
+        kpi_basename:
+          type: string
+          description: Kpi Basename
         mean:
           type: number
           description: Mean value of gathered data

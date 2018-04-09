@@ -53,6 +53,7 @@ def get_cord_data(start_date, end_date, kpi, cord, **options):
 
         data = {
                 "cord_id": cord,
+                "kpi_basename": kpi,
                 "mean": average,
                 "max_val": max_value,
                 "min_val": min_value,
@@ -109,8 +110,9 @@ def get_cluster_data(start_date, end_date, kpi, cord, acronym, **options):
         distribution = [temp[0].tolist(), temp[1].tolist()]
 
         data = {
-                "acronym": acronym,
                 "cord_id": cord,
+                "acronym": acronym,
+                "kpi_basename": kpi,
                 "mean": average,
                 "max_val": max_value,
                 "min_val": min_value,

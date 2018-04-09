@@ -6,7 +6,7 @@ tags:
 parameters:
   - name: cord_id
     in: path
-    type: integer
+    type: string
     required: true
     description: Operator identifier
   - name: date_start
@@ -46,7 +46,7 @@ responses:
             type: string
             description: Coverage of this kpi basename
           cord_id:
-            type: integer
+            type: string
             description: Coverage of this operator identifier
           acronym:
             type: string

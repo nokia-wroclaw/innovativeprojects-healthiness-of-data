@@ -6,7 +6,7 @@ tags:
 parameters:
   - name: cord_id
     in: path
-    type: integer
+    type: string
     required: true
     description: Operator identifier
   - name: date_start
@@ -36,8 +36,11 @@ responses:
       id: operator_aggregates
       properties:
         cord_id:
-          type: integer
+          type: string
           description: Operator identifier
+        kpi_basename:
+          type: string
+          description: Kpi Basename
         mean:
           type: number
           description: Mean value of gathered data
