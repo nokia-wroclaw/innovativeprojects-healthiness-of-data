@@ -6,6 +6,7 @@ from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 from matplotlib import pyplot
 from changepy import pelt
 from changepy.costs import normal_var
+import math
 
 
 def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshold):
@@ -87,40 +88,36 @@ def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshol
 
 
         ready_data["outliers"] = numpy.where(numpy.abs(modified_z_scores) > threshold)[0].tolist()
-        #data_changes = pelt(normal_var(ready_data['values'], numpy.mean(ready_data['values'])), len(ready_data['values']))
+
+        variance_changes = {'values': [], 'dates': []}
+        for i in range(0, len(ready_data["values"]) - 41):
+            var1 = numpy.var(ready_data["values"][i:i + 20], ddof=1)
+            var2 = numpy.var(ready_data["values"][i + 18:i + 38], ddof=1)
+            factor = (math.log(max(var1,var2))**2) / (math.log(min(var1,var2))**2)
+            variance_changes['values'].append(factor*10+100)
+            variance_changes['dates'].append(ready_data['dates'][i])
+
         for outlier in ready_data["outliers"]:
             ready_data["outlier_values"].append(ready_data["values"][outlier])
             ready_data["outlier_dates"].append(ready_data["dates"][outlier])
 
-        return ready_data, moving_mean, data_changes
+        return ready_data, moving_mean, variance_changes
 
 
 ready_data, moving_mean, data_changes = find_outliers('2015-01-03', '2018-04-01', 'SGSN_2012', 'Skuntank', 'dilfihess', 3.5)
-data_changes_dates = []
-data_changes_values = []
-for item in data_changes:
-    data_changes_dates.append(ready_data['dates'][item])
-    data_changes_values.append(ready_data['values'][item])
 # 2015-01-03 / 2016-01-03
 fig = pyplot.figure()
 ax = fig.add_subplot(211)
 ax.plot(ready_data['dates'], ready_data['values'], marker='o', linestyle='None', markersize=2)
 ax.plot(ready_data['dates'], moving_mean, color='r')
 ax.plot(ready_data["outlier_dates"], ready_data["outlier_values"], marker='x', linestyle='None', markersize=8)
-ax.plot(data_changes_dates, data_changes_values, marker='o', color='g', linestyle='None', markersize=8)
-
-
+ax.plot(data_changes['dates'], data_changes['values'], marker='o', linestyle='--', color='g', markersize=1)
 
 ready_data, moving_mean, data_changes = find_outliers('2016-01-03', '2018-04-01', 'SGSN_2012', 'Skuntank', 'dilfihess', 3.5)
-data_changes_dates = []
-data_changes_values = []
-for item in data_changes:
-    data_changes_dates.append(ready_data['dates'][item])
-    data_changes_values.append(ready_data['values'][item])
 ax2 = fig.add_subplot(212)
 ax2.plot(ready_data['dates'], ready_data['values'], marker='o', linestyle='None', markersize=2)
 ax2.plot(ready_data['dates'], moving_mean, color='r')
 ax2.plot(ready_data["outlier_dates"], ready_data["outlier_values"], marker='x', linestyle='None', markersize=8)
-ax2.plot(data_changes_dates, data_changes_values, marker='o', color='g', linestyle='None', markersize=8)
+ax2.plot(data_changes['dates'], data_changes['values'], marker='o', linestyle='--', color='g', markersize=1)
 
 pyplot.show()
