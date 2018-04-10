@@ -1,5 +1,4 @@
 import {Map2dComponent} from './components/map2d/map2d.component';
-import {PeriodicityComponent} from './components/periodicity/periodicity.component';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
@@ -51,12 +50,11 @@ import {
 import {DraftComponent} from './components/draft/draft.component';
 import {AutocompleteChipsComponent} from './shared/components/autocomplete-chips/autocomplete-chips.component';
 import {CacheDataComponent} from './shared/components/cache-data/cache-data.component';
-import {TrendComponent} from './components/trend/trend.component';
 import {AggregatesHistogramComponent} from './components/aggregates-histogram/aggregates-histogram.component';
 import {AboutComponent} from './shared/components/about/about.component';
 import {SharedFunctionsService} from './shared/services/shared.functions.service';
-import { NotfoundComponent } from './shared/components/notfound/notfound.component';
-import { DecompositionComponent } from './components/decomposition/decomposition.component';
+import {NotfoundComponent} from './shared/components/notfound/notfound.component';
+import {DecompositionComponent} from './components/decomposition/decomposition.component';
 
 
 @NgModule({
@@ -68,9 +66,7 @@ import { DecompositionComponent } from './components/decomposition/decomposition
     DraftComponent,
     AutocompleteChipsComponent,
     CacheDataComponent,
-    PeriodicityComponent,
     Map2dComponent,
-    TrendComponent,
     AggregatesHistogramComponent,
     AboutComponent,
     NotfoundComponent,
