@@ -4,7 +4,7 @@ from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 from .utils import parse_check_date
 
 
-def calculate_coverage(start_date, end_date, cord_id, acronyms, kpis):
+def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis):
     """
     Calculates data coverage.
     :param start_date: Starting date.

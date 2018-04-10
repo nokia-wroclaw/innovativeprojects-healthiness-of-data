@@ -2,10 +2,10 @@ from flasgger import Swagger, swag_from
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from .api_functions.utils import get_cord_id_list, get_cord_acronym_set, get_acronym_list, get_kpi_list
-from .api_functions.aggregates import get_cord_data, get_cluster_data
-from .api_functions.coverage import calculate_coverage
+from .api_functions.aggregates import calculate_operator_aggregates, calculate_cluster_aggregates
+from .api_functions.coverage import calculate_cluster_coverage
 from .api_functions.outliers import find_outliers
-from .api_functions.decomposition import get_operator_periodicity
+from .api_functions.decomposition import calculate_cluster_decomposition
 import yaml
 
 app = Flask(__name__)
@@ -21,7 +21,7 @@ def get_operator_aggregates(cord_id):
     kpi_basename = request.args.get('kpi_basename')
     histogram_bins = request.args.get('bins')  # DEFAULT 10
 
-    data = get_cord_data(date_start, date_end, kpi_basename, cord_id, hist_bins=histogram_bins)
+    data = calculate_operator_aggregates(date_start, date_end, kpi_basename, cord_id, hist_bins=histogram_bins)
     if not data:
         return jsonify({"success": False})
     else:
@@ -36,7 +36,7 @@ def get_cluster_aggregates(cord_id, acronym):
     kpi_basename = request.args.get('kpi_basename')
     histogram_bins = request.args.get('bins')
 
-    data = get_cluster_data(date_start, date_end, kpi_basename, cord_id, acronym, hist_bins=histogram_bins)
+    data = calculate_cluster_aggregates(date_start, date_end, kpi_basename, cord_id, acronym, hist_bins=histogram_bins)
     if not data:
         return jsonify({"success": False})
     else:
@@ -51,7 +51,7 @@ def get_operator_coverages(cord_id):
     kpis = request.args.getlist('kpi_basename')
     acronyms = request.args.getlist('acronym')
 
-    data = calculate_coverage(date_start, date_end, cord_id, acronyms, kpis)
+    data = calculate_cluster_coverage(date_start, date_end, cord_id, acronyms, kpis)
     if not data:
         return jsonify({"success": False})
     else:
@@ -67,6 +67,19 @@ def get_operator_outliers(cord_id, acronym):
     threshold = request.args.get('threshold')
 
     data = find_outliers(date_start, date_end, kpi_basename, cord_id, acronym, threshold)
+    if not data:
+        return jsonify({"success": False})
+    else:
+        return jsonify(data)
+
+@app.route('/api/decomposition/<string:cord_id>/<string:acronym>', methods=['GET'])
+def get_cluster_decomposition(cord_id, acronym):
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+    kpi_basename = request.args.get('kpi_basename')
+    frequency = request.args.get('frequency')
+
+    data = calculate_cluster_decomposition(date_start, date_end, kpi_basename, cord_id, acronym, frequency)
     if not data:
         return jsonify({"success": False})
     else:

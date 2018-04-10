@@ -6,7 +6,7 @@ from toolbox.cassandra_object_mapper_models import PlmnProcessed
 from .utils import parse_check_date
 
 
-def get_cord_data(start_date, end_date, kpi, cord, **options):
+def calculate_operator_aggregates(start_date, end_date, kpi, cord, **options):
     """
     Calculates all aggregates.
     :param start_date: beginning date of range
@@ -68,7 +68,7 @@ def get_cord_data(start_date, end_date, kpi, cord, **options):
         return data
 
 
-def get_cluster_data(start_date, end_date, kpi, cord, acronym, **options):
+def calculate_cluster_aggregates(start_date, end_date, kpi, cord, acronym, **options):
     """
     Calculates all aggregates.
     :param start_date: beginning date of range
