@@ -4,8 +4,6 @@ from cassandra.cqlengine import connection
 from backend.api_functions.utils import parse_check_date
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 from matplotlib import pyplot
-from changepy import pelt
-from changepy.costs import normal_var
 import math
 
 

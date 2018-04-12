@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {RestService} from '../../shared/services/rest.service';
 
 @Component({
   selector: 'app-decomposition',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DecompositionComponent implements OnInit {
 
-  constructor() { }
+  object: any;
+
+  constructor(private restService: RestService) {
+  }
 
   ngOnInit() {
+
+    // this.restService.getAll()
   }
 
 }
