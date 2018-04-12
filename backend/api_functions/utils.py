@@ -1,6 +1,7 @@
 import datetime
 from collections import defaultdict
 
+import yaml
 from cassandra.cluster import Cluster
 from cassandra.cqlengine import connection
 from cassandra.query import named_tuple_factory
