@@ -1,9 +1,11 @@
 import numpy
 import datetime
+import yaml
 from cassandra.cqlengine import connection
 from .utils import parse_check_date
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
-import yaml
+
+
 def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshold):
     """
     Function for finding outliers.
