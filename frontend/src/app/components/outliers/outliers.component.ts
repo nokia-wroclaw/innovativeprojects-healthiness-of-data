@@ -181,7 +181,7 @@ export class OutliersComponent implements OnInit {
       data: {
         labels: this.labels,
         datasets: [{
-          label: 'Normal Data', 
+          label: 'Normal Data',
           backgroundColor: 'rgba(0, 0, 160, 1)',
           borderColor: 'rgba(0, 0, 160, 1)',
           borderWidth: 1,
@@ -273,8 +273,7 @@ export class OutliersComponent implements OnInit {
       dataset.data.pop();
     });
     chart.update();
-
-    chart.data.labels.push(label);
+    
     chart.data.datasets.forEach((dataset) => {
       dataset.data.push(newData);
     });
