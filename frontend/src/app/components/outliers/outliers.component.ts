@@ -127,7 +127,7 @@ export class OutliersComponent implements OnInit {
     }).then(() => {
       this.outliersChartLoaded = true;
     }).then(() => {
-      this.updateChart(this.myChart, this.labels);
+      this.updateChart(this.myChart);
     });
   }
 
@@ -244,7 +244,7 @@ export class OutliersComponent implements OnInit {
 
   }
 
-  updateChart(chart, label) {
+  updateChart(chart) {
     const newData = chart.data = {
       labels: this.labels,
       datasets: [{
@@ -273,7 +273,7 @@ export class OutliersComponent implements OnInit {
       dataset.data.pop();
     });
     chart.update();
-    
+
     chart.data.datasets.forEach((dataset) => {
       dataset.data.push(newData);
     });

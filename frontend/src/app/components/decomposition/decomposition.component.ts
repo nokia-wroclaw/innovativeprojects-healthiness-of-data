@@ -6,6 +6,7 @@ import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.
 import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
+import {forEach} from '@angular/router/src/utils/collection';
 
 declare var Chart: any;
 
@@ -35,7 +36,9 @@ export class DecompositionComponent implements OnInit {
   decompositionDatesFormatted: any = [];
   observedGapsFilled: any = [];
   seasonalGapsFilled: any = [];
+  trendValuesFixed: any = [];
   trendGapsFilled: any = [];
+
 
   labels: any = [];
   myChart;
@@ -110,6 +113,7 @@ export class DecompositionComponent implements OnInit {
       url += '&frequency=' + decompositionParams.value.frequency;
     }
 
+
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {
         console.log('decomposition: ');
@@ -124,18 +128,32 @@ export class DecompositionComponent implements OnInit {
         this.trendDates = response.data.trend_dates;
         this.trendValues = response.data.trend_values;
 
+
         this.clearPreviousChartData();
       } else {
         this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
       }
     }).then(() => {
+      this.fixTrend(decompositionParams.value.frequency / 2);
       this.generateDates();
     }).then(() => {
       this.decompositionChartLoaded = true;
     }).then(() => {
-      this.updateChart(this.myChart, this.labels);
+      this.updateChart(this.myChart);
     });
 
+
+  }
+
+  fixTrend(missing: number) {
+    let missingArray = new Array<number>(Math.floor(missing));
+    missingArray.forEach((nan) => {
+      nan = null;
+    });
+    this.trendValuesFixed = missingArray;
+    this.trendValuesFixed = this.trendValuesFixed.concat(this.trendValues, missingArray);
+    console.log('trend fixed');
+    console.log(this.trendValuesFixed);
 
   }
 
@@ -155,10 +173,6 @@ export class DecompositionComponent implements OnInit {
     for (let i = 0; i < this.observedDates.length; i++) {
       this.decompositionDatesFormatted.push(this.sharedFunctions.parseDate(new Date(this.observedDates[i])));
     }
-    console.log('labels');
-    console.log(this.labels);
-    console.log('dates formatted');
-    console.log(this.decompositionDatesFormatted);
     this.fillGaps();
   }
 
@@ -167,10 +181,12 @@ export class DecompositionComponent implements OnInit {
       if (this.labels[i] === this.decompositionDatesFormatted[j]) {
         this.observedGapsFilled.push(this.observedValues[j]);
         this.seasonalGapsFilled.push(this.seasonalValues[j]);
+        this.trendGapsFilled.push(this.trendValuesFixed[j]);
         j++;
       } else {
         this.observedGapsFilled.push(null);
         this.seasonalGapsFilled.push(null);
+        this.trendGapsFilled.push(null);
       }
 
     }
@@ -184,7 +200,6 @@ export class DecompositionComponent implements OnInit {
     this.seasonalGapsFilled.length = 0;
     this.trendGapsFilled.length = 0;
     this.decompositionDatesFormatted.length = 0;
-
     console.log('previous chart data cleared');
   }
 
@@ -281,7 +296,7 @@ export class DecompositionComponent implements OnInit {
 
   }
 
-  updateChart(chart, label) {
+  updateChart(chart) {
     const newData = chart.data = {
       labels: this.labels,
       datasets: [{
