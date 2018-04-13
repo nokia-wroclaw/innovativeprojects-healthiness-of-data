@@ -19,8 +19,8 @@ export class RestService {
     };
   }
 
-  getAll<T>(resouceName: String) {
-    const url = `${API_URL}/${resouceName}`;
+  getAll<T>(resourceName: String) {
+    const url = `${API_URL}/${resourceName}`;
     return axios.get(url)
       .then(function (response) {
         return response;

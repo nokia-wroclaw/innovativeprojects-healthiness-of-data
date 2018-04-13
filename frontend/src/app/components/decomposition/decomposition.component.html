@@ -20,14 +20,14 @@
         <mat-form-field class="full-width">
           <input [formControl]="cordIDFormControl"
                  [formControlName]="'cordID'"
-                 placeholder='cord_id: 111'
+                 placeholder='cord_id: Skuntank'
                  id="cordID"
                  matInput
                  [matAutocomplete]="autoCord"
                  required>
         </mat-form-field>
         <mat-autocomplete #autoCord="matAutocomplete">
-          <mat-option *ngFor="let option of filteredCordIDs  | async" [value]="option">
+          <mat-option *ngFor="let option of filteredCordIDs |async" [value]="option">
             {{ option }}
           </mat-option>
         </mat-autocomplete>
@@ -54,27 +54,27 @@
                  [matAutocomplete]="autoKpi"
                  required>
         </mat-form-field>
-        <mat-autocomplete #autoKpi="matAutocomplete" >
+        <mat-autocomplete #autoKpi="matAutocomplete">
           <mat-option *ngFor="let optionKpi of filteredKpiBasenames | async" [value]="optionKpi">
             {{optionKpi}}
           </mat-option>
         </mat-autocomplete>
 
         <mat-form-field class="full-width">
-          <input matInput id="threshold" formControlName="threshold" placeholder='threshold default = 3.5'>
+          <input matInput id="frequency" formControlName="frequency" placeholder='frequency default = 31'>
         </mat-form-field>
 
-        <button mat-raised-button color="primary" [type]="submit" [disabled]="!outlierParams.valid">Fetch data</button>
+        <button mat-raised-button color="primary" [type]="submit" [disabled]="!decompositionParams.valid">Fetch data</button>
       </form>
     </mat-card>
   </mat-sidenav>
 
   <mat-sidenav-content>
     <mat-card>
-      <h1>Outliers</h1>
+      <h1>Decomposition</h1>
       <mat-card>
         <h3>Result chart:</h3>
-        <mat-spinner *ngIf="outliersChartLoading"></mat-spinner>
+        <mat-spinner *ngIf="decompositionChartLoading"></mat-spinner>
         <canvas id="myChart" width="1000" height="400"></canvas>
       </mat-card>
 

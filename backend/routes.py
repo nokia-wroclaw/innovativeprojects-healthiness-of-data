@@ -8,7 +8,6 @@ from backend.api_functions.coverage import calculate_cluster_coverage
 from backend.api_functions.outliers import find_outliers
 from backend.api_functions.decomposition import calculate_cluster_decomposition
 
-
 app = Flask(__name__)
 CORS(app)
 Swagger(app)
@@ -74,6 +73,7 @@ def get_operator_outliers(cord_id, acronym):
         return jsonify(data)
 
 
+@swag_from('api_docs/decomposition_clusters.yml', validation=True)
 @app.route('/api/decomposition/<string:cord_id>/<string:acronym>', methods=['GET'])
 def get_cluster_decomposition(cord_id, acronym):
     date_start = request.args.get('date_start')

@@ -1,11 +1,12 @@
 import datetime
+
 import pandas
 import statsmodels.api
-from .utils import parse_check_date
-from cassandra.cqlengine import connection
-from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 import yaml
-from matplotlib import pyplot
+from cassandra.cqlengine import connection
+
+from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
+from .utils import parse_check_date
 
 
 def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id, acronym, frequency):
