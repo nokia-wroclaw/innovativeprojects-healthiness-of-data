@@ -2,6 +2,41 @@
 
 # innovativeprojects-healthiness-of-data
 
+Demo: http://healthiness-of-data.ovh
+
+## Table of contents
+1. Project goal
+2. Functionalities
+3. Technologies
+4. Installation guide
+5. People
+
+
+# 1. Project goal
+Project goal was to donec in sem vel augue egestas scelerisque ut non tellus. Donec vel turpis libero. Sed at feugiat leo. Pellentesque faucibus diam in lorem dignissim, nec consectetur est luctus. Curabitur diam urna, sollicitudin id aliquam sit amet, porttitor a eros. Proin nec justo tempor, condimentum ligula at, gravida tellus. Integer lacinia justo turpis, vel mollis enim fermentum non. Etiam vitae diam ut purus fermentum semper at non elit. Etiam non semper eros. 
+
+
+# 2. Functionalities
+Application can do some cool stuff
+* Aggregates and histogram
+* Coverage
+* Decomposition
+* Outliers
+* 2D map
+
+# 3. Technologies
+* Backend
+  * Python 3
+  * Flasgger
+* Frontend
+  * Angular 2+ https://angular.io/
+  * Angular Material https://material.angular.io/
+  * Charts.js https://www.chartjs.org/
+* Cassandra
+* Docker
+
+
+# 4. Installation guide
 **First setup a keyspace:**
 
     CREATE KEYSPACE IF NOT EXISTS pb2  
@@ -31,3 +66,15 @@ Then export and load the data into second table like before.**
 **IMPORTANT!!**
 
 **Increase batch limit size to 50000 kb in cassandra.yaml config file.**
+
+# 5. People
+Students
+* Wojciech Adamek (lead backend & data science)
+* Jacek Zalewski (lead frontend)
+* Jakub Walecki
+* Dominika Maślanka
+
+Nokia's superiors
+* Mateusz Sikora
+* Ewa Kaczmarek
+
