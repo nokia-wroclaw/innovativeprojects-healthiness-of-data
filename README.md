@@ -2,8 +2,6 @@
 
 # innovativeprojects-healthiness-of-data
 
-Demo: http://healthiness-of-data.ovh
-
 ## Table of contents
 1. Project overview
 2. Functionality
