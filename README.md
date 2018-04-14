@@ -22,7 +22,7 @@ API can be accessed by everyone over at http://healthiness-of-data.ovh/api
 And finally API documentation over at http://healthiness-of-data.ovh/apidocs
 
 
-# 2. Functionalities
+# 2. Functionality
 When you enter the site you can access the functionality in Components dropdown menu.
 
 Currently we have finished and visualized these data endpoints:
@@ -52,7 +52,9 @@ And in the future we would like to add more:
 
 
 # 4. Installation guide
-**The project is available to everyone at http://healthiness-of-data.ovh/homepage If you want to set it up locally:**
+**The project is available to everyone at http://healthiness-of-data.ovh/homepage**
+
+**If you want to set it up locally:**
 **Before setting up the project edit the config.yml file in main directory and input local database and API addresses and ports.**
 **Install Cassandra, enter CQL Shell and setup a keyspace:**
 
