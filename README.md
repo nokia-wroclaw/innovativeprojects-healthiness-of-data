@@ -42,7 +42,8 @@ And in the future we would like to add more:
 # 3. Technologies
 * Backend
   * Python 3
-  * Flasgger
+  * Flask
+  * Flasgger (Swagger)
 * Frontend
   * Angular 2+ https://angular.io/
   * Angular Material https://material.angular.io/
