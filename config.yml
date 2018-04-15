@@ -1,0 +1,8 @@
+flask_options:
+  host_address: 127.0.0.1 # this address allows only local connections, 0.0.0.0 allows remote connections
+  host_port: 5000
+  debug_mode: yes # debug mode
+
+database_options:
+  address: 145.239.87.179 # 145.239.87.179 - VPS, else use local 127.0.0.1
+  keyspace: pb2

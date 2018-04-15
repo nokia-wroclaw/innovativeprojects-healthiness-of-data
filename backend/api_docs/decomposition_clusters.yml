@@ -1,0 +1,88 @@
+Decomposition for operator, cluster and kpi
+Returns decompostion for provided operator, cluster and kpi basename.
+---
+tags:
+  - Decomposition - clusters
+parameters:
+  - name: cord_id
+    in: path
+    type: string
+    required: true
+    description: Operator identifier
+  - name: date_start
+    in: query
+    type: string
+    required: true
+    description: Start of data range for data
+  - name: date_end
+    in: query
+    type: string
+    required: true
+    description: End of data range for data
+  - name: kpi_basename
+    in: query
+    type: string
+    required: true
+    description: Fetch data for provided kpi basename
+  - name: acronym
+    in: path
+    type: string
+    required: true
+    description: Acronym belonging to provided cord_id
+  - name: frequency
+    in: query
+    type: number
+    required: false
+    description: Frequency something something
+responses:
+  200:
+    description: Decomposition - 3 arrays of all values and 3 arrays of dates
+    schema:
+      id: decomposition_clusters
+      type: object
+      properties:
+        kpi_basename:
+          type: string
+          description: Decomposition of this kpi basename
+        cord_id:
+          type: string
+          description: Decomposition of this operator identifier
+        acronym:
+          type: string
+          description: Decm of this cluster name
+        observed_dates:
+          type: array
+          items:
+            type: string
+          description: Dates of observed values
+        observed_values:
+          type: array
+          items:
+            type: number
+          description: observed values
+        seasonal_dates:
+          type: array
+          items:
+            type: string
+          description: Dates of seasonal values
+        seasonal_values:
+          type: array
+          items:
+            type: number
+          description: seasonal values
+        trend_dates:
+          type: array
+          items:
+            type: string
+          description: Dates of trend values
+        trend_values:
+          type: array
+          items:
+            type: number
+          description: trend values
+  400:
+    schema:
+      properties:
+        success:
+          type: boolean
+          default: false

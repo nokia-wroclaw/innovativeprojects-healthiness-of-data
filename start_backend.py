@@ -1,4 +1,4 @@
-from backend.run_server import starter
+from backend.routes import starter
 
 
 def main():
@@ -7,4 +7,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
