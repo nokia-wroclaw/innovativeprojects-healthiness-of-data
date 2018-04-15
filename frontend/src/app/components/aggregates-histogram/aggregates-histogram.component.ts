@@ -29,7 +29,7 @@ export class AggregatesHistogramComponent implements OnInit {
   filteredAcronyms: any = [];
   cordIdsFiltered: Observable<string[]>;
   acronymsFiltered: Observable<string[]>;
-  labels: any = [];
+  // labels: any = [];
 
   fullData: any = [];
   fullHistogramData: any = [];
@@ -44,7 +44,6 @@ export class AggregatesHistogramComponent implements OnInit {
 
   histogramDatesFormatted: any = [];
 
-  histogramsGapsFilled: any = [];
   chart;
   myChart;
   chartCreated = false;
@@ -70,7 +69,7 @@ export class AggregatesHistogramComponent implements OnInit {
     return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + (date.getDate())).slice(-2);
   }
 
-  getHistograms(outliersParams) {
+  getHistograms(histogramsParams) {
     console.log('coverage params');
     console.log(this.histogramParams);
     this.histogramChartLoading = true;
@@ -83,74 +82,40 @@ export class AggregatesHistogramComponent implements OnInit {
     this.endDate = this.parseDate(this.histogramParams.value.endDate);
     const baseURL = 'api/clusters/aggregates' + '/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate + '&kpi_basename=' + this.kpiBaseName;
 
-    // let kpiBaseNamesURL = '';
-    // kpiBaseNamesURL += '&kpi_basename=' + kpi;
-    // let url = baseURL + kpiBaseNamesURL;
-    // if (outliersParams.value.threshold) {
-    //   url += '&threshold=' + outliersParams.value.threshold;
-    // }
     let url = baseURL;
     console.log(url);
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {
-        console.log('outlierData: ');
+        console.log('histogramData: ');
         console.log(response.data);
-        //console.log(response.data[0].distribution)
         this.histogramChartLoading = false;
         this.histogramData = response.data;
         this.histogramValues = response.data.distribution[0];
         this.histogramIndexes = response.data.distribution[1];
-        this.histogramDates = response.data.distribution[0];
         this.clearPreviousChartData();
-        // properify labels
-     //   for (let i = 0; i < this.histogramDates.length; i++) {
-      //let newDate = new Date(this.histogramDates[i]);
-      //this.histogramDatesFormatted.push(this.parseDate(newDate));
-        for (let i = 0; i < this.histogramIndexes.length - 1; i++) {
-          this.properLabels.push(this.histogramIndexes[i].substring(0, 7) + ' ' + this.histogramIndexes[i+1].substring(0, 7));
-        }
-        console.log("new labels");
-        console.log(this.properLabels);
-      } else {
-
-      }
-    }).then(() => {
-      this.generateDates();
+      } 
     }).then(() => {
       this.generateLabels();
       this.histogramChartLoaded = true;
-      console.log(this.histogramData);
     }).then(() => {
-      this.updateChart(this.myChart, this.labels);
+      this.updateChart(this.myChart, this.properLabels);
     });
-
   }
   clearPreviousChartData() {
-    this.labels.length = 0;
-    this.histogramsGapsFilled.length = 0;
-    this.histogramDatesFormatted.length = 0;
+    this.properLabels.length = 0;
     console.log('previous chart data cleared');
   }
   updateChart(chart, label) {
     let ddd = chart.data = {
       labels: this.properLabels,
       datasets: [{
-        label: 'Normal Data',
+        label: 'Data',
         data: this.histogramValues,
         backgroundColor: 'rgba(0, 0, 160, 1)',
         borderColor: 'rgba(0, 0, 160, 1)',
         borderWidth: 1,
         fill: false,
         pointRadius: 1,
-        pointBorderWidth: 1
-      }, {
-        label: 'Outliers',
-        data: this.histogramsGapsFilled,
-        backgroundColor: 'rgba(160, 0, 0, 1)',
-        borderColor: 'rgba(160, 0, 0, 1)',
-        borderWidth: 1,
-        fill: false,
-        pointRadius: 2,
         pointBorderWidth: 1
       }]
     };
@@ -161,7 +126,6 @@ export class AggregatesHistogramComponent implements OnInit {
     });
     chart.update();
 
-    chart.data.labels.push(label);
     chart.data.datasets.forEach((dataset) => {
       dataset.data.push(ddd);
     });
@@ -184,12 +148,12 @@ export class AggregatesHistogramComponent implements OnInit {
     this.myChart = new Chart(this.chart, {
       type: 'bar',
       data: {
-        labels: this.histogramIndexes,
+        labels: this.properLabels,
         datasets: [ {
-          label: 'histograms',
+          label: 'Data',
           data: this.histogramValues,
-          backgroundColor: 'rgba(160, 0, 0, 1)',
-          borderColor: 'rgba(160, 0, 0, 1)',
+          backgroundColor: 'rgba(0, 0, 160, 1)',
+          borderColor: 'rgba(0, 0, 160, 1)',
           borderWidth: 1,
           fill: false,
           pointRadius: 2,
@@ -247,31 +211,10 @@ getCordAcronymSet() {
     return list.filter(option =>
       option.toLowerCase().indexOf(val.toLowerCase()) === 0);
   }
-  generateDates() {
-    const moment = require('moment');
-    require('twix');
-    const itr = moment.twix(new Date(this.startDate), new Date(this.endDate)).iterate('days');
-    while (itr.hasNext()) {
-      const fullDate = itr.next().toDate();
-      this.labels.push(this.parseDate(fullDate));
-    }
-
-    for (let i = 0; i < this.histogramDates.length; i++) {
-      let newDate = new Date(this.histogramDates[i]);
-      this.histogramDatesFormatted.push(this.parseDate(newDate));
-    }
-  }
-
   generateLabels() {
-    let x = 0;
-    for (let i = 0; i < this.histogramData.length; i++) {
-      if (i === this.histogramIndexes[x]) {
-        this.fullHistogramData.push({x: i, y: this.histogramData[i]});
-        x += 1;
-      } else {
-        this.fullData.push({x: i, y: this.histogramData[i]});
-      }
-    }
+    for (let i = 0; i < this.histogramIndexes.length - 1; i++) {
+          this.properLabels.push("|" + this.histogramIndexes[i].toString().slice(0, 5) + ":" + this.histogramIndexes[i+1].toString().slice(0, 5));
+        }
   }
 
 }
