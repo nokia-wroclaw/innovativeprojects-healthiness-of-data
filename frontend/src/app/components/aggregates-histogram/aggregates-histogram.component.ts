@@ -23,6 +23,9 @@ export class AggregatesHistogramComponent implements OnInit {
   cordId: string[];
   histogramChartLoading = false;
   histogramChartLoaded = false;
+  temporaryLabel: string;
+  temporaryLabel2: string;
+
 
   cordAcronymSet: any = [];
   cordIdsList: any = [];
@@ -100,14 +103,11 @@ export class AggregatesHistogramComponent implements OnInit {
         this.histogramData = response.data;
         this.histogramValues = response.data.distribution[0];
         this.histogramIndexes = response.data.distribution[1];
-        this.histogramDates = response.data.distribution[0];
+        //this.histogramDates = response.data.distribution[0];
         this.clearPreviousChartData();
         // properify labels
-     //   for (let i = 0; i < this.histogramDates.length; i++) {
-      //let newDate = new Date(this.histogramDates[i]);
-      //this.histogramDatesFormatted.push(this.parseDate(newDate));
         for (let i = 0; i < this.histogramIndexes.length - 1; i++) {
-          this.properLabels.push(this.histogramIndexes[i].substring(0, 7) + ' ' + this.histogramIndexes[i+1].substring(0, 7));
+          this.properLabels.push("|" + this.histogramIndexes[i].toString().slice(0, 5) + ":" + this.histogramIndexes[i+1].toString().slice(0, 5));
         }
         console.log("new labels");
         console.log(this.properLabels);
@@ -129,6 +129,7 @@ export class AggregatesHistogramComponent implements OnInit {
     this.labels.length = 0;
     this.histogramsGapsFilled.length = 0;
     this.histogramDatesFormatted.length = 0;
+    this.properLabels.length = 0;
     console.log('previous chart data cleared');
   }
   updateChart(chart, label) {
@@ -143,15 +144,6 @@ export class AggregatesHistogramComponent implements OnInit {
         fill: false,
         pointRadius: 1,
         pointBorderWidth: 1
-      }, {
-        label: 'Outliers',
-        data: this.histogramsGapsFilled,
-        backgroundColor: 'rgba(160, 0, 0, 1)',
-        borderColor: 'rgba(160, 0, 0, 1)',
-        borderWidth: 1,
-        fill: false,
-        pointRadius: 2,
-        pointBorderWidth: 1
       }]
     };
 
@@ -161,7 +153,7 @@ export class AggregatesHistogramComponent implements OnInit {
     });
     chart.update();
 
-    chart.data.labels.push(label);
+    //chart.data.labels.push(label);
     chart.data.datasets.forEach((dataset) => {
       dataset.data.push(ddd);
     });
