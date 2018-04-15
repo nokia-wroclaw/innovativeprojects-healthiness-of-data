@@ -23,6 +23,9 @@ export class AggregatesHistogramComponent implements OnInit {
   cordId: string[];
   histogramChartLoading = false;
   histogramChartLoaded = false;
+  temporaryLabel: string;
+  temporaryLabel2: string;
+
 
   cordAcronymSet: any = [];
   cordIdsList: any = [];
