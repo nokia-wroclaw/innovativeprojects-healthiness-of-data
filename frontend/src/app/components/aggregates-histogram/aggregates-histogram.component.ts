@@ -38,6 +38,7 @@ export class AggregatesHistogramComponent implements OnInit {
   histogramDates: any = [];
   histogramIndexes: any = [];
   histogramValues: any = [];
+  properLabels: any = [];
   cordIdControl = new FormControl('', [Validators.required]);
   acronymControl = new FormControl('', [Validators.required]);  
 
@@ -80,7 +81,7 @@ export class AggregatesHistogramComponent implements OnInit {
     this.acronym = this.histogramParams.value.acronym;
     this.startDate = this.parseDate(this.histogramParams.value.startDate);
     this.endDate = this.parseDate(this.histogramParams.value.endDate);
-    const baseURL = 'api/clusters/aggregates' + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate + '&kpi_basename=' + this.kpiBaseName;
+    const baseURL = 'api/clusters/aggregates' + '/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate + '&kpi_basename=' + this.kpiBaseName;
 
     // let kpiBaseNamesURL = '';
     // kpiBaseNamesURL += '&kpi_basename=' + kpi;
@@ -94,13 +95,22 @@ export class AggregatesHistogramComponent implements OnInit {
       if (response['status'] === 200) {
         console.log('outlierData: ');
         console.log(response.data);
-        console.log(response.data[0].distribution)
+        //console.log(response.data[0].distribution)
         this.histogramChartLoading = false;
-        this.histogramData = response.data[0];
-        this.histogramValues = response.data[0].distribution[1];
-        this.histogramIndexes = response.data[0].distribution[0];
-        this.histogramDates = response.data[0].distribution[0];
+        this.histogramData = response.data;
+        this.histogramValues = response.data.distribution[0];
+        this.histogramIndexes = response.data.distribution[1];
+        this.histogramDates = response.data.distribution[0];
         this.clearPreviousChartData();
+        // properify labels
+     //   for (let i = 0; i < this.histogramDates.length; i++) {
+      //let newDate = new Date(this.histogramDates[i]);
+      //this.histogramDatesFormatted.push(this.parseDate(newDate));
+        for (let i = 0; i < this.histogramIndexes.length - 1; i++) {
+          this.properLabels.push(this.histogramIndexes[i].substring(0, 7) + ' ' + this.histogramIndexes[i+1].substring(0, 7));
+        }
+        console.log("new labels");
+        console.log(this.properLabels);
       } else {
 
       }
@@ -123,7 +133,7 @@ export class AggregatesHistogramComponent implements OnInit {
   }
   updateChart(chart, label) {
     let ddd = chart.data = {
-      labels: this.histogramIndexes,
+      labels: this.properLabels,
       datasets: [{
         label: 'Normal Data',
         data: this.histogramValues,
