@@ -81,28 +81,32 @@ def get_cluster_decomposition(cord_id, acronym):
     kpi_basename = request.args.get('kpi_basename')
     frequency = request.args.get('frequency')
 
-    data = calculate_cluster_decomposition(date_start, date_end, kpi_basename, cord_id, acronym, frequency)
+    data = calculate_cluster_decomposition(date_start, date_end, kpi_basename, cord_id, acronym, frequency=frequency)
     if not data:
         return jsonify({"success": False})
     else:
         return jsonify(data)
 
 
+@swag_from('api_docs/fetch_kpi_basename.yml')
 @app.route('/api/fetch_kpi_basenames', methods=['GET'])
 def get_kpi_basenames():
     return jsonify(get_kpi_list())
 
 
+@swag_from('api_docs/fetch_acronyms.yml')
 @app.route('/api/fetch_acronyms', methods=['GET'])
 def get_acronyms():
     return jsonify(get_acronym_list())
 
 
+@swag_from('api_docs/fetch_cord_acronym_set.yml')
 @app.route('/api/fetch_cord_acronym_set', methods=['GET'])
 def get_cord_acronyms_set():
     return jsonify(get_cord_acronym_set())
 
 
+@swag_from('api_docs/fetch_cord_ids.yml')
 @app.route('/api/fetch_cord_ids', methods=['GET'])
 def get_cord_ids():
     return jsonify(get_cord_id_list())

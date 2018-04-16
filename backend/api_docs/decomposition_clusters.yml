@@ -1,14 +1,18 @@
-Decomposition for operator, cluster and kpi
-Returns decompostion for provided operator, cluster and kpi basename.
+Decomposition for cord_id, acronym and kpi
 ---
 tags:
   - Decomposition - clusters
 parameters:
   - name: cord_id
     in: path
-    type: string
+    type: integer
     required: true
     description: Operator identifier
+  - name: acronym
+    in: path
+    type: string
+    required: true
+    description: Cluster name
   - name: date_start
     in: query
     type: string
@@ -24,62 +28,62 @@ parameters:
     type: string
     required: true
     description: Fetch data for provided kpi basename
-  - name: acronym
-    in: path
-    type: string
-    required: true
-    description: Acronym belonging to provided cord_id
   - name: frequency
     in: query
-    type: number
+    type: integer
     required: false
-    description: Frequency something something
+    description: Frequency at which decomposition should be calculated.
 responses:
   200:
-    description: Decomposition - 3 arrays of all values and 3 arrays of dates
+    description: Decomposition: observed, seasonal, trend.
     schema:
-      id: decomposition_clusters
-      type: object
+      id: cluster_decomposition
       properties:
-        kpi_basename:
-          type: string
-          description: Decomposition of this kpi basename
         cord_id:
           type: string
-          description: Decomposition of this operator identifier
+          description: Operator identifier
         acronym:
           type: string
-          description: Decm of this cluster name
+          description: Cluster name
+        kpi_basename:
+          type: string
+          description: Kpi Basename
+
+        seasonal_values:
+          description: Mean value of gathered data
+          type: array
+          items:
+            type: number
+
+        seasonal_dates:
+          description: Dates of seasonal data
+          type: array
+          items:
+            type: string
+
+        trend_values:
+          description: Values of trend data
+          type: array
+          items:
+            type: number
+
+        trend_dates:
+          description: Dates of trend data
+          type: array
+          items:
+            type: string
+
+        observed_values:
+          description: Values of observed data.
+          type: array
+          items:
+            type: number
+
         observed_dates:
           type: array
+          description: Dates of observed data.
           items:
             type: string
-          description: Dates of observed values
-        observed_values:
-          type: array
-          items:
-            type: number
-          description: observed values
-        seasonal_dates:
-          type: array
-          items:
-            type: string
-          description: Dates of seasonal values
-        seasonal_values:
-          type: array
-          items:
-            type: number
-          description: seasonal values
-        trend_dates:
-          type: array
-          items:
-            type: string
-          description: Dates of trend values
-        trend_values:
-          type: array
-          items:
-            type: number
-          description: trend values
   400:
     schema:
       properties:
