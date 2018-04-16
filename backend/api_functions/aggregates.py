@@ -50,7 +50,7 @@ def calculate_operator_aggregates(start_date, end_date, kpi, cord, **options):
         average = numpy.mean(values)
         max_value = max(values)
         min_value = min(values)
-        coverage = len(dates)/(end_date - first_date).days/len(acronyms)
+        coverage = len(dates) * 1.0 /(end_date - first_date).days/len(acronyms)
         deviation = numpy.std(values, ddof=1)
         temp = numpy.histogram(values, bins=histogram_bins)
         distribution = [temp[0].tolist(), temp[1].tolist()]
@@ -111,7 +111,7 @@ def calculate_cluster_aggregates(start_date, end_date, kpi, cord, acronym, **opt
         average = numpy.mean(values)
         max_value = max(values)
         min_value = min(values)
-        coverage = len(dates) / (end_date - first_date).days
+        coverage = len(dates) * 1.0 / (end_date - first_date).days
         deviation = numpy.std(values, ddof=1)
         temp = numpy.histogram(values, bins=histogram_bins)
         distribution = [temp[0].tolist(), temp[1].tolist()]
