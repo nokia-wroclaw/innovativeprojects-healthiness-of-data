@@ -1,3 +1,69 @@
-<p>
-  aggregates-histogram works!
-</p>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav mode="side" opened style="width: 250px;">
+    <mat-card>
+      <h3>Search:</h3>
+      <form name="histogramsForm" (ngSubmit)="getHistograms(histogramParams)" [formGroup]="histogramParams">
+
+        <mat-form-field class="input-line">
+          <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Choose start date"
+                 required>
+          <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+          <mat-datepicker #startDate></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="Choose end date" required>
+          <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+          <mat-datepicker #endDate></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input matInput id="cordIds" [formControl]="cordIdControl" [formControlName]="'cordId'"
+                 placeholder='cord_id: 111' [matAutocomplete]="autoCord" required>
+        </mat-form-field>
+        <mat-autocomplete #autoCord="matAutocomplete">
+          <mat-option *ngFor="let option of cordIdsFiltered  | async" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-form-field class="full-width">
+          <input matInput id="acronym" [formControl]="acronymControl" [formControlName]="'acronym'"
+                 placeholder='acronym: dilfihess' [matAutocomplete]="autoAcro" required>
+        </mat-form-field>
+        <mat-autocomplete #autoAcro="matAutocomplete">
+          <mat-option *ngFor="let option of acronymsFiltered | async" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-form-field class="full-width">
+          <input matInput id="kpiBaseName" formControlName="kpiBaseName" placeholder='kpi_basename: SGSN_2012'
+                 required>
+        </mat-form-field>
+
+
+        <button mat-raised-button [type]="submit" [disabled]="!histogramParams.valid">Fetch data</button>
+      </form>
+    </mat-card>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-card>
+      <h5>MAX: {{ MAX }}</h5>
+      <h5>MIN: {{ MIN }}</h5>
+      <h5>COVERAGE: {{ COVERAGE }}</h5>
+      <h5>DEVIATION: {{ DEVIATION }}</h5>
+      <h5>MEAN: {{ MEAN }}</h5>
+    </mat-card>
+    <mat-card>
+      <h1>Histograms</h1>
+      <mat-card>
+        <h3>Result chart:</h3>
+        <mat-spinner *ngIf="histogramsChartLoading"></mat-spinner>
+        <canvas id="myChart" width="900" height="600"></canvas>
+      </mat-card>
+
+    </mat-card>
+  </mat-sidenav-content>
+</mat-sidenav-container>
