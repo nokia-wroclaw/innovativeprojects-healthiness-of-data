@@ -50,11 +50,23 @@
 
   <mat-sidenav-content>
     <mat-card>
-      <h5>MAX: {{ MAX }}</h5>
-      <h5>MIN: {{ MIN }}</h5>
-      <h5>COVERAGE: {{ COVERAGE }}</h5>
-      <h5>DEVIATION: {{ DEVIATION }}</h5>
-      <h5>MEAN: {{ MEAN }}</h5>
+      <div style="text-align: center">
+        <div class="column-container">
+          <h5>MAX<br />{{ MAX }}</h5>
+        </div>
+        <div class="column-container">
+          <h5>MIN<br />{{ MIN }}</h5>
+        </div>
+        <div class="column-container">
+          <h5>COVERAGE<br />{{ COVERAGE }}</h5>
+        </div>
+        <div class="column-container">
+          <h5>DEVIATION<br />{{ DEVIATION }}</h5>
+        </div>
+        <div class="column-container">
+          <h5>MEAN<br />{{ MEAN }}</h5>
+        </div>
+      </div>
     </mat-card>
     <mat-card>
       <h1>Histograms</h1>
