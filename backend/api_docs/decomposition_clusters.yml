@@ -1,0 +1,92 @@
+Decomposition for cord_id, acronym and kpi
+---
+tags:
+  - Decomposition - clusters
+parameters:
+  - name: cord_id
+    in: path
+    type: integer
+    required: true
+    description: Operator identifier
+  - name: acronym
+    in: path
+    type: string
+    required: true
+    description: Cluster name
+  - name: date_start
+    in: query
+    type: string
+    required: true
+    description: Start of data range for data
+  - name: date_end
+    in: query
+    type: string
+    required: true
+    description: End of data range for data
+  - name: kpi_basename
+    in: query
+    type: string
+    required: true
+    description: Fetch data for provided kpi basename
+  - name: frequency
+    in: query
+    type: integer
+    required: false
+    description: Frequency at which decomposition should be calculated.
+responses:
+  200:
+    description: Decomposition: observed, seasonal, trend.
+    schema:
+      id: cluster_decomposition
+      properties:
+        cord_id:
+          type: string
+          description: Operator identifier
+        acronym:
+          type: string
+          description: Cluster name
+        kpi_basename:
+          type: string
+          description: Kpi Basename
+
+        seasonal_values:
+          description: Mean value of gathered data
+          type: array
+          items:
+            type: number
+
+        seasonal_dates:
+          description: Dates of seasonal data
+          type: array
+          items:
+            type: string
+
+        trend_values:
+          description: Values of trend data
+          type: array
+          items:
+            type: number
+
+        trend_dates:
+          description: Dates of trend data
+          type: array
+          items:
+            type: string
+
+        observed_values:
+          description: Values of observed data.
+          type: array
+          items:
+            type: number
+
+        observed_dates:
+          type: array
+          description: Dates of observed data.
+          items:
+            type: string
+  400:
+    schema:
+      properties:
+        success:
+          type: boolean
+          default: false

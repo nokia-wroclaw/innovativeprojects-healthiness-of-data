@@ -1,0 +1,12 @@
+Returns all existing KPIs in the database.
+---
+tags:
+  - Fetch - KPI Basename
+responses:
+  200:
+    description: All existing KPI Basenames in the database.
+    schema:
+      id: kpi_basenames
+      type: array
+      items:
+        type: string
