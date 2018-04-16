@@ -4,7 +4,7 @@
 */*/*/*.pyc
 */*/*/*/*.pyc
 /venv
-
+frontend/src/app/config.ts
 \.vscode/
 
 toolbox/pokemon_functions/
