@@ -1,12 +1,12 @@
+import yaml
 from flasgger import Swagger, swag_from
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from .api_functions.utils import get_cord_id_list, get_cord_acronym_set, get_acronym_list, get_kpi_list
-from .api_functions.aggregates import calculate_operator_aggregates, calculate_cluster_aggregates
-from .api_functions.coverage import calculate_cluster_coverage
-from .api_functions.outliers import find_outliers
-from .api_functions.decomposition import calculate_cluster_decomposition
-import yaml
+from backend.api_functions.utils import get_cord_id_list, get_cord_acronym_set, get_acronym_list, get_kpi_list
+from backend.api_functions.aggregates import calculate_operator_aggregates, calculate_cluster_aggregates
+from backend.api_functions.coverage import calculate_cluster_coverage
+from backend.api_functions.outliers import find_outliers
+from backend.api_functions.decomposition import calculate_cluster_decomposition
 
 app = Flask(__name__)
 CORS(app)

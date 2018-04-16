@@ -1,5 +1,6 @@
 import datetime
 import numpy
+import yaml
 from collections import defaultdict
 from cassandra.cqlengine import connection
 from toolbox.cassandra_object_mapper_models import PlmnProcessed
@@ -96,23 +97,23 @@ def calculate_cluster_aggregates(start_date, end_date, kpi, cord, acronym, **opt
 
         connection.setup([config['address']], config['keyspace'])
         step = datetime.timedelta(days=1)
-        values = defaultdict(list)
-        dates = defaultdict(list)
+        values = []
+        dates = []
 
         while start_date < end_date:
             result = PlmnProcessed.objects.filter(kpi_basename=kpi).filter(date=start_date).\
                                            filter(cord_id=cord).filter(acronym=acronym)
             start_date += step
             for row in result:
-                values[cord].append(row.value)
-                dates[cord].append(row.date.strftime('%d-%m-%Y'))
+                values.append(row.value)
+                dates.append(row.date.strftime('%d-%m-%Y'))
 
-        average = numpy.mean(values[cord])
-        max_value = max(values[cord])
-        min_value = min(values[cord])
-        coverage = len(dates[cord]) / (end_date - first_date).days
-        deviation = numpy.std(values[cord], ddof=1)
-        temp = numpy.histogram(values[cord], bins=histogram_bins)
+        average = numpy.mean(values)
+        max_value = max(values)
+        min_value = min(values)
+        coverage = len(dates) / (end_date - first_date).days
+        deviation = numpy.std(values, ddof=1)
+        temp = numpy.histogram(values, bins=histogram_bins)
         distribution = [temp[0].tolist(), temp[1].tolist()]
 
         data = {

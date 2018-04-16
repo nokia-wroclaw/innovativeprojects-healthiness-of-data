@@ -5,7 +5,6 @@ import {OutliersComponent} from './components/outliers/outliers.component';
 import {DraftComponent} from './components/draft/draft.component';
 import {Map2dComponent} from './components/map2d/map2d.component';
 import {AggregatesHistogramComponent} from './components/aggregates-histogram/aggregates-histogram.component';
-import {AboutComponent} from './shared/components/about/about.component';
 import {NotfoundComponent} from './shared/components/notfound/notfound.component';
 import {DecompositionComponent} from './components/decomposition/decomposition.component';
 
@@ -20,7 +19,6 @@ export const routes: Routes = [
   {path: 'outliers', component: OutliersComponent},
   {path: 'map2d', component: Map2dComponent},
 
-  {path: 'about', component: AboutComponent},
   {path: '**', component: NotfoundComponent},
 
   {path: 'draft', component: DraftComponent},
