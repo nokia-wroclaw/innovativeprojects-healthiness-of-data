@@ -32,7 +32,6 @@ export class AggregatesHistogramComponent implements OnInit {
   filteredAcronyms: any = [];
   cordIdsFiltered: Observable<string[]>;
   acronymsFiltered: Observable<string[]>;
-  // labels: any = [];
 
   fullData: any = [];
   fullHistogramData: any = [];
@@ -50,6 +49,11 @@ export class AggregatesHistogramComponent implements OnInit {
   chart;
   myChart;
   chartCreated = false;
+  MAX: string;
+  MIN: string;
+  COVERAGE: string;
+  MEAN: string;
+  DEVIATION: string;
 
   constructor(private router: Router,
               private restService: RestService,
@@ -60,6 +64,11 @@ export class AggregatesHistogramComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.chart = document.getElementById('myChart');
+    this.MAX = '0';
+    this.MIN = '0';
+    this.COVERAGE = '0';
+    this.MEAN = '0';
+    this.DEVIATION = '0';
     this.generateChart();
     this.getCordAcronymSet();
     this.getCordIdsList();
@@ -95,6 +104,11 @@ export class AggregatesHistogramComponent implements OnInit {
         this.histogramData = response.data;
         this.histogramValues = response.data.distribution[0];
         this.histogramIndexes = response.data.distribution[1];
+        this.MAX = response.data.max_val;
+        this.MIN = response.data.min_val;
+        this.COVERAGE = response.data.coverage;
+        this.MEAN = response.data.mean;
+        this.DEVIATION = response.data.std_deviation;
         this.clearPreviousChartData();
       } 
     }).then(() => {
@@ -122,7 +136,6 @@ export class AggregatesHistogramComponent implements OnInit {
         pointBorderWidth: 1
       }]
     };
-
     chart.data.labels.pop();
     chart.data.datasets.forEach((dataset) => {
       dataset.data.pop();
