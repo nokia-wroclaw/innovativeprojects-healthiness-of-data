@@ -35,7 +35,7 @@ parameters:
     description: Frequency at which decomposition should be calculated.
 responses:
   200:
-    description: Decomposition: observed, seasonal, trend.
+    description: Decomposition, observed, seasonal, trend.
     schema:
       id: cluster_decomposition
       properties:
