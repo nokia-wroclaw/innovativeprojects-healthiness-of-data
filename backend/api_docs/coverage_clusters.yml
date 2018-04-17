@@ -2,7 +2,7 @@ Coverage for clusters and kpis
 Returns coverages for provided acronyms and kpis belonging to provided cord_id.
 ---
 tags:
-  - Coverage - clusters
+  - Coverage
 parameters:
   - name: cord_id
     in: path

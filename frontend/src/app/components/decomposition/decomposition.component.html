@@ -5,14 +5,14 @@
       <form name="outliersForm" (ngSubmit)="getDecomposition(decompositionParams)" [formGroup]="decompositionParams">
 
         <mat-form-field>
-          <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Choose start date"
+          <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Start Date"
                  required>
           <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
           <mat-datepicker #startDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
-          <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="Choose end date" required>
+          <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="End Date" required>
           <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
           <mat-datepicker #endDate></mat-datepicker>
         </mat-form-field>
@@ -20,7 +20,7 @@
         <mat-form-field class="full-width">
           <input [formControl]="cordIDFormControl"
                  [formControlName]="'cordID'"
-                 placeholder='cord_id: Skuntank'
+                 placeholder='Cord ID'
                  id="cordID"
                  matInput
                  [matAutocomplete]="autoCord"
@@ -36,7 +36,7 @@
           <input [formControl]="acronymFormControl"
                  [formControlName]="'acronym'"
                  matInput
-                 placeholder='acronym: dilfihess'
+                 placeholder='Acronym'
                  [matAutocomplete]="autoAcro"
                  required>
         </mat-form-field>
@@ -50,7 +50,7 @@
           <input [formControl]="kpiBasenameFormControl"
                  [formControlName]="'kpiBaseName'"
                  matInput
-                 placeholder='kpi_basenames: SGSN_2012'
+                 placeholder='KPI Basename'
                  [matAutocomplete]="autoKpi"
                  required>
         </mat-form-field>
@@ -61,12 +61,12 @@
         </mat-autocomplete>
 
         <mat-form-field class="full-width">
-          <input matInput id="frequency" formControlName="frequency" placeholder='frequency default = 31'>
+          <input matInput id="frequency" formControlName="frequency" placeholder='Frequency'>
         </mat-form-field>
 
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!decompositionParams.valid">Fetch data
         </button>
-        <button mat-raised-button color="accent" type="button" (click)="imLazy()">Im lazy</button>
+        <button mat-raised-button color="accent" type="button" (click)="imLazy()">Auto</button>
       </form>
     </mat-card>
     <div style="width: 100%;">
@@ -82,8 +82,6 @@
     <mat-card>
       <h1>Decomposition</h1>
       <mat-card>
-        <h3>Decomposition result chart:</h3>
-
         <canvas id="myChart" width="1000" height="400"></canvas>
       </mat-card>
 

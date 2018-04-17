@@ -4,14 +4,14 @@
       <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
 
         <mat-form-field>
-          <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Choose start date"
+          <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Start Date"
                  required>
           <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
           <mat-datepicker #startDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
-          <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="Choose end date" required>
+          <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="End Date" required>
           <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
           <mat-datepicker #endDate></mat-datepicker>
         </mat-form-field>
@@ -19,7 +19,7 @@
         <mat-form-field>
           <input [formControl]="cordIDFormControl"
                  [formControlName]="'cordID'"
-                 placeholder="Select cord id"
+                 placeholder="Cord ID"
                  matInput
                  [matAutocomplete]="autoCord"
                  required>
@@ -40,7 +40,7 @@
 
             <input [formControl]="acronymsFormControl"
                    [formControlName]="'acronyms'"
-                   placeholder="Select acronyms"
+                   placeholder="Acronyms"
                    [matChipInputFor]="acronymList"
                    [matChipInputAddOnBlur]="addOnBlur"
                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
@@ -68,7 +68,7 @@
 
             <input [formControl]="kpiBasenamesFormControl"
                    [formControlName]="'kpiBaseNames'"
-                   placeholder="Select kpi basenames"
+                   placeholder="KPI Basenames"
                    [matChipInputFor]="kpiList"
                    [matAutocomplete]="autoKpi"
                    [matChipInputAddOnBlur]="addOnBlur"
@@ -99,7 +99,6 @@
     <mat-card>
       <h1>Coverage</h1>
       <mat-card>
-        <h2>Coverage table:</h2>
         <table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
           <tr>
             <th>xxxxxx</th>

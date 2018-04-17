@@ -31,7 +31,7 @@ export class CoverageComponent implements OnInit {
   acronymsByCordID: any = [];
 
   filteredCordIDs: Observable<string[]>;
-  selectedKpiBasenames: any = ['TRF_215', 'SGSN_2012'];
+  selectedKpiBasenames: any = ['TRF_215', 'RNC_31'];
   filteredKpiBasenames: any = [];
   filteredAcronyms: any = [];
 
@@ -50,7 +50,7 @@ export class CoverageComponent implements OnInit {
   separatorKeysCodes = [ENTER, COMMA, TAB];
 
 
-  selectedAcronyms: any = ['strathatuk', 'drasheshu'];
+  selectedAcronyms: any = ['strathatuk', 'strebriszatt'];
 
 
   coverageParams: FormGroup;

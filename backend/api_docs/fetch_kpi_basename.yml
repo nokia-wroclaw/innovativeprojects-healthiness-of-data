@@ -1,7 +1,7 @@
 Returns all existing KPIs in the database.
 ---
 tags:
-  - Fetch - KPI Basename
+  - Fetch
 responses:
   200:
     description: All existing KPI Basenames in the database.

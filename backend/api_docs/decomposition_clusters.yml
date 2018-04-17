@@ -1,7 +1,7 @@
 Decomposition for cord_id, acronym and kpi
 ---
 tags:
-  - Decomposition - clusters
+  - Decomposition
 parameters:
   - name: cord_id
     in: path

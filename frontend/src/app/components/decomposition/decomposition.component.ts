@@ -348,12 +348,12 @@ export class DecompositionComponent implements OnInit {
   imLazy() {
     console.log('you re lazy');
     this.decompositionParams.patchValue({
-      startDate: new Date('2016-06-01T00:00:00.000Z'),
+      startDate: new Date('2017-06-01T00:00:00.000Z'),
       endDate: new Date('2018-01-01T00:00:00.000Z'),
       cordID: 'Skuntank',
       acronym: 'dilfihess',
       kpiBaseName: 'SGSN_2012'
     });
-    this.sharedFunctions.openSnackBar('you\'re lazy', 'very true');
+    this.sharedFunctions.openSnackBar('Autocompleted', 'OK');
   }
 }

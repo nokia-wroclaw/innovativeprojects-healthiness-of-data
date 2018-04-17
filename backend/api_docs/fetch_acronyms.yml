@@ -1,7 +1,7 @@
 Returns all existing acronyms in the database.
 ---
 tags:
-  - Fetch - Acronyms
+  - Fetch
 responses:
   200:
     description: All existing acronyms in the database.

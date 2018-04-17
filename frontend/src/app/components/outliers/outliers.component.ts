@@ -157,13 +157,14 @@ export class OutliersComponent implements OnInit {
       } else {
         this.dataGapsFilled.push(null);
       }
-      if (this.outlierIndexes[k] === i) {
+      if (this.outlierValues[k] === this.dataGapsFilled[i]) {
         this.outliersGapsFilled.push(this.outlierValues[k]);
         k++;
       } else {
         this.outliersGapsFilled.push(null);
       }
     }
+    console.log(this.outliersGapsFilled);
   }
 
   setOnChange(full: any, formControl: FormControl): any {
@@ -205,12 +206,13 @@ export class OutliersComponent implements OnInit {
         }, {
           label: 'Outliers',
           data: this.outliersGapsFilled,
-          backgroundColor: 'rgba(160, 0, 0, 1)',
-          borderColor: 'rgba(160, 0, 0, 1)',
-          borderWidth: 1,
+          backgroundColor: 'rgba(255, 153, 0, 1)',
+          borderColor: 'rgba(255, 153, 0, 1)',
+          borderWidth: 4,
           fill: false,
-          pointRadius: 2,
+          pointRadius: 8,
           pointBorderWidth: 1,
+          pointStyle: 'star',
           options: {
             spanGaps: false,
             scales: {
@@ -263,12 +265,13 @@ export class OutliersComponent implements OnInit {
       }, {
         label: 'Outliers',
         data: this.outliersGapsFilled,
-        backgroundColor: 'rgba(160, 0, 0, 1)',
-        borderColor: 'rgba(160, 0, 0, 1)',
-        borderWidth: 1,
+        backgroundColor: 'rgba(255, 153, 0, 1)',
+        borderColor: 'rgba(255, 153, 0, 1)',
+        borderWidth: 4,
         fill: false,
-        pointRadius: 2,
-        pointBorderWidth: 1
+        pointRadius: 8,
+        pointBorderWidth: 1,
+        pointStyle: 'star',
       }]
     };
 
@@ -288,13 +291,13 @@ export class OutliersComponent implements OnInit {
   imLazy() {
     console.log('you re lazy');
     this.outlierParams.patchValue({
-      startDate: new Date('2016-06-01T00:00:00.000Z'),
+      startDate: new Date('2016-05-01T00:00:00.000Z'),
       endDate: new Date('2018-01-01T00:00:00.000Z'),
       cordID: 'Skuntank',
       acronym: 'dilfihess',
       kpiBaseName: 'SGSN_2012'
     });
-    this.sharedFunctions.openSnackBar('you\'re lazy', 'very true');
+    this.sharedFunctions.openSnackBar('Autocompleted', 'OK');
   }
 }
 
