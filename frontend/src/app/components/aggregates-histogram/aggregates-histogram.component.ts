@@ -129,6 +129,7 @@ export class AggregatesHistogramComponent implements OnInit {
         this.updateChart(this.myChart);
       } else {
         this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
+        this.histogramChartLoading = false;
       }
     });
   }

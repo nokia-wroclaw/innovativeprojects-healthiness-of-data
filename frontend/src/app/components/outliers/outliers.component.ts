@@ -129,6 +129,7 @@ export class OutliersComponent implements OnInit {
         this.updateChart(this.myChart);
       } else {
         this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
+        this.outliersChartLoading = false;
       }
     });
 

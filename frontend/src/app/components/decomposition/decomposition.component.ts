@@ -140,6 +140,7 @@ export class DecompositionComponent implements OnInit {
 
       } else {
         this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
+        this.decompositionChartLoading = false;
       }
     });
 
