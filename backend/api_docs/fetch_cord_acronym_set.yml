@@ -1,7 +1,7 @@
 Returns an object with Cords as keys and a list of acronyms belonging to them as items.
 ---
 tags:
-  - Fetch - Cord Acronym Set
+  - Fetch
 responses:
   200:
     description: Object with Cords as keys and a list of acronyms belonging to them as items.

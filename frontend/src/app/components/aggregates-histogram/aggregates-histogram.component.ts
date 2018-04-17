@@ -227,7 +227,6 @@ export class AggregatesHistogramComponent implements OnInit {
 
 
   imLazy() {
-    console.log('you re lazy');
     this.histogramParams.patchValue({
       startDate: new Date('2016-06-01T00:00:00.000Z'),
       endDate: new Date('2018-01-01T00:00:00.000Z'),
@@ -235,6 +234,6 @@ export class AggregatesHistogramComponent implements OnInit {
       acronym: 'dilfihess',
       kpiBaseName: 'SGSN_2012'
     });
-    this.sharedFunctions.openSnackBar('you\'re lazy', 'very true');
+    this.sharedFunctions.openSnackBar('Autocompleted', 'OK');
   }
 }

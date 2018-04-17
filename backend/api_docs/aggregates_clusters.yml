@@ -2,7 +2,7 @@ Aggregates for cord_id, acronym and kpi
 Returns aggregates for provided cord_id, acronym and kpi_basename.
 ---
 tags:
-  - Aggregates - clusters
+  - Aggregates
 parameters:
   - name: cord_id
     in: path

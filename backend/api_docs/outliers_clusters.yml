@@ -2,7 +2,7 @@ Outliers for operator, cluster and kpi
 Returns outliers for provided operator, cluster and kpi basename.
 ---
 tags:
-  - Outliers - clusters
+  - Outliers
 parameters:
   - name: cord_id
     in: path
