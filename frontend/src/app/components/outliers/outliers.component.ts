@@ -45,7 +45,7 @@ export class OutliersComponent implements OnInit {
 
   cordIDFormControl = new FormControl('', [Validators.required]);
   acronymFormControl = new FormControl('', [Validators.required]);
-  kpiBasenamesFormControl = new FormControl('', [Validators.required]);
+  kpiBasenameFormControl = new FormControl('', [Validators.required]);
 
 
   outlierDatesFormatted: any = [];
@@ -54,6 +54,7 @@ export class OutliersComponent implements OnInit {
   outliersGapsFilled: any = [];
   chartElement;
   myChart;
+  fetchedIn: any;
 
   constructor(private router: Router,
               private restService: RestService,
@@ -71,7 +72,7 @@ export class OutliersComponent implements OnInit {
     this.generateChart();
 
 
-    this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenamesFormControl);
+    this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
     this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
     // this.filteredAcronyms = this.setOnChange(this.acronymsByCordID, this.acronymFormControl);
     this.filteredAcronyms = this.acronymFormControl.valueChanges.pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.acronymsByCordID, 50)));
@@ -87,7 +88,7 @@ export class OutliersComponent implements OnInit {
       endDate: ['', Validators.required],
       cordID: this.cordIDFormControl,
       acronym: this.acronymFormControl,
-      kpiBaseNames: this.kpiBasenamesFormControl,
+      kpiBaseName: this.kpiBasenameFormControl,
       threshold: ''
     });
   }
@@ -98,7 +99,7 @@ export class OutliersComponent implements OnInit {
     this.outliersChartLoading = true;
     this.startDate = outliersParams.value.startDate;
     this.endDate = outliersParams.value.endDate;
-    this.kpiBaseName = outliersParams.value.kpiBaseNames;
+    this.kpiBaseName = outliersParams.value.kpiBaseName;
     this.cordID = outliersParams.value.cordID;
     this.acronym = outliersParams.value.acronym;
     this.startDate = this.sharedFunctions.parseDate(outliersParams.value.startDate);
@@ -109,8 +110,11 @@ export class OutliersComponent implements OnInit {
     if (outliersParams.value.threshold) {
       url += '&threshold=' + outliersParams.value.threshold;
     }
+    let start = new Date().getTime();
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {
+        let end = new Date().getTime();
+        this.fetchedIn = end - start;
         console.log('outlierData: ');
         console.log(response.data);
         this.outliersChartLoading = false;
@@ -119,16 +123,16 @@ export class OutliersComponent implements OnInit {
         this.outlierIndexes = response.data.outliers;
         this.outlierDates = response.data.dates;
         this.clearPreviousChartData();
-      } else  {
+
+        this.generateDates();
+        this.outliersChartLoaded = true;
+        this.updateChart(this.myChart);
+      } else {
         this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
       }
-    }).then(() => {
-      this.generateDates();
-    }).then(() => {
-      this.outliersChartLoaded = true;
-    }).then(() => {
-      this.updateChart(this.myChart);
     });
+
+
   }
 
   generateDates() {
@@ -281,6 +285,17 @@ export class OutliersComponent implements OnInit {
     console.log('chart updated');
   }
 
+  imLazy() {
+    console.log('you re lazy');
+    this.outlierParams.patchValue({
+      startDate: new Date('2016-06-01T00:00:00.000Z'),
+      endDate: new Date('2018-01-01T00:00:00.000Z'),
+      cordID: 'Skuntank',
+      acronym: 'dilfihess',
+      kpiBaseName: 'SGSN_2012'
+    });
+    this.sharedFunctions.openSnackBar('you\'re lazy', 'very true');
+  }
 }
 
 

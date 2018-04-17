@@ -42,6 +42,7 @@ export class CoverageComponent implements OnInit {
   startDate: string;
   endDate: string;
   cordID: any;
+  fetchedIn: any;
 
   coverageTableLoaded = false;
   coverageTableLoading = false;
@@ -96,6 +97,7 @@ export class CoverageComponent implements OnInit {
     });
   }
 
+
   public getCoverage(coverageParams): void {
     console.log('coverage params');
     console.log(coverageParams);
@@ -103,7 +105,6 @@ export class CoverageComponent implements OnInit {
     this.startDate = this.sharedFunctions.parseDate(coverageParams.value.startDate);
     this.endDate = this.sharedFunctions.parseDate(coverageParams.value.endDate);
     this.cordID = this.coverageParams.value.cordID;
-    console.log(this.cordID);
     const baseURL = 'api/coverage/' + this.cordID + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
     this.selectedKpiBasenames = this.selectedKpiBasenames.map((e) => {
       return e.toUpperCase();
@@ -112,7 +113,10 @@ export class CoverageComponent implements OnInit {
 
     const acronymsURL = this.sharedFunctions.processArguments(this.selectedAcronyms, 'acronym');
     const url = baseURL + kpiBaseNamesURL + acronymsURL;
+    let start = new Date().getTime();
     this.restService.getAll(url).then(response => {
+      let end = new Date().getTime();
+      this.fetchedIn = end - start;
       console.log('coverageData: ');
       console.log(response.data);
       this.coverageTableLoading = false;

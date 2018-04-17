@@ -6,17 +6,7 @@ import {Injectable} from '@angular/core';
 @Injectable()
 export class RestService {
 
-  headers;
-
   constructor() {
-    const token = sessionStorage.getItem('token');
-    this.headers = {headers: {'Token': token}};
-  }
-
-  setHeaders() {
-    return {
-      headers: {'Token': sessionStorage.getItem('token')}
-    };
   }
 
   getAll<T>(resourceName: String) {

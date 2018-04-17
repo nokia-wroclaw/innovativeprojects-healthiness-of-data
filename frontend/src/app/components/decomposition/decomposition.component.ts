@@ -56,7 +56,9 @@ export class DecompositionComponent implements OnInit {
   decompositionParams: FormGroup;
   cordIDFormControl = new FormControl('', [Validators.required]);
   acronymFormControl = new FormControl('', [Validators.required]);
-  kpiBasenamesFormControl = new FormControl('', [Validators.required]);
+  kpiBasenameFormControl = new FormControl('', [Validators.required]);
+
+  fetchedIn: any;
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
@@ -65,14 +67,13 @@ export class DecompositionComponent implements OnInit {
     this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheData.getFullCordIDsList();
     this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
-
   }
 
   ngOnInit() {
     this.initForm();
     this.chartElement = document.getElementById('myChart');
     this.generateChart();
-    this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenamesFormControl);
+    this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
     this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
     // this.filteredAcronyms = this.setOnChange(this.acronymsByCordID, this.acronymFormControl);
     this.filteredAcronyms = this.acronymFormControl.valueChanges.pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.acronymsByCordID, 50)));
@@ -89,10 +90,11 @@ export class DecompositionComponent implements OnInit {
       endDate: ['', Validators.required],
       cordID: this.cordIDFormControl,
       acronym: this.acronymFormControl,
-      kpiBaseNames: this.kpiBasenamesFormControl,
+      kpiBaseName: this.kpiBasenameFormControl,
       frequency: 31
     });
   }
+
 
   getDecomposition(decompositionParams: FormGroup) {
     console.log('decomposition params');
@@ -100,7 +102,7 @@ export class DecompositionComponent implements OnInit {
     this.decompositionChartLoading = true;
     this.startDate = decompositionParams.value.startDate;
     this.endDate = decompositionParams.value.endDate;
-    this.kpiBaseName = decompositionParams.value.kpiBaseNames;
+    this.kpiBaseName = decompositionParams.value.kpiBaseName;
     this.cordID = decompositionParams.value.cordID;
     this.acronym = decompositionParams.value.acronym;
     this.startDate = this.sharedFunctions.parseDate(decompositionParams.value.startDate);
@@ -113,12 +115,13 @@ export class DecompositionComponent implements OnInit {
       url += '&frequency=' + decompositionParams.value.frequency;
     }
 
-
+    let start = new Date().getTime();
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {
-        console.log('decomposition: ');
+        let end = new Date().getTime();
         console.log(response.data);
         this.decompositionChartLoading = false;
+        this.fetchedIn = end - start;
         this.observedDates = response.data.observed_dates;
         this.observedValues = response.data.observed_values;
 
@@ -130,16 +133,14 @@ export class DecompositionComponent implements OnInit {
 
 
         this.clearPreviousChartData();
+        this.fixTrend(decompositionParams.value.frequency / 2);
+        this.generateDates();
+        this.decompositionChartLoaded = true;
+        this.updateChart(this.myChart);
+
       } else {
         this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
       }
-    }).then(() => {
-      this.fixTrend(decompositionParams.value.frequency / 2);
-      this.generateDates();
-    }).then(() => {
-      this.decompositionChartLoaded = true;
-    }).then(() => {
-      this.updateChart(this.myChart);
     });
 
 
@@ -152,9 +153,7 @@ export class DecompositionComponent implements OnInit {
     });
     this.trendValuesFixed = missingArray;
     this.trendValuesFixed = this.trendValuesFixed.concat(this.trendValues, missingArray);
-    console.log('trend fixed');
-    console.log(this.trendValuesFixed);
-
+    return;
   }
 
   setOnChange(full: any, formControl: FormControl): any {
@@ -188,19 +187,17 @@ export class DecompositionComponent implements OnInit {
         this.seasonalGapsFilled.push(null);
         this.trendGapsFilled.push(null);
       }
-
     }
-    console.log('seaons');
-    console.log(this.observedGapsFilled);
   }
 
-  clearPreviousChartData() {
+  clearPreviousChartData(): any {
     this.labels.length = 0;
     this.observedGapsFilled.length = 0;
     this.seasonalGapsFilled.length = 0;
     this.trendGapsFilled.length = 0;
     this.decompositionDatesFormatted.length = 0;
     console.log('previous chart data cleared');
+    return;
   }
 
   generateChart() {
@@ -210,8 +207,8 @@ export class DecompositionComponent implements OnInit {
         labels: this.labels,
         datasets: [{
           label: 'Observed',
-          backgroundColor: 'rgba(0, 0, 160, 1)',
-          borderColor: 'rgba(0, 0, 160, 1)',
+          backgroundColor: 'rgba(0, 0, 160, 0.5)',
+          borderColor: 'rgba(0, 0, 160, 0.5)',
           borderWidth: 1,
           fill: false,
           pointRadius: 1,
@@ -224,30 +221,6 @@ export class DecompositionComponent implements OnInit {
                   beginAtZero: false
                 }
               }]
-            }
-          }
-        }, {
-          label: 'Seasonal',
-          data: {},
-          backgroundColor: 'rgba(160, 0, 0, 1)',
-          borderColor: 'rgba(160, 0, 0, 1)',
-          borderWidth: 1,
-          fill: false,
-          pointRadius: 1,
-          pointBorderWidth: 1,
-          options: {
-            spanGaps: false,
-            scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: false
-                }
-              }]
-            }, elements: {
-              line: {
-                skipNull: true,
-                drawNull: false,
-              }
             }
           }
         }, {
@@ -274,9 +247,40 @@ export class DecompositionComponent implements OnInit {
               }
             }
           }
+        }, {
+          label: 'Seasonal',
+          data: {},
+          backgroundColor: 'rgba(160, 0, 0, 1)',
+          borderColor: 'rgba(160, 0, 0, 1)',
+          borderWidth: 1,
+          fill: false,
+          pointRadius: 1,
+          pointBorderWidth: 1,
+          options: {
+            spanGaps: false,
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: false
+                }
+              }]
+            }, elements: {
+              line: {
+                skipNull: true,
+                drawNull: false,
+              }
+            }
+          }
         }]
       },
       options: {
+        responsive: true,
+        zoom: {
+          enabled: true,
+          mode: 'x',
+          drag: true
+
+        },
         spanGaps: false,
         scales: {
           yAxes: [{
@@ -296,23 +300,14 @@ export class DecompositionComponent implements OnInit {
 
   }
 
-  updateChart(chart) {
+  updateChart(chart): any {
     const newData = chart.data = {
       labels: this.labels,
       datasets: [{
         label: 'Observed',
         data: this.observedGapsFilled,
-        backgroundColor: 'rgba(0, 0, 160, 1)',
-        borderColor: 'rgba(0, 0, 160, 1)',
-        borderWidth: 1,
-        fill: false,
-        pointRadius: 1,
-        pointBorderWidth: 1
-      }, {
-        label: 'Seasonal',
-        data: this.seasonalGapsFilled,
-        backgroundColor: 'rgba(160, 0, 0, 1)',
-        borderColor: 'rgba(160, 0, 0, 1)',
+        backgroundColor: 'rgba(0, 0, 160, 0.5)',
+        borderColor: 'rgba(0, 0, 160, 0.5)',
         borderWidth: 1,
         fill: false,
         pointRadius: 1,
@@ -322,6 +317,15 @@ export class DecompositionComponent implements OnInit {
         data: this.trendGapsFilled,
         backgroundColor: 'rgba(0, 160, 0, 1)',
         borderColor: 'rgba(0, 160, 0, 1)',
+        borderWidth: 1,
+        fill: false,
+        pointRadius: 1,
+        pointBorderWidth: 1
+      }, {
+        label: 'Seasonal',
+        data: this.seasonalGapsFilled,
+        backgroundColor: 'rgba(160, 0, 0, 1)',
+        borderColor: 'rgba(160, 0, 0, 1)',
         borderWidth: 1,
         fill: false,
         pointRadius: 1,
@@ -339,5 +343,17 @@ export class DecompositionComponent implements OnInit {
     });
     chart.update();
     console.log('chart updated');
+  }
+
+  imLazy() {
+    console.log('you re lazy');
+    this.decompositionParams.patchValue({
+      startDate: new Date('2016-06-01T00:00:00.000Z'),
+      endDate: new Date('2018-01-01T00:00:00.000Z'),
+      cordID: 'Skuntank',
+      acronym: 'dilfihess',
+      kpiBaseName: 'SGSN_2012'
+    });
+    this.sharedFunctions.openSnackBar('you\'re lazy', 'very true');
   }
 }

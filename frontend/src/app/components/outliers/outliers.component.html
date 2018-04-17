@@ -1,5 +1,5 @@
 <mat-sidenav-container class="sidenav-container" style=" height: 800px;">
-  <mat-sidenav mode="side" opened style="width: 250px;">
+  <mat-sidenav mode="side" opened style="width: 250px; height: 800px;">
     <mat-card>
       <h3>Search:</h3>
       <form name="outliersForm" (ngSubmit)="getOutliers(outlierParams)" [formGroup]="outlierParams">
@@ -47,10 +47,10 @@
         </mat-autocomplete>
 
         <mat-form-field class="full-width">
-          <input [formControl]="kpiBasenamesFormControl"
-                 [formControlName]="'kpiBaseNames'"
+          <input [formControl]="kpiBasenameFormControl"
+                 [formControlName]="'kpiBaseName'"
                  matInput
-                 placeholder='kpi_basenames: SGSN_2012'
+                 placeholder='kpi_basename: SGSN_2012'
                  [matAutocomplete]="autoKpi"
                  required>
         </mat-form-field>
@@ -65,16 +65,22 @@
         </mat-form-field>
 
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!outlierParams.valid">Fetch data</button>
+        <button mat-raised-button color="accent" type="button" (click)="imLazy()">Im lazy</button>
       </form>
     </mat-card>
+    <div style="width: 100%;">
+      <div style="margin: 0 auto; width: 50%;">
+        <mat-spinner *ngIf="outliersChartLoading"></mat-spinner>
+      </div>
+      <div *ngIf="outliersChartLoaded && !outliersChartLoading">Data fetched in: {{fetchedIn}} ms</div>
+    </div>
   </mat-sidenav>
 
   <mat-sidenav-content>
     <mat-card>
       <h1>Outliers</h1>
-      <mat-card>
-        <h3>Result chart:</h3>
-        <mat-spinner *ngIf="outliersChartLoading"></mat-spinner>
+      <mat-card >
+        <h3>Outliers result chart:</h3>
         <canvas id="myChart" width="1000" height="400"></canvas>
       </mat-card>
 

@@ -88,14 +88,18 @@
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!coverageParams.valid">Fetch data</button>
       </form>
     </mat-card>
-
+    <div style="width: 100%;">
+      <div style="margin: 0 auto; width: 50%;">
+        <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
+      </div>
+      <div *ngIf="coverageTableLoaded && !coverageTableLoading">Data fetched in: {{fetchedIn}} ms</div>
+    </div>
   </mat-sidenav>
   <mat-sidenav-content>
     <mat-card>
       <h1>Coverage</h1>
       <mat-card>
-        <h2>Coverage table goes here:</h2>
-        <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
+        <h2>Coverage table:</h2>
         <table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
           <tr>
             <th>xxxxxx</th>

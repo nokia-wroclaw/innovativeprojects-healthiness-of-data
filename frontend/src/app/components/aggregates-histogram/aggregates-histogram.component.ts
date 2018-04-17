@@ -5,6 +5,8 @@ import {RestService} from '../../shared/services/rest.service';
 import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
+import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
+import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
 
 declare var Chart: any;
 
@@ -15,137 +17,69 @@ declare var Chart: any;
 })
 export class AggregatesHistogramComponent implements OnInit {
 
-  histogramParams: FormGroup
+  fullKpiBasenamesList: any = [];
+  fullCordIDsList: any = [];
+  fullCordIDsAcronymsSet: any = [];
+  acronymsByCordID: any = [];
+
+  filteredKpiBasenames: Observable<string[]>;
+  filteredCordIDs: Observable<string[]>;
+  filteredAcronyms: Observable<string[]>;
+
   startDate: any;
   endDate: any;
-  kpiBaseName: string[];
-  acronym: string[];
-  cordId: string[];
+  kpiBaseName: any;
+  acronym: any;
+  cordID: any;
   histogramChartLoading = false;
   histogramChartLoaded = false;
-  temporaryLabel: string;
-  temporaryLabel2: string;
-
-
-  cordAcronymSet: any = [];
-  cordIdsList: any = [];
-  filteredAcronyms: any = [];
-  cordIdsFiltered: Observable<string[]>;
-  acronymsFiltered: Observable<string[]>;
-
-  fullData: any = [];
-  fullHistogramData: any = [];
 
   histogramData: any = [];
-  histogramDates: any = [];
   histogramIndexes: any = [];
   histogramValues: any = [];
   properLabels: any = [];
-  cordIdControl = new FormControl('', [Validators.required]);
-  acronymControl = new FormControl('', [Validators.required]);  
 
-  histogramDatesFormatted: any = [];
+  histogramParams: FormGroup;
+  cordIDFormControl = new FormControl('', [Validators.required]);
+  acronymFormControl = new FormControl('', [Validators.required]);
+  kpiBasenameFormControl = new FormControl('', [Validators.required]);
 
   chart;
   myChart;
-  chartCreated = false;
-  MAX: string;
-  MIN: string;
-  COVERAGE: string;
-  MEAN: string;
-  DEVIATION: string;
+  max: string;
+  min: string;
+  coverage: string;
+  mean: string;
+  deviation: string;
+  fetchedIn: any;
 
-  constructor(private router: Router,
-              private restService: RestService,
-              private formBuilder: FormBuilder) {
+  constructor(private restService: RestService,
+              private formBuilder: FormBuilder,
+              private sharedFunctions: SharedFunctionsService,
+              private cacheData: CacheDataComponent) {
+    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
+    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
+    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
   }
 
 
   ngOnInit() {
     this.initForm();
     this.chart = document.getElementById('myChart');
-    this.MAX = '0';
-    this.MIN = '0';
-    this.COVERAGE = '0';
-    this.MEAN = '0';
-    this.DEVIATION = '0';
+    this.max = '0';
+    this.min = '0';
+    this.coverage = '0';
+    this.mean = '0';
+    this.deviation = '0';
     this.generateChart();
-    this.getCordAcronymSet();
-    this.getCordIdsList();
-    this.cordIdControl.valueChanges.subscribe(cor => {
-      this.filteredAcronyms = this.cordAcronymSet[cor];
-    });
+    this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
+    this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
+    // this.filteredAcronyms = this.setOnChange(this.acronymsByCordID, this.acronymFormControl);
+    this.filteredAcronyms = this.acronymFormControl.valueChanges.pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.acronymsByCordID, 50)));
 
-  }
-  parseDate(date: any): string {
-    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + (date.getDate())).slice(-2);
-  }
-
-  getHistograms(histogramsParams) {
-    console.log('coverage params');
-    console.log(this.histogramParams);
-    this.histogramChartLoading = true;
-    this.startDate = this.histogramParams.value.startDate;
-    this.endDate = this.histogramParams.value.endDate;
-    this.kpiBaseName = this.histogramParams.value.kpiBaseName;
-    this.cordId = this.histogramParams.value.cordId;
-    this.acronym = this.histogramParams.value.acronym;
-    this.startDate = this.parseDate(this.histogramParams.value.startDate);
-    this.endDate = this.parseDate(this.histogramParams.value.endDate);
-    const baseURL = 'api/clusters/aggregates' + '/' + this.cordId + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate + '&kpi_basename=' + this.kpiBaseName;
-
-    let url = baseURL;
-    console.log(url);
-    this.restService.getAll(url).then(response => {
-      if (response['status'] === 200) {
-        console.log('histogramData: ');
-        console.log(response.data);
-        this.histogramChartLoading = false;
-        this.histogramData = response.data;
-        this.histogramValues = response.data.distribution[0];
-        this.histogramIndexes = response.data.distribution[1];
-        this.MAX = response.data.max_val;
-        this.MIN = response.data.min_val;
-        this.COVERAGE = response.data.coverage;
-        this.MEAN = response.data.mean;
-        this.DEVIATION = response.data.std_deviation;
-        this.clearPreviousChartData();
-      } 
-    }).then(() => {
-      this.generateLabels();
-      this.histogramChartLoaded = true;
-    }).then(() => {
-      this.updateChart(this.myChart, this.properLabels);
+    this.cordIDFormControl.valueChanges.subscribe((cord) => {
+      this.acronymsByCordID = this.fullCordIDsAcronymsSet[cord];
     });
-  }
-  clearPreviousChartData() {
-    this.properLabels.length = 0;
-    console.log('previous chart data cleared');
-  }
-  updateChart(chart, label) {
-    let ddd = chart.data = {
-      labels: this.properLabels,
-      datasets: [{
-        label: 'Data',
-        data: this.histogramValues,
-        backgroundColor: 'rgba(0, 0, 160, 1)',
-        borderColor: 'rgba(0, 0, 160, 1)',
-        borderWidth: 1,
-        fill: false,
-        pointRadius: 1,
-        pointBorderWidth: 1
-      }]
-    };
-    chart.data.labels.pop();
-    chart.data.datasets.forEach((dataset) => {
-      dataset.data.pop();
-    });
-    chart.update();
-
-    chart.data.datasets.forEach((dataset) => {
-      dataset.data.push(ddd);
-    });
-    chart.update();
 
   }
 
@@ -153,19 +87,74 @@ export class AggregatesHistogramComponent implements OnInit {
     this.histogramParams = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      kpiBaseName: ['', Validators.required],
-      acronym: this.acronymControl,
-      cordId: this.cordIdControl,
+      cordID: this.cordIDFormControl,
+      acronym: this.acronymFormControl,
+      kpiBaseName: this.kpiBasenameFormControl
     });
   }
-  generateChart() {
-    console.log('generating chart...');
 
+  getHistogram(histogramParams) {
+    console.log('coverage params');
+    console.log(this.histogramParams);
+    this.histogramChartLoading = true;
+    this.startDate = histogramParams.value.startDate;
+    this.endDate = histogramParams.value.endDate;
+    this.kpiBaseName = histogramParams.value.kpiBaseName;
+    this.cordID = histogramParams.value.cordID;
+    this.acronym = histogramParams.value.acronym;
+    this.startDate = this.sharedFunctions.parseDate(histogramParams.value.startDate);
+    this.endDate = this.sharedFunctions.parseDate(histogramParams.value.endDate);
+    const url = 'api/clusters/aggregates' + '/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate + '&kpi_basename=' + this.kpiBaseName.toUpperCase();
+
+    let start = new Date().getTime();
+    this.restService.getAll(url).then(response => {
+      if (response['status'] === 200) {
+        let end = new Date().getTime();
+        this.fetchedIn = end - start;
+        console.log('histogram data: ');
+        console.log(response.data);
+        this.histogramChartLoading = false;
+        this.histogramData = response.data;
+        this.histogramValues = response.data.distribution[0];
+        this.histogramIndexes = response.data.distribution[1];
+        this.max = response.data.max_val;
+        this.min = response.data.min_val;
+        this.coverage = response.data.coverage;
+        this.mean = response.data.mean;
+        this.deviation = response.data.std_deviation;
+        this.clearPreviousChartData();
+
+        this.generateLabels();
+        this.histogramChartLoaded = true;
+        this.updateChart(this.myChart);
+      } else {
+        this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
+      }
+    });
+  }
+
+  clearPreviousChartData() {
+    this.properLabels.length = 0;
+    console.log('previous chart data cleared');
+  }
+
+  generateLabels() {
+    for (let i = 0; i < this.histogramIndexes.length - 1; i++) {
+      this.properLabels.push('|' + this.histogramIndexes[i].toString().slice(0, 5) + ':' + this.histogramIndexes[i + 1].toString().slice(0, 5) + ']');
+    }
+  }
+
+  setOnChange(full: any, formControl: FormControl): any {
+    return formControl.valueChanges
+      .pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
+  }
+
+  generateChart() {
     this.myChart = new Chart(this.chart, {
       type: 'bar',
       data: {
         labels: this.properLabels,
-        datasets: [ {
+        datasets: [{
           label: 'Data',
           data: this.histogramValues,
           backgroundColor: 'rgba(0, 0, 160, 1)',
@@ -207,30 +196,44 @@ export class AggregatesHistogramComponent implements OnInit {
         }
       }
     });
-   } 
-getCordAcronymSet() {
-    this.restService.getAll('api/fetch_cord_acronym_set').then((response) => {
-      this.cordAcronymSet = response.data;
-      this.acronymsFiltered = this.acronymControl.valueChanges
-        .pipe(startWith(''), map(val => this.filter(val, this.filteredAcronyms)));
-    });
   }
 
-  getCordIdsList() {
-    this.restService.getAll('api/fetch_cord_ids').then((response) => {
-      this.cordIdsList = response.data;
-      this.cordIdsFiltered = this.cordIdControl.valueChanges
-      .pipe(startWith(''), map(val => this.filter(val, this.cordIdsList)));
+  updateChart(chart) {
+    const newData = chart.data = {
+      labels: this.properLabels,
+      datasets: [{
+        label: 'Data',
+        data: this.histogramValues,
+        backgroundColor: 'rgba(0, 0, 160, 1)',
+        borderColor: 'rgba(0, 0, 160, 1)',
+        borderWidth: 1,
+        fill: false,
+        pointRadius: 1,
+        pointBorderWidth: 1
+      }]
+    };
+    chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data.pop();
     });
-  }
-  filter(val: string, list: any): string[] {
-    return list.filter(option =>
-      option.toLowerCase().indexOf(val.toLowerCase()) === 0);
-  }
-  generateLabels() {
-    for (let i = 0; i < this.histogramIndexes.length - 1; i++) {
-          this.properLabels.push("|" + this.histogramIndexes[i].toString().slice(0, 5) + ":" + this.histogramIndexes[i+1].toString().slice(0, 5));
-        }
+    chart.update();
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data.push(newData);
+    });
+    chart.update();
+    console.log('chart updated');
   }
 
+
+  imLazy() {
+    console.log('you re lazy');
+    this.histogramParams.patchValue({
+      startDate: new Date('2016-06-01T00:00:00.000Z'),
+      endDate: new Date('2018-01-01T00:00:00.000Z'),
+      cordID: 'Skuntank',
+      acronym: 'dilfihess',
+      kpiBaseName: 'SGSN_2012'
+    });
+    this.sharedFunctions.openSnackBar('you\'re lazy', 'very true');
+  }
 }
