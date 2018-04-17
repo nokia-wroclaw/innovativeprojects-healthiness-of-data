@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {RestService} from '../../shared/services/rest.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatAutocompleteSelectedEvent} from '@angular/material';
+import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
 import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
 
 import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
@@ -142,18 +142,6 @@ export class CoverageComponent implements OnInit {
     this.coverageTableLoaded = false;
   }
 
-  // add(event: MatChipInputEvent): void {
-  //   let input = event.input;
-  //   let value = event.value;
-  //   console.log(value)
-  //   if ((value || '').trim()) {
-  //     this.selectedAcronyms.push(value);
-  //   }
-  //   if (input) {
-  //     input.value = '';
-  //   }
-  // }
-
   removeChipKpiBasename(chip: any): void {
     const index = this.selectedKpiBasenames.indexOf(chip);
     if (index >= 0) {
@@ -179,6 +167,19 @@ export class CoverageComponent implements OnInit {
       input.value = '';
     }
     this.coverageTableLoaded = false;
+  }
+
+  // force add chip
+  add(event: MatChipInputEvent): void {
+    let input = event.input;
+    let value = event.value;
+    console.log(value);
+    if ((value || '').trim()) {
+      this.selectedAcronyms.push(value);
+    }
+    if (input) {
+      input.value = '';
+    }
   }
 
   removeChipAcronym(chip: any): void {

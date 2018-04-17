@@ -47,9 +47,11 @@
                    [matAutocomplete]="autoAcr"
                    matInput
                    #chipInputAcronym
-                   required/>
+                   required
+                   (matChipInputTokenEnd)="add($event)"
+            />
 
-            <!--(matChipInputTokenEnd)="add($event)"-->
+
           </mat-chip-list>
           <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChipAcronym($event, chipInputAcronym)">
             <mat-option *ngFor="let optionAcr of filteredAcronyms" [value]="optionAcr">

@@ -18,9 +18,8 @@ export const routes: Routes = [
   {path: 'decomposition', component: DecompositionComponent},
   {path: 'outliers', component: OutliersComponent},
   {path: 'map2d', component: Map2dComponent},
-
-  {path: '**', component: NotfoundComponent},
-
   {path: 'draft', component: DraftComponent},
+  {path: '**', component: NotfoundComponent}
+
 
 ];
