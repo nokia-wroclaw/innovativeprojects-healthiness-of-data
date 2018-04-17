@@ -1,0 +1,79 @@
+Aggregates for cord_id, acronym and kpi
+Returns aggregates for provided cord_id, acronym and kpi_basename.
+---
+tags:
+  - Aggregates
+parameters:
+  - name: cord_id
+    in: path
+    type: integer
+    required: true
+    description: Operator identifier
+  - name: acronym
+    in: path
+    type: string
+    required: true
+    description: Cluster name
+  - name: date_start
+    in: query
+    type: string
+    required: true
+    description: Start of data range for data
+  - name: date_end
+    in: query
+    type: string
+    required: true
+    description: End of data range for data
+  - name: kpi_basename
+    in: query
+    type: string
+    required: true
+    description: Fetch data for provided kpi basename
+  - name: bins
+    in: query
+    type: integer
+    required: false
+    description: How many histogram bins should be displayed.
+responses:
+  200:
+    description: Aggregates (mean, maximum value, minimum value, standard deviation, coverage and distribution(histogram)) for all acronyms belonging to provided cord_id and kpi.
+    schema:
+      id: operator_aggregates
+      properties:
+        cord_id:
+          type: string
+          description: Operator identifier
+        acronym:
+          type: string
+          description: Cluster name
+        kpi_basename:
+          type: string
+          description: Kpi Basename
+        mean:
+          type: number
+          description: Mean value of gathered data
+        max_val:
+          type: number
+          description: Maximum value of gathered data
+        min_val:
+          type: number
+          description: Minimum value of gathered data
+        std_deviation:
+          type: number
+          description: Standard deviation of gathered data
+        coverage:
+          type: number
+          description: Coverage of gathered data
+        distribution:
+          type: array
+          description: Distribution of gathered data for provided histogram bins
+          items:
+            type: array
+            items:
+              type: number
+  400:
+    schema:
+      properties:
+        success:
+          type: boolean
+          default: false

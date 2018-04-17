@@ -1,0 +1,12 @@
+Returns all existing cord ids in the database.
+---
+tags:
+  - Fetch
+responses:
+  200:
+    description: All existing cord ids in the database.
+    schema:
+      id: cord_ids
+      type: array
+      items:
+        type: string
