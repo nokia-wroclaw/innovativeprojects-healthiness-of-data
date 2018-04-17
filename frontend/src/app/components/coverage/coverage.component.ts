@@ -50,7 +50,7 @@ export class CoverageComponent implements OnInit {
   separatorKeysCodes = [ENTER, COMMA, TAB];
 
 
-  selectedAcronyms: any = ['strathatuk', 'strebriszatt'];
+  selectedAcronyms: any = ['strathatuk', 'strebriszatt', 'bliulfux', 'dilfihess', 'ubrerm', 'ugrohaarm' ];
 
 
   coverageParams: FormGroup;
