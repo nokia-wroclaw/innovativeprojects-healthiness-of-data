@@ -41,8 +41,22 @@ export class DecompositionComponent implements OnInit {
 
 
   labels: any = [];
-  myChart;
-  chartElement;
+  trendChart;
+  seasonalChart;
+
+  trendDataset = {
+    label: 'Seasonal',
+    data: this.seasonalGapsFilled,
+    backgroundColor: 'rgba(160, 0, 0, 1)',
+    borderColor: 'rgba(160, 0, 0, 1)',
+    borderWidth: 1,
+    fill: false,
+    pointRadius: 1,
+    pointBorderWidth: 1
+  };
+
+  trendChartElement;
+  seasonalChartElement;
 
   decompositionChartLoading = false;
   decompositionChartLoaded = false;
@@ -71,9 +85,12 @@ export class DecompositionComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.chartElement = document.getElementById('myChart');
-    this.sharedFunctions.hideElement(this.chartElement);
-    this.generateChart();
+    this.trendChartElement = document.getElementById('trendChart');
+    this.seasonalChartElement = document.getElementById('seasonalChart');
+    this.sharedFunctions.hideElement(this.trendChartElement);
+    this.sharedFunctions.hideElement(this.seasonalChartElement);
+    this.generateTrendChart();
+    this.generateSeasonalChart();
     this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
     this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
     // this.filteredAcronyms = this.setOnChange(this.acronymsByCordID, this.acronymFormControl);
@@ -100,7 +117,9 @@ export class DecompositionComponent implements OnInit {
   getDecomposition(decompositionParams: FormGroup) {
     console.log('decomposition params');
     console.log(decompositionParams);
-    this.sharedFunctions.hideElement(this.chartElement);
+    this.sharedFunctions.hideElement(this.trendChartElement);
+    this.sharedFunctions.hideElement(this.seasonalChartElement);
+
     this.decompositionChartLoading = true;
     this.startDate = decompositionParams.value.startDate;
     this.endDate = decompositionParams.value.endDate;
@@ -137,7 +156,8 @@ export class DecompositionComponent implements OnInit {
         this.fixTrend(decompositionParams.value.frequency / 2);
         this.generateDates();
         this.decompositionChartLoaded = true;
-        this.updateChart(this.myChart);
+        this.updateTrendChart(this.trendChart);
+        this.updateSeasonalChart(this.seasonalChart);
 
       } else {
         this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
@@ -202,8 +222,8 @@ export class DecompositionComponent implements OnInit {
     return;
   }
 
-  generateChart() {
-    this.myChart = new Chart(this.chartElement, {
+  generateTrendChart() {
+    this.trendChart = new Chart(this.trendChartElement, {
       type: 'line',
       data: {
         labels: this.labels,
@@ -249,7 +269,41 @@ export class DecompositionComponent implements OnInit {
               }
             }
           }
-        }, {
+        }]
+      },
+      options: {
+        responsive: true,
+        zoom: {
+          enabled: true,
+          mode: 'x',
+          drag: true
+
+        },
+        spanGaps: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: false
+            }
+          }]
+        }, elements: {
+          line: {
+            skipNull: true,
+            drawNull: false,
+          }
+        }
+      }
+    });
+
+
+  }
+
+  generateSeasonalChart() {
+    this.seasonalChart = new Chart(this.seasonalChartElement, {
+      type: 'line',
+      data: {
+        labels: this.labels,
+        datasets: [{
           label: 'Seasonal',
           data: {},
           backgroundColor: 'rgba(160, 0, 0, 1)',
@@ -302,7 +356,7 @@ export class DecompositionComponent implements OnInit {
 
   }
 
-  updateChart(chart): any {
+  updateTrendChart(chart): any {
     const newData = chart.data = {
       labels: this.labels,
       datasets: [{
@@ -323,15 +377,6 @@ export class DecompositionComponent implements OnInit {
         fill: false,
         pointRadius: 1,
         pointBorderWidth: 1
-      }, {
-        label: 'Seasonal',
-        data: this.seasonalGapsFilled,
-        backgroundColor: 'rgba(160, 0, 0, 1)',
-        borderColor: 'rgba(160, 0, 0, 1)',
-        borderWidth: 1,
-        fill: false,
-        pointRadius: 1,
-        pointBorderWidth: 1
       }]
     };
 
@@ -344,9 +389,38 @@ export class DecompositionComponent implements OnInit {
       dataset.data.push(newData);
     });
     chart.update();
-    console.log('chart updated');
-    this.sharedFunctions.showElement(this.chartElement);
+    console.log('trend chart updated');
+    this.sharedFunctions.showElement(this.trendChartElement);
+
   }
+
+  updateSeasonalChart(chart): any {
+    const newData = chart.data = {
+      labels: this.labels,
+      datasets: [{
+        label: 'Seasonal',
+        data: this.seasonalGapsFilled,
+        backgroundColor: 'rgba(160, 0, 0, 1)',
+        borderColor: 'rgba(160, 0, 0, 1)',
+        borderWidth: 1,
+        fill: false,
+        pointRadius: 1,
+        pointBorderWidth: 1
+      }]
+    };
+    chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data.pop();
+    });
+    chart.update();
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data.push(newData);
+    });
+    chart.update();
+    console.log('seasonal chart updated');
+    this.sharedFunctions.showElement(this.seasonalChartElement);
+  }
+
 
   imLazy() {
     this.decompositionParams.patchValue({
@@ -358,3 +432,153 @@ export class DecompositionComponent implements OnInit {
     });
   }
 }
+
+
+// generateChart();
+// {
+//   this.myChart = new Chart(this.trendChartElement, {
+//     type: 'line',
+//     data: {
+//       labels: this.labels,
+//       datasets: [{
+//         label: 'Observed',
+//         backgroundColor: 'rgba(0, 0, 160, 0.5)',
+//         borderColor: 'rgba(0, 0, 160, 0.5)',
+//         borderWidth: 1,
+//         fill: false,
+//         pointRadius: 1,
+//         pointBorderWidth: 1,
+//         options: {
+//           spanGaps: true,
+//           scales: {
+//             yAxes: [{
+//               ticks: {
+//                 beginAtZero: false
+//               }
+//             }]
+//           }
+//         }
+//       }, {
+//         label: 'Trend',
+//         data: {},
+//         backgroundColor: 'rgba(0, 160, 0, 1)',
+//         borderColor: 'rgba(0, 160, 0, 1)',
+//         borderWidth: 1,
+//         fill: false,
+//         pointRadius: 1,
+//         pointBorderWidth: 1,
+//         options: {
+//           spanGaps: false,
+//           scales: {
+//             yAxes: [{
+//               ticks: {
+//                 beginAtZero: false
+//               }
+//             }]
+//           }, elements: {
+//             line: {
+//               skipNull: true,
+//               drawNull: false,
+//             }
+//           }
+//         }
+//       }, {
+//         label: 'Seasonal',
+//         data: {},
+//         backgroundColor: 'rgba(160, 0, 0, 1)',
+//         borderColor: 'rgba(160, 0, 0, 1)',
+//         borderWidth: 1,
+//         fill: false,
+//         pointRadius: 1,
+//         pointBorderWidth: 1,
+//         options: {
+//           spanGaps: false,
+//           scales: {
+//             yAxes: [{
+//               ticks: {
+//                 beginAtZero: false
+//               }
+//             }]
+//           }, elements: {
+//             line: {
+//               skipNull: true,
+//               drawNull: false,
+//             }
+//           }
+//         }
+//       }]
+//     },
+//     options: {
+//       responsive: true,
+//       zoom: {
+//         enabled: true,
+//         mode: 'x',
+//         drag: true
+//
+//       },
+//       spanGaps: false,
+//       scales: {
+//         yAxes: [{
+//           ticks: {
+//             beginAtZero: false
+//           }
+//         }]
+//       }, elements: {
+//         line: {
+//           skipNull: true,
+//           drawNull: false,
+//         }
+//       }
+//     }
+//   });
+//
+//
+// }
+
+
+// updateChart(chart): any {
+//   const newData = chart.data = {
+//     labels: this.labels,
+//     datasets: [{
+//       label: 'Observed',
+//       data: this.observedGapsFilled,
+//       backgroundColor: 'rgba(0, 0, 160, 0.5)',
+//       borderColor: 'rgba(0, 0, 160, 0.5)',
+//       borderWidth: 1,
+//       fill: false,
+//       pointRadius: 1,
+//       pointBorderWidth: 1
+//     }, {
+//       label: 'Trend',
+//       data: this.trendGapsFilled,
+//       backgroundColor: 'rgba(0, 160, 0, 1)',
+//       borderColor: 'rgba(0, 160, 0, 1)',
+//       borderWidth: 1,
+//       fill: false,
+//       pointRadius: 1,
+//       pointBorderWidth: 1
+//     }, {
+//       label: 'Seasonal',
+//       data: this.seasonalGapsFilled,
+//       backgroundColor: 'rgba(160, 0, 0, 1)',
+//       borderColor: 'rgba(160, 0, 0, 1)',
+//       borderWidth: 1,
+//       fill: false,
+//       pointRadius: 1,
+//       pointBorderWidth: 1
+//     }]
+//   };
+//
+//   chart.data.labels.pop();
+//   chart.data.datasets.forEach((dataset) => {
+//     dataset.data.pop();
+//   });
+//   chart.update();
+//   chart.data.datasets.forEach((dataset) => {
+//     dataset.data.push(newData);
+//   });
+//   chart.update();
+//   console.log('chart updated');
+//   this.sharedFunctions.showElement(this.trendChartElement);
+//   this.sharedFunctions.showElement(this.seasonalChartElement);
+// }

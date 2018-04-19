@@ -77,8 +77,10 @@
     <mat-card style="height: 100%;">
       <h1>Decomposition</h1>
       <mat-card>
-        <canvas id="myChart" width="1000" height="400"></canvas>
         <mat-spinner *ngIf="decompositionChartLoading"></mat-spinner>
+        <canvas id="trendChart" width="1000" height="200"></canvas>
+        <mat-divider></mat-divider>
+        <canvas id="seasonalChart" width="1000" height="200"></canvas>
       </mat-card>
     </mat-card>
   </mat-sidenav-content>
