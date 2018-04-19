@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {RestService} from '../../services/rest.service';
 import {map} from 'rxjs/operators/map';
 import {startWith} from 'rxjs/operators/startWith';
+import {SharedFunctionsService} from '../../services/shared.functions.service';
 
 @Component({
   selector: 'app-cache-data',
@@ -15,7 +16,8 @@ export class CacheDataComponent implements OnInit {
   fullCordIDsList: any = [];
   fullCordIDsAcronymsSet: any = [];
 
-  constructor(private restService: RestService) {
+  constructor(private restService: RestService,
+              private sharedFunctions: SharedFunctionsService) {
   }
 
   ngOnInit() {
@@ -27,21 +29,29 @@ export class CacheDataComponent implements OnInit {
       this.fullKpiBasenamesList = response.data;
       localStorage.setItem('fullKpiBasenamesList', response.data);
       console.log('downloaded kpi basenames list');
+      this.sharedFunctions.openSnackBar('Downloaded new autocompletes lists, refresh page.', 'OK');
     }).catch((error) => {
       console.log(error);
     });
   }
 
+
   getKpiBasenamesList(): any {
     const item = localStorage.getItem('fullKpiBasenamesList');
-    if (item != null) {
-      if(item.substring(0, 9) !== '<!DOCTYPE')
-      return item.split(',');
+    if (!!item && item != 'undefined') {
+      if (item.substring(0, 9) !== '<!DOCTYPE') {
+        return item.split(',');
+      } else {
+        this.setFullKpiBasenamesList().then((r) => {
+          return r.split(',');
+        });
+      }
     } else {
       this.setFullKpiBasenamesList().then((r) => {
         return r.split(',');
       });
     }
+
   }
 
   // cord ids
@@ -50,6 +60,7 @@ export class CacheDataComponent implements OnInit {
       this.fullCordIDsList = response.data;
       localStorage.setItem('fullCordIDsList', response.data);
       console.log('downloaded cord IDs list');
+      this.sharedFunctions.openSnackBar('Downloaded new autocompletes lists, refresh page.', 'OK');
     }).catch((error) => {
       console.log(error);
     });
@@ -57,13 +68,20 @@ export class CacheDataComponent implements OnInit {
 
   getFullCordIDsList(): any {
     const item = localStorage.getItem('fullCordIDsList');
-    if (item != null) {
-      return item.split(',');
+    if (!!item && item != 'undefined') {
+      if (item.substring(0, 9) !== '<!DOCTYPE') {
+        return item.split(',');
+      } else {
+        this.setFullCordIDsList().then((r) => {
+          return r.split(',');
+        });
+      }
     } else {
       this.setFullCordIDsList().then((r) => {
         return r.split(',');
       });
     }
+
   }
 
   // cord-acronyms set
@@ -72,6 +90,7 @@ export class CacheDataComponent implements OnInit {
       this.fullCordIDsAcronymsSet = response.data;
       localStorage.setItem('fullCordIDsAcronymsSet', JSON.stringify(this.fullCordIDsAcronymsSet));
       console.log('downloaded cord-acronyms set list');
+      this.sharedFunctions.openSnackBar('Downloaded new autocompletes lists, refresh page.', 'OK');
     }).catch((error) => {
       console.log(error);
     });
@@ -79,20 +98,31 @@ export class CacheDataComponent implements OnInit {
 
   getFullCordIDsAcronymsSet(): any {
     const item = localStorage.getItem('fullCordIDsAcronymsSet');
-    if (item != null) {
-      return JSON.parse(item);
+    if (!!item && item != 'undefined') {
+      if (item.substring(0, 9) !== '<!DOCTYPE') {
+        return JSON.parse(item);
+      } else {
+        this.setFullCordIDsAcronymsSet().then((r) => {
+          return r;
+        });
+      }
     } else {
       this.setFullCordIDsAcronymsSet().then((r) => {
         return r;
       });
     }
+
+
   }
 
   clearLocalStorage() {
     localStorage.removeItem('fullKpiBasenamesList');
     localStorage.removeItem('fullCordIDsList');
     localStorage.removeItem('fullCordIDsAcronymsSet');
+    console.log('local storage cleared');
   }
 
 }
+
+
 

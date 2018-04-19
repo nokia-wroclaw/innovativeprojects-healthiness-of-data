@@ -44,17 +44,6 @@ export class DecompositionComponent implements OnInit {
   trendChart;
   seasonalChart;
 
-  trendDataset = {
-    label: 'Seasonal',
-    data: this.seasonalGapsFilled,
-    backgroundColor: 'rgba(160, 0, 0, 1)',
-    borderColor: 'rgba(160, 0, 0, 1)',
-    borderWidth: 1,
-    fill: false,
-    pointRadius: 1,
-    pointBorderWidth: 1
-  };
-
   trendChartElement;
   seasonalChartElement;
 
@@ -78,9 +67,11 @@ export class DecompositionComponent implements OnInit {
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cacheData: CacheDataComponent) {
+
     this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheData.getFullCordIDsList();
     this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
+
   }
 
   ngOnInit() {
@@ -272,6 +263,10 @@ export class DecompositionComponent implements OnInit {
         }]
       },
       options: {
+        title: {
+          display: true,
+          text: 'Trend chart'
+        },
         responsive: true,
         zoom: {
           enabled: true,
@@ -330,6 +325,10 @@ export class DecompositionComponent implements OnInit {
         }]
       },
       options: {
+        title: {
+          display: true,
+          text: 'Seasonal chart'
+        },
         responsive: true,
         zoom: {
           enabled: true,

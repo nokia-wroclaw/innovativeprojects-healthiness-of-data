@@ -97,13 +97,13 @@
       <div *ngIf="coverageTableLoaded && !coverageTableLoading">Data fetched in: {{fetchedIn/1000}} s</div>
     </div>
   </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-card>
+  <mat-sidenav-content style="height: 100%;">
+    <mat-card style="height: 100%;" >
       <h1>Coverage</h1>
       <mat-card>
         <table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
           <tr>
-            <th>xxxxxx</th>
+            <th>kpi \ acronym</th>
             <th *ngFor="let acr of selectedAcronyms">{{acr}}</th>
           </tr>
           <tr *ngFor="let kpi of selectedKpiBasenames; let i = index;">
