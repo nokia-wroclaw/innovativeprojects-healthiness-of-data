@@ -1,6 +1,7 @@
 <mat-sidenav-container class="sidenav-container" style="height: 100%;">
   <mat-sidenav mode="side" opened style="width: 250px;">
-    <mat-card><h2>Search:</h2>
+    <mat-card>
+      <h3>Search:</h3>
       <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
 
         <mat-form-field>
@@ -88,12 +89,10 @@
         </mat-form-field>
 
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!coverageParams.valid">Fetch data</button>
+        <button mat-raised-button color="accent" type="button" (click)="imLazy()">Auto</button>
       </form>
     </mat-card>
     <div style="width: 100%;">
-      <div style="margin: 0 auto; width: 50%;">
-        <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
-      </div>
       <div *ngIf="coverageTableLoaded && !coverageTableLoading">Data fetched in: {{fetchedIn/1000}} s</div>
     </div>
   </mat-sidenav>
@@ -101,6 +100,7 @@
     <mat-card style="height: 100%;" >
       <h1>Coverage</h1>
       <mat-card>
+        <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
         <table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
           <tr>
             <th>kpi \ acronym</th>

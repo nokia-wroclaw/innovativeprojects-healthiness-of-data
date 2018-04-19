@@ -7,6 +7,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class Map2dComponent implements OnInit {
 
+  map2DLoading = false;
+  map2DLoaded = false;
+
+
   constructor() { }
 
   ngOnInit() {

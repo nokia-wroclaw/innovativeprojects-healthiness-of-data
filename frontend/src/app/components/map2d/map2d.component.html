@@ -1,3 +1,22 @@
-<p>
-  map2d works!
-</p>
+<mat-sidenav-container class="sidenav-container" style="height: 100%;">
+  <mat-sidenav mode="side" opened style="width: 250px;">
+    <mat-card>
+      <h3>Search:</h3>
+    </mat-card>
+    <div style="width: 100%;">
+      <div *ngIf="map2DLoaded && !map2DLoading">Data fetched in: {{fetchedIn/1000}} s</div>
+    </div>
+
+  </mat-sidenav>
+
+
+  <mat-sidenav-content>
+    <mat-card style="height: 100%;">
+      <h1>2D map for kpi and stuff</h1>
+      <mat-card>
+        <mat-spinner *ngIf="map2DLoading"></mat-spinner>
+      </mat-card>
+
+    </mat-card>
+  </mat-sidenav-content>
+</mat-sidenav-container>

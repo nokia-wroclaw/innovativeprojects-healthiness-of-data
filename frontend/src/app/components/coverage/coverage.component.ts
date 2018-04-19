@@ -31,7 +31,7 @@ export class CoverageComponent implements OnInit {
   acronymsByCordID: any = [];
 
   filteredCordIDs: Observable<string[]>;
-  selectedKpiBasenames: any = ['TRF_215', 'RNC_31'];
+  selectedKpiBasenames: any = [];
   filteredKpiBasenames: Observable<string[]>;
   filteredAcronyms: Observable<string[]>;
 
@@ -213,13 +213,15 @@ export class CoverageComponent implements OnInit {
     if (this.selectedAcronyms.length === 0) {
       this.filterOptionsAcronym('');
     }
-    // if (this.selectedAcronyms.length === 0) {
-    //   setTimeout(() => {
-    //     if (!this.autoCompleteTrigger.panelOpen) {
-    //       this.filterOptionsAcronym('');
-    //       this.autoCompleteTrigger.openPanel();
-    //     }
-    //   }, 10);
-    // }
+  }
+
+  imLazy() {
+    this.coverageParams.patchValue({
+      startDate: new Date('2014-01-01T00:00:00.000Z'),
+      endDate: new Date('2018-03-01T00:00:00.000Z'),
+      cordID: 'Mr. Mime',
+    });
+    this.selectedAcronyms = ['threarirzearr', 'toubrishik', 'threghix'];
+    this.selectedKpiBasenames = ['TRF_215', 'RNC_31'];
   }
 }
