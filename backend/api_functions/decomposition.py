@@ -14,7 +14,7 @@ def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id,
     end_date = parse_check_date(end_date)
 
     if not start_date and not end_date:
-        return False
+        return {error: "Incorrect dates."}
     else:
 
         with open("config.yml", 'r') as yml_file:
@@ -22,7 +22,7 @@ def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id,
 
         connection.setup([config['address']], config['keyspace'])
         step = datetime.timedelta(days=1)
-
+        kpi_basename = kpi_basename.lower()
         frame_setup = {'values': [], 'dates': []}
         while start_date < end_date:
             result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date) \
@@ -32,14 +32,11 @@ def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id,
                 frame_setup['values'].append(row.value)
                 frame_setup['dates'].append(row.date)
 
+        if frequency >= len(frame_setup['values']):
+            return {error: "Frequency can't be higher than amount of found data."}
+
         data_frame = pandas.DataFrame(frame_setup)
         data_frame = data_frame.set_index(['dates'])
-
-        # frequency = options.get('frequency')
-        if not frequency:
-            frequency = 31
-        else:
-            frequency = int(frequency)
 
         decomp = statsmodels.api.tsa.seasonal_decompose(data_frame, freq=frequency, model='multiplicative')
 
