@@ -58,6 +58,9 @@
             {{optionKpi}}
           </mat-option>
         </mat-autocomplete>
+        <mat-form-field class="full-width">
+          <input matInput id="bins" formControlName="histBins" [formControl] = "histBinsFormControl" placeholder='Histogram Bins'>
+        </mat-form-field>
 
 
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!histogramParams.valid">Fetch data</button>

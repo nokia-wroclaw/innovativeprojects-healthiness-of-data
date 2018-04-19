@@ -32,7 +32,7 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis):
         for acronym in acronyms:
             for kpi in kpis:
                 dates = set()
-                kpi = kpi.lower()
+                kpi = kpi.upper()
 
                 while start_date < end_date:
                     result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date).\

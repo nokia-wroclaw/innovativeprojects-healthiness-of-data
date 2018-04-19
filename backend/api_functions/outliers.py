@@ -28,7 +28,7 @@ def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshol
 
         connection.setup([config['address']], config['keyspace'])
         step = datetime.timedelta(days=1)
-        kpi_basename = kpi_basename.lower()
+        kpi_basename = kpi_basename.upper()
 
         ready_data = {"cord_id": cord_id, "acronym": acronym, "kpi_basename": kpi_basename, "values": [],
                       "outliers": [], "outlier_values": [], "dates": []}

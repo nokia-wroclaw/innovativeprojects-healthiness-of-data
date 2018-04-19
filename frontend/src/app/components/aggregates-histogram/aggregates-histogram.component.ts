@@ -31,6 +31,7 @@ export class AggregatesHistogramComponent implements OnInit {
   kpiBaseName: any;
   acronym: any;
   cordID: any;
+  histBins: any;
   histogramChartLoading = false;
   histogramChartLoaded = false;
 
@@ -43,6 +44,7 @@ export class AggregatesHistogramComponent implements OnInit {
   cordIDFormControl = new FormControl('', [Validators.required]);
   acronymFormControl = new FormControl('', [Validators.required]);
   kpiBasenameFormControl = new FormControl('', [Validators.required]);
+  histBinsFormControl = new FormControl('',);
 
   chart;
   myChart;
@@ -90,7 +92,8 @@ export class AggregatesHistogramComponent implements OnInit {
       endDate: ['', Validators.required],
       cordID: this.cordIDFormControl,
       acronym: this.acronymFormControl,
-      kpiBaseName: this.kpiBasenameFormControl
+      kpiBaseName: this.kpiBasenameFormControl,
+      histBins: this.histBinsFormControl
     });
   }
 
@@ -106,8 +109,9 @@ export class AggregatesHistogramComponent implements OnInit {
     this.acronym = histogramParams.value.acronym;
     this.startDate = this.sharedFunctions.parseDate(histogramParams.value.startDate);
     this.endDate = this.sharedFunctions.parseDate(histogramParams.value.endDate);
-    const url = 'api/clusters/aggregates' + '/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate + '&kpi_basename=' + this.kpiBaseName.toUpperCase();
-
+    this.histBins = histogramParams.value.histBins;
+    if(typeof this.histBins == 'undefined') this.histBins = 10;
+    const url = 'api/clusters/aggregates' + '/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate + '&kpi_basename=' + this.kpiBaseName.toUpperCase() + '&bins=' + this.histBins;
     let start = new Date().getTime();
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {

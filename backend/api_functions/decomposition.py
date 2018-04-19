@@ -22,7 +22,7 @@ def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id,
 
         connection.setup([config['address']], config['keyspace'])
         step = datetime.timedelta(days=1)
-        kpi_basename = kpi_basename.lower()
+        kpi_basename = kpi_basename.upper()
         frame_setup = {'values': [], 'dates': []}
         while start_date < end_date:
             result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date) \

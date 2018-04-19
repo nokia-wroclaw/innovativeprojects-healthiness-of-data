@@ -38,7 +38,7 @@ def calculate_operator_aggregates(start_date, end_date, kpi, cord, **options):
         values = []
         dates = []
         acronyms = set()
-        kpi = kpi.lower()
+        kpi = kpi.upper()
 
         while start_date < end_date:
             result = PlmnProcessed.objects.filter(kpi_basename=kpi).filter(date=start_date).filter(cord_id=cord)
@@ -100,7 +100,7 @@ def calculate_cluster_aggregates(start_date, end_date, kpi, cord, acronym, **opt
         step = datetime.timedelta(days=1)
         values = []
         dates = []
-        kpi = kpi.lower()
+        kpi = kpi.upper()
 
         while start_date < end_date:
             result = PlmnProcessed.objects.filter(kpi_basename=kpi).filter(date=start_date).\
