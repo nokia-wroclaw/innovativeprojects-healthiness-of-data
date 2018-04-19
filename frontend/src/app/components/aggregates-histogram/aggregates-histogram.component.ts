@@ -66,6 +66,7 @@ export class AggregatesHistogramComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.chart = document.getElementById('myChart');
+    this.sharedFunctions.hideElement(this.chart);
     this.max = '0';
     this.min = '0';
     this.coverage = '0';
@@ -96,6 +97,7 @@ export class AggregatesHistogramComponent implements OnInit {
   getHistogram(histogramParams) {
     console.log('coverage params');
     console.log(this.histogramParams);
+    this.sharedFunctions.hideElement(this.chart);
     this.histogramChartLoading = true;
     this.startDate = histogramParams.value.startDate;
     this.endDate = histogramParams.value.endDate;
@@ -223,6 +225,7 @@ export class AggregatesHistogramComponent implements OnInit {
     });
     chart.update();
     console.log('chart updated');
+    this.sharedFunctions.showElement(this.chart);
   }
 
 
@@ -234,6 +237,5 @@ export class AggregatesHistogramComponent implements OnInit {
       acronym: 'dilfihess',
       kpiBaseName: 'SGSN_2012'
     });
-    this.sharedFunctions.openSnackBar('Autocompleted', 'OK');
   }
 }

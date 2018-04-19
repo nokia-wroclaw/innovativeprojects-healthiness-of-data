@@ -72,6 +72,7 @@ export class DecompositionComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.chartElement = document.getElementById('myChart');
+    this.sharedFunctions.hideElement(this.chartElement);
     this.generateChart();
     this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
     this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
@@ -99,6 +100,7 @@ export class DecompositionComponent implements OnInit {
   getDecomposition(decompositionParams: FormGroup) {
     console.log('decomposition params');
     console.log(decompositionParams);
+    this.sharedFunctions.hideElement(this.chartElement);
     this.decompositionChartLoading = true;
     this.startDate = decompositionParams.value.startDate;
     this.endDate = decompositionParams.value.endDate;
@@ -109,7 +111,6 @@ export class DecompositionComponent implements OnInit {
     this.endDate = this.sharedFunctions.parseDate(decompositionParams.value.endDate);
     let url = 'api/decomposition/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate
       + '&kpi_basename=' + this.kpiBaseName.toUpperCase();
-
 
     if (decompositionParams.value.frequency) {
       url += '&frequency=' + decompositionParams.value.frequency;
@@ -344,10 +345,10 @@ export class DecompositionComponent implements OnInit {
     });
     chart.update();
     console.log('chart updated');
+    this.sharedFunctions.showElement(this.chartElement);
   }
 
   imLazy() {
-    console.log('you re lazy');
     this.decompositionParams.patchValue({
       startDate: new Date('2017-06-01T00:00:00.000Z'),
       endDate: new Date('2018-01-01T00:00:00.000Z'),
@@ -355,6 +356,5 @@ export class DecompositionComponent implements OnInit {
       acronym: 'dilfihess',
       kpiBaseName: 'SGSN_2012'
     });
-    this.sharedFunctions.openSnackBar('Autocompleted', 'OK');
   }
 }

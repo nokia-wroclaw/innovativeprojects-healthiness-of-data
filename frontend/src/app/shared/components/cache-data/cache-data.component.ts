@@ -35,6 +35,7 @@ export class CacheDataComponent implements OnInit {
   getKpiBasenamesList(): any {
     const item = localStorage.getItem('fullKpiBasenamesList');
     if (item != null) {
+      if(item.substring(0, 9) !== '<!DOCTYPE')
       return item.split(',');
     } else {
       this.setFullKpiBasenamesList().then((r) => {

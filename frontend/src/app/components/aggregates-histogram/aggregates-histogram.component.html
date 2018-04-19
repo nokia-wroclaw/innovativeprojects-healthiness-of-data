@@ -1,18 +1,17 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav mode="side" opened style="width: 250px; height: 800px;">
+<mat-sidenav-container class="sidenav-container" style="height: 100%;">
+  <mat-sidenav mode="side" opened style="width: 250px;">
     <mat-card>
       <h3>Search:</h3>
       <form name="histogramsForm" (ngSubmit)="getHistogram(histogramParams)" [formGroup]="histogramParams">
 
         <mat-form-field class="input-line">
-          <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Start Date"
-                 required>
+          <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Start date" required>
           <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
           <mat-datepicker #startDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
-          <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="End Date" required>
+          <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="End date" required>
           <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
           <mat-datepicker #endDate></mat-datepicker>
         </mat-form-field>
@@ -27,7 +26,7 @@
                  required>
         </mat-form-field>
         <mat-autocomplete #autoCord="matAutocomplete">
-          <mat-option *ngFor="let option of filteredCordIDs |async" [value]="option">
+          <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
             {{ option }}
           </mat-option>
         </mat-autocomplete>
@@ -50,7 +49,7 @@
           <input [formControl]="kpiBasenameFormControl"
                  [formControlName]="'kpiBaseName'"
                  matInput
-                 placeholder='Kpi Basename'
+                 placeholder='Kpi basename'
                  [matAutocomplete]="autoKpi"
                  required>
         </mat-form-field>
@@ -67,17 +66,14 @@
       </form>
     </mat-card>
     <div style="width: 100%;">
-      <div style="margin: 0 auto; width: 50%;">
-        <mat-spinner *ngIf="histogramChartLoading"></mat-spinner>
-      </div>
-      <div *ngIf="histogramChartLoaded && !histogramChartLoading">Data fetched in: {{fetchedIn}} ms</div>
+      <div *ngIf="histogramChartLoaded && !histogramChartLoading">Data fetched in: {{fetchedIn/1000}} s</div>
     </div>
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-card><h1>Aggregates & histogram</h1>
+    <mat-card style="height: 100%;">
+      <h1>Aggregates & histogram</h1>
       <mat-card>
-
         <div style="text-align: center">
           <div class="column-container">
             <h5>MAX<br/>{{ max }}</h5>
@@ -99,6 +95,7 @@
       <mat-card>
         <h3>Histogram chart:</h3>
         <canvas id="myChart" width="1000" height="300"></canvas>
+        <mat-spinner *ngIf="histogramChartLoading"></mat-spinner>
       </mat-card>
     </mat-card>
   </mat-sidenav-content>

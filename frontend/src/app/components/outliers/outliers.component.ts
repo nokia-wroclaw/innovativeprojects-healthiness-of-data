@@ -69,6 +69,7 @@ export class OutliersComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.chartElement = document.getElementById('myChart');
+    this.sharedFunctions.hideElement(this.chartElement);
     this.generateChart();
 
 
@@ -96,6 +97,7 @@ export class OutliersComponent implements OnInit {
   getOutliers(outliersParams) {
     console.log('outliers params');
     console.log(outliersParams);
+    this.sharedFunctions.hideElement(this.chartElement);
     this.outliersChartLoading = true;
     this.startDate = outliersParams.value.startDate;
     this.endDate = outliersParams.value.endDate;
@@ -287,10 +289,10 @@ export class OutliersComponent implements OnInit {
     });
     chart.update();
     console.log('chart updated');
+    this.sharedFunctions.showElement(this.chartElement);
   }
 
   imLazy() {
-    console.log('you re lazy');
     this.outlierParams.patchValue({
       startDate: new Date('2016-05-01T00:00:00.000Z'),
       endDate: new Date('2018-01-01T00:00:00.000Z'),
@@ -298,7 +300,6 @@ export class OutliersComponent implements OnInit {
       acronym: 'dilfihess',
       kpiBaseName: 'SGSN_2012'
     });
-    this.sharedFunctions.openSnackBar('Autocompleted', 'OK');
   }
 }
 

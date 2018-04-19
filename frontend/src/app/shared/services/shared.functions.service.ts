@@ -35,4 +35,21 @@ export class SharedFunctionsService {
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {});
   }
+
+  switchOpenHideElement(element: any) {
+    if (element.style.display === 'none') {
+      element.style.display = 'block';
+    } else {
+      element.style.display = 'none';
+    }
+  }
+
+  hideElement(element: any) {
+    element.style.display = 'none';
+
+  }
+
+  showElement(element: any) {
+    element.style.display = 'block';
+  }
 }

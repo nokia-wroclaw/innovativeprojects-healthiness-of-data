@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {RestService} from '../../shared/services/rest.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatAutocompleteSelectedEvent, MatChipInputEvent} from '@angular/material';
+import {MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatChipInputEvent} from '@angular/material';
 import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
 
 import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
@@ -32,8 +32,8 @@ export class CoverageComponent implements OnInit {
 
   filteredCordIDs: Observable<string[]>;
   selectedKpiBasenames: any = ['TRF_215', 'RNC_31'];
-  filteredKpiBasenames: any = [];
-  filteredAcronyms: any = [];
+  filteredKpiBasenames: Observable<string[]>;
+  filteredAcronyms: Observable<string[]>;
 
   coverageData: any = [];
 
@@ -50,7 +50,8 @@ export class CoverageComponent implements OnInit {
   separatorKeysCodes = [ENTER, COMMA, TAB];
 
 
-  selectedAcronyms: any = ['strathatuk', 'strebriszatt', 'bliulfux', 'dilfihess', 'ubrerm', 'ugrohaarm' ];
+  selectedAcronyms: any = [];
+  // selectedAcronyms: any = ['strathatuk', 'strebriszatt', 'bliulfux', 'dilfihess', 'ubrerm', 'ugrohaarm'];
 
 
   coverageParams: FormGroup;
@@ -62,6 +63,9 @@ export class CoverageComponent implements OnInit {
   removable = true;
   addOnBlur = true;
 
+  @ViewChild('chipInputAcronym', {read: MatAutocompleteTrigger})
+  private autoCompleteTrigger: MatAutocompleteTrigger;
+
   constructor(private router: Router,
               private restService: RestService,
               private formBuilder: FormBuilder,
@@ -69,6 +73,7 @@ export class CoverageComponent implements OnInit {
               private sharedFunctions: SharedFunctionsService) {
     this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheData.getFullCordIDsList();
+    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
   }
 
   ngOnInit() {
@@ -126,8 +131,7 @@ export class CoverageComponent implements OnInit {
   }
 
   setOnChange(full: any, formControl: FormControl): any {
-    return formControl.valueChanges
-      .pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
+    return formControl.valueChanges.pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
   }
 
   // kpi basenames
@@ -162,7 +166,7 @@ export class CoverageComponent implements OnInit {
     const selection = event.option.value;
     this.selectedAcronyms.push(selection);
     this.acronymsByCordID = this.acronymsByCordID.filter(obj => obj !== selection);
-    this.filteredAcronyms = this.acronymsByCordID.slice(0, 50);
+    this.filteredAcronyms = this.acronymsByCordID;
     if (input) {
       input.value = '';
     }
@@ -170,17 +174,16 @@ export class CoverageComponent implements OnInit {
   }
 
   // force add chip
-  add(event: MatChipInputEvent): void {
-    let input = event.input;
-    let value = event.value;
-    console.log(value);
-    if ((value || '').trim()) {
-      this.selectedAcronyms.push(value);
-    }
-    if (input) {
-      input.value = '';
-    }
-  }
+  // add(event: MatChipInputEvent): void {
+  //   let input = event.input;
+  //   let value = event.value;
+  //   if ((value || '').trim()) {
+  //     this.selectedAcronyms.push(value);
+  //   }
+  //   if (input) {
+  //     input.value = '';
+  //   }
+  // }
 
   removeChipAcronym(chip: any): void {
     const index = this.selectedAcronyms.indexOf(chip);
@@ -193,7 +196,30 @@ export class CoverageComponent implements OnInit {
 
   filterOptionsAcronym(opt: string) {
     this.filteredAcronyms = this.acronymsByCordID
-      .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0).slice(0, 50);
+      .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0);
   }
 
+  filterAcronyms($event: MatAutocompleteSelectedEvent, inputCord: any) {
+    console.log(inputCord.value);
+    console.log(this.fullCordIDsAcronymsSet[inputCord.value]);
+    this.acronymsByCordID.length = 0;
+    this.selectedAcronyms.length = 0;
+    this.acronymsByCordID = this.fullCordIDsAcronymsSet[inputCord.value];
+  }
+
+  inputFocus() {
+    // this.autoCompleteTrigger.openPanel();
+    console.log(this.selectedAcronyms.length);
+    if (this.selectedAcronyms.length === 0) {
+      this.filterOptionsAcronym('');
+    }
+    // if (this.selectedAcronyms.length === 0) {
+    //   setTimeout(() => {
+    //     if (!this.autoCompleteTrigger.panelOpen) {
+    //       this.filterOptionsAcronym('');
+    //       this.autoCompleteTrigger.openPanel();
+    //     }
+    //   }, 10);
+    // }
+  }
 }

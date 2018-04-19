@@ -1,2 +1,93 @@
-<h1>Draft</h1>
-<div>{{kpis[5]}}</div>
+<mat-sidenav-container class="sidenav-container" style=" height: 800px;">
+  <mat-sidenav mode="side" [opened]="true" style="width: 250px;">
+    <mat-card>
+      <h2>Search:</h2>
+      <form name="draftForm" (ngSubmit)="getDraft(draftParams.value)" [formGroup]="draftParams">
+
+        <mat-form-field>
+          <input [formControl]="cordIDFormControl"
+                 [formControlName]="'cordID'"
+                 placeholder="Select cord id"
+                 matInput
+                 [matAutocomplete]="autoCord"
+                 required>
+        </mat-form-field>
+        <mat-autocomplete #autoCord="matAutocomplete">
+          <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-form-field class="full-width">
+          <mat-chip-list #acronymList>
+            <mat-chip *ngFor="let chip of selectedAcronyms" [selectable]="selectable" [removable]="removable"
+                      (remove)="removeChipAcronym(chip)">
+              {{chip}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+
+            <input [formControl]="acronymsFormControl"
+                   [formControlName]="'acronyms'"
+                   placeholder="Select acronyms"
+                   [matChipInputFor]="acronymList"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   [matAutocomplete]="autoAcr"
+                   matInput
+                   #chipInputAcronym
+                   required/>
+
+            <!--(matChipInputTokenEnd)="add($event)"-->
+          </mat-chip-list>
+          <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChipAcronym($event, chipInputAcronym)">
+            <mat-option *ngFor="let optionAcr of filteredAcronyms" [value]="optionAcr">
+              {{optionAcr}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-chip-list #kpiList>
+            <mat-chip *ngFor="let chip of selectedKpiBasenames" [selectable]="selectable" [removable]="removable"
+                      (remove)="removeChipKpiBasename(chip)">
+              {{chip}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+
+            <input [formControl]="kpiBasenamesFormControl"
+                   [formControlName]="'kpiBaseNames'"
+                   placeholder="Select kpi basenames"
+                   [matChipInputFor]="kpiList"
+                   [matAutocomplete]="autoKpi"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   matInput
+                   #chipInputKpi
+                   required/>
+
+          </mat-chip-list>
+          <mat-autocomplete #autoKpi="matAutocomplete" (optionSelected)="addChipKpiBasename($event, chipInputKpi)">
+            <mat-option *ngFor="let optionKpi of filteredKpiBasenames" [value]="optionKpi">
+              {{optionKpi}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" [type]="submit" [disabled]="!draftParams.valid">Fetch data</button>
+      </form>
+
+
+
+    </mat-card>
+  </mat-sidenav>
+
+
+  <mat-sidenav-content>
+    <mat-card>
+      <h1>Draft</h1>
+
+    </mat-card>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
