@@ -21,7 +21,7 @@ def calculate_operator_aggregates(start_date, end_date, kpi, cord, **options):
     end_date = parse_check_date(end_date)
     first_date = start_date
     if not start_date and not end_date:
-        return {error: "Incorrect dates."}
+        return {"error": "Incorrect dates."}
     else:
         # Get options
         histogram_bins = options.get('hist_bins')
@@ -84,7 +84,7 @@ def calculate_cluster_aggregates(start_date, end_date, kpi, cord, acronym, **opt
     end_date = parse_check_date(end_date)
     first_date = start_date
     if not start_date and not end_date:
-        return {error: "Incorrect dates."}
+        return {"error": "Incorrect dates."}
     else:
         # Get options
         histogram_bins = options.get('hist_bins')

@@ -14,7 +14,7 @@ def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id,
     end_date = parse_check_date(end_date)
 
     if not start_date and not end_date:
-        return {error: "Incorrect dates."}
+        return {"error": "Incorrect dates."}
     else:
 
         with open("config.yml", 'r') as yml_file:
@@ -33,7 +33,7 @@ def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id,
                 frame_setup['dates'].append(row.date)
 
         if frequency >= len(frame_setup['values']):
-            return {error: "Frequency can't be higher than amount of found data."}
+            return {"error": "Frequency can't be higher than amount of found data."}
 
         data_frame = pandas.DataFrame(frame_setup)
         data_frame = data_frame.set_index(['dates'])

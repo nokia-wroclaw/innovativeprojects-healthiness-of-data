@@ -20,7 +20,7 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis):
     first_date = start_date
 
     if not start_date and not end_date:
-        return {error: "Incorrect dates."}
+        return {"error": "Incorrect dates."}
     else:
         with open("config.yml", 'r') as yml_file:
             config = yaml.load(yml_file)['database_options']
