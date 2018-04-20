@@ -98,7 +98,8 @@ export class CoverageComponent implements OnInit {
       endDate: ['', Validators.required],
       cordID: this.cordIDFormControl,
       acronyms: [this.selectedAcronyms],
-      kpiBaseNames: [this.selectedKpiBasenames]
+      kpiBaseNames: [this.selectedKpiBasenames],
+      gapSize: 5
     });
   }
 
@@ -115,9 +116,9 @@ export class CoverageComponent implements OnInit {
       return e.toUpperCase();
     });
     const kpiBaseNamesURL = this.sharedFunctions.processArguments(this.selectedKpiBasenames, 'kpi_basename');
-
     const acronymsURL = this.sharedFunctions.processArguments(this.selectedAcronyms, 'acronym');
-    const url = baseURL + kpiBaseNamesURL + acronymsURL;
+
+    const url = baseURL + kpiBaseNamesURL + acronymsURL + '&gap_size=' + coverageParams.value.gapSize;
     let start = new Date().getTime();
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {
@@ -133,7 +134,6 @@ export class CoverageComponent implements OnInit {
           this.coverageData = response.data;
           this.coverageTableLoaded = true;
         }
-
       } else {
         this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
         this.coverageTableLoading = false;

@@ -44,8 +44,9 @@ def get_operator_coverages(cord_id):
     date_end = request.args.get('date_end')
     kpis = request.args.getlist('kpi_basename')
     acronyms = request.args.getlist('acronym')
+    gap_size = request.args.get('gap_size')
 
-    data = calculate_cluster_coverage(date_start, date_end, cord_id, acronyms, kpis)
+    data = calculate_cluster_coverage(date_start, date_end, cord_id, acronyms, kpis, gap_size)
     return jsonify(data)
 
 

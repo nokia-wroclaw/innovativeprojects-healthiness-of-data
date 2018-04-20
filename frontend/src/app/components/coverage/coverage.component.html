@@ -88,6 +88,10 @@
           </mat-autocomplete>
         </mat-form-field>
 
+        <mat-form-field class="full-width">
+          <input matInput id="gapSize" formControlName="gapSize" placeholder='Gap size'>
+        </mat-form-field>
+
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!coverageParams.valid">Fetch data</button>
         <button mat-raised-button color="accent" type="button" (click)="imLazy()">Auto</button>
       </form>
