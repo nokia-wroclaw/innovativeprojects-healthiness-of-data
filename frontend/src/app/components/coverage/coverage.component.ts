@@ -121,6 +121,7 @@ export class CoverageComponent implements OnInit {
     let start = new Date().getTime();
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {
+        console.log('coverageData: ');
         console.log(response.data);
         if (response.data.error) {
           this.sharedFunctions.openSnackBar(response.data.error, 'OK');
@@ -128,8 +129,6 @@ export class CoverageComponent implements OnInit {
         } else {
           let end = new Date().getTime();
           this.fetchedIn = end - start;
-          console.log('coverageData: ');
-          console.log(response.data);
           this.coverageTableLoading = false;
           this.coverageData = response.data;
           this.coverageTableLoaded = true;

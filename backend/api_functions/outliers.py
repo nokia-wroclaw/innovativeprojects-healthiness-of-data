@@ -30,8 +30,13 @@ def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshol
         step = datetime.timedelta(days=1)
         kpi_basename = kpi_basename.upper()
 
-        ready_data = {"cord_id": cord_id, "acronym": acronym, "kpi_basename": kpi_basename, "values": [],
-                      "outliers": [], "outlier_values": [], "dates": []}
+        ready_data = {"cord_id": cord_id,
+                      "acronym": acronym,
+                      "kpi_basename": kpi_basename,
+                      "values": [],
+                      "outliers": [],
+                      "outlier_values": [],
+                      "dates": []}
 
         while start_date < end_date:
             result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date) \
