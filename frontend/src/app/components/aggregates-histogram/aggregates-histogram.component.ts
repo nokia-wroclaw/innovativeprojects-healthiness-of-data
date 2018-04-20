@@ -110,29 +110,35 @@ export class AggregatesHistogramComponent implements OnInit {
     this.startDate = this.sharedFunctions.parseDate(histogramParams.value.startDate);
     this.endDate = this.sharedFunctions.parseDate(histogramParams.value.endDate);
     this.histBins = histogramParams.value.histBins;
-    if(typeof this.histBins == 'undefined') this.histBins = 10;
+    if (typeof this.histBins == 'undefined') this.histBins = 10;
     const url = 'api/clusters/aggregates' + '/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate + '&kpi_basename=' + this.kpiBaseName.toUpperCase() + '&bins=' + this.histBins;
     let start = new Date().getTime();
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {
-        let end = new Date().getTime();
-        this.fetchedIn = end - start;
-        console.log('histogram data: ');
         console.log(response.data);
-        this.histogramChartLoading = false;
-        this.histogramData = response.data;
-        this.histogramValues = response.data.distribution[0];
-        this.histogramIndexes = response.data.distribution[1];
-        this.max = response.data.max_val;
-        this.min = response.data.min_val;
-        this.coverage = response.data.coverage;
-        this.mean = response.data.mean;
-        this.deviation = response.data.std_deviation;
-        this.clearPreviousChartData();
+        if (response.data.error) {
+          this.sharedFunctions.openSnackBar(response.data.error, 'OK');
+          this.histogramChartLoading = false;
+        } else {
+          let end = new Date().getTime();
+          this.fetchedIn = end - start;
+          console.log('histogram data: ');
+          console.log(response.data);
+          this.histogramChartLoading = false;
+          this.histogramData = response.data;
+          this.histogramValues = response.data.distribution[0];
+          this.histogramIndexes = response.data.distribution[1];
+          this.max = response.data.max_val;
+          this.min = response.data.min_val;
+          this.coverage = response.data.coverage;
+          this.mean = response.data.mean;
+          this.deviation = response.data.std_deviation;
+          this.clearPreviousChartData();
 
-        this.generateLabels();
-        this.histogramChartLoaded = true;
-        this.updateChart(this.myChart);
+          this.generateLabels();
+          this.histogramChartLoaded = true;
+          this.updateChart(this.myChart);
+        }
       } else {
         this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
         this.histogramChartLoading = false;

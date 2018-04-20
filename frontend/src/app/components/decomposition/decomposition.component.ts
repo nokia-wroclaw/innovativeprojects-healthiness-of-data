@@ -129,26 +129,31 @@ export class DecompositionComponent implements OnInit {
     let start = new Date().getTime();
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {
-        let end = new Date().getTime();
         console.log(response.data);
-        this.decompositionChartLoading = false;
-        this.fetchedIn = end - start;
-        this.observedDates = response.data.observed_dates;
-        this.observedValues = response.data.observed_values;
+        if (response.data.error) {
+          this.sharedFunctions.openSnackBar(response.data.error, 'OK');
+          this.decompositionChartLoading = false;
+        } else {
+          let end = new Date().getTime();
+          this.decompositionChartLoading = false;
+          this.fetchedIn = end - start;
+          this.observedDates = response.data.observed_dates;
+          this.observedValues = response.data.observed_values;
 
-        this.seasonalDates = response.data.seasonal_dates;
-        this.seasonalValues = response.data.seasonal_values;
+          this.seasonalDates = response.data.seasonal_dates;
+          this.seasonalValues = response.data.seasonal_values;
 
-        this.trendDates = response.data.trend_dates;
-        this.trendValues = response.data.trend_values;
+          this.trendDates = response.data.trend_dates;
+          this.trendValues = response.data.trend_values;
 
 
-        this.clearPreviousChartData();
-        this.fixTrend(decompositionParams.value.frequency / 2);
-        this.generateDates();
-        this.decompositionChartLoaded = true;
-        this.updateTrendChart(this.trendChart);
-        this.updateSeasonalChart(this.seasonalChart);
+          this.clearPreviousChartData();
+          this.fixTrend(decompositionParams.value.frequency / 2);
+          this.generateDates();
+          this.decompositionChartLoaded = true;
+          this.updateTrendChart(this.trendChart);
+          this.updateSeasonalChart(this.seasonalChart);
+        }
 
       } else {
         this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');

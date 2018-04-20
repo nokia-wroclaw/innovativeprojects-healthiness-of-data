@@ -120,13 +120,25 @@ export class CoverageComponent implements OnInit {
     const url = baseURL + kpiBaseNamesURL + acronymsURL;
     let start = new Date().getTime();
     this.restService.getAll(url).then(response => {
-      let end = new Date().getTime();
-      this.fetchedIn = end - start;
-      console.log('coverageData: ');
-      console.log(response.data);
-      this.coverageTableLoading = false;
-      this.coverageData = response.data;
-      this.coverageTableLoaded = true;
+      if (response['status'] === 200) {
+        console.log(response.data);
+        if (response.data.error) {
+          this.sharedFunctions.openSnackBar(response.data.error, 'OK');
+          this.coverageTableLoading = false;
+        } else {
+          let end = new Date().getTime();
+          this.fetchedIn = end - start;
+          console.log('coverageData: ');
+          console.log(response.data);
+          this.coverageTableLoading = false;
+          this.coverageData = response.data;
+          this.coverageTableLoaded = true;
+        }
+
+      } else {
+        this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
+        this.coverageTableLoading = false;
+      }
     });
   }
 

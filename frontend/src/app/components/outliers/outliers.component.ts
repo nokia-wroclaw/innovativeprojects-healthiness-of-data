@@ -115,20 +115,25 @@ export class OutliersComponent implements OnInit {
     let start = new Date().getTime();
     this.restService.getAll(url).then(response => {
       if (response['status'] === 200) {
-        let end = new Date().getTime();
-        this.fetchedIn = end - start;
-        console.log('outlierData: ');
-        console.log(response.data);
-        this.outliersChartLoading = false;
-        this.outlierData = response.data.values;
-        this.outlierValues = response.data.outlier_values;
-        this.outlierIndexes = response.data.outliers;
-        this.outlierDates = response.data.dates;
-        this.clearPreviousChartData();
+        if (response.data.error) {
+          this.sharedFunctions.openSnackBar(response.data.error, 'OK');
+          this.outliersChartLoading = false;
+        } else {
+          let end = new Date().getTime();
+          this.fetchedIn = end - start;
+          console.log('outlierData: ');
+          console.log(response.data);
+          this.outliersChartLoading = false;
+          this.outlierData = response.data.values;
+          this.outlierValues = response.data.outlier_values;
+          this.outlierIndexes = response.data.outliers;
+          this.outlierDates = response.data.dates;
+          this.clearPreviousChartData();
 
-        this.generateDates();
-        this.outliersChartLoaded = true;
-        this.updateChart(this.myChart);
+          this.generateDates();
+          this.outliersChartLoaded = true;
+          this.updateChart(this.myChart);
+        }
       } else {
         this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
         this.outliersChartLoading = false;

@@ -12,6 +12,7 @@ from .utils import parse_check_date
 def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id, acronym, frequency):
     start_date = parse_check_date(start_date)
     end_date = parse_check_date(end_date)
+    frequency = int(frequency)
 
     if not start_date and not end_date:
         return {"error": "Incorrect dates."}
