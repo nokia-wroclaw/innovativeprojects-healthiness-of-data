@@ -28,16 +28,15 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis):
         connection.setup([config['address']], config['keyspace'])
         step = datetime.timedelta(days=1)
         data = []
-        values = []
         min_gap = 5
-        gaps = []
-        last_found_date = first_date
 
         for acronym in acronyms:
             for kpi in kpis:
                 dates = set()
                 kpi = kpi.upper()
-
+                last_found_date = first_date
+                values = list()
+                gaps = list()
                 while start_date < end_date:
                     result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date). \
                         filter(kpi_basename=kpi).filter(acronym=acronym)
@@ -58,15 +57,13 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis):
                             gaps.append(gap)
                         last_found_date = row.date
                 data.append({
-                    "kpi_basename": kpi,
-                    "cord_id": cord_id,
-                    "acronym": acronym,
-                    "coverage": len(dates) * 1.0 / (end_date - first_date).days,
-                    "values": values,
-                    "gaps": gaps
+                        "kpi_basename": kpi,
+                        "cord_id": cord_id,
+                        "acronym": acronym,
+                        "coverage": len(dates) * 1.0 / (end_date - first_date).days,
+                        "values": values,
+                        "gaps": gaps
                 })
-                values = []
-                gaps = []
-                last_found_date = first_date
+                start_date = first_date
 
-        return data
+    return data
