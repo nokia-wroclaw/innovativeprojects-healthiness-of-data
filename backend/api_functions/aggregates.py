@@ -47,6 +47,9 @@ def calculate_operator_aggregates(start_date, end_date, kpi, cord, **options):
             values.append(row.value)
             dates.append(row.date.strftime('%d-%m-%Y'))
 
+    if not len(values):
+        return {"error": "No data found for given parameters."}, 400
+
     average = numpy.mean(values)
     max_value = max(values)
     min_value = min(values)
@@ -107,6 +110,9 @@ def calculate_cluster_aggregates(start_date, end_date, kpi, cord, acronym, **opt
         for row in result:
             values.append(row.value)
             dates.append(row.date.strftime('%d-%m-%Y'))
+
+    if not len(values):
+        return {"error": "No data found for given parameters."}, 400
 
     average = numpy.mean(values)
     max_value = max(values)
