@@ -21,30 +21,30 @@ def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, threshol
     end_date = parse_check_date(end_date)
 
     if not start_date and not end_date:
-        return {"error": "Incorrect dates."}
-    else:
-        with open("config.yml", 'r') as yml_file:
-            config = yaml.load(yml_file)['database_options']
+        return {"error": "Incorrect dates."}, 400
 
-        connection.setup([config['address']], config['keyspace'])
-        step = datetime.timedelta(days=1)
-        kpi_basename = kpi_basename.upper()
+    with open("config.yml", 'r') as yml_file:
+        config = yaml.load(yml_file)['database_options']
 
-        ready_data = {"cord_id": cord_id,
-                      "acronym": acronym,
-                      "kpi_basename": kpi_basename,
-                      "values": [],
-                      "outliers": [],
-                      "outlier_values": [],
-                      "dates": []}
+    connection.setup([config['address']], config['keyspace'])
+    step = datetime.timedelta(days=1)
+    kpi_basename = kpi_basename.upper()
 
-        while start_date < end_date:
-            result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date) \
-                .filter(kpi_basename=kpi_basename).filter(acronym=acronym)
-            start_date += step
-            for row in result:
-                ready_data["values"].append(row.value)
-                ready_data["dates"].append(row.date)
+    ready_data = {"cord_id": cord_id,
+                  "acronym": acronym,
+                  "kpi_basename": kpi_basename,
+                  "values": [],
+                  "outliers": [],
+                  "outlier_values": [],
+                  "dates": []}
+
+    while start_date < end_date:
+        result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date) \
+            .filter(kpi_basename=kpi_basename).filter(acronym=acronym)
+        start_date += step
+        for row in result:
+            ready_data["values"].append(row.value)
+            ready_data["dates"].append(row.date)
 
     if not threshold:
         threshold = 3.5
