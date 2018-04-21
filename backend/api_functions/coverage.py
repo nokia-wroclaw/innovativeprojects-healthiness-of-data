@@ -19,15 +19,10 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis, ga
     start_date = parse_check_date(start_date)
     end_date = parse_check_date(end_date)
     first_date = start_date
-<<<<<<< HEAD
     gap_size = int(gap_size) + 1
+
     if gap_size <= 0:
-        return {"error": "Gap size is too small - min value: 1"}
-=======
-    print(gap_size)
-    if int(gap_size) <= 0:
         return {"error": "Gap size is too small - min value: 1"}, 400
->>>>>>> a204cba016896bfbfb5218a179bff34240ba54e5
 
     if not start_date and not end_date:
         return {"error": "Incorrect dates."}, 400
@@ -35,52 +30,6 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis, ga
     with open("config.yml", 'r') as yml_file:
         config = yaml.load(yml_file)['database_options']
 
-<<<<<<< HEAD
-        for acronym in acronyms:
-            for kpi in kpis:
-                print("next dataset")
-                dates = list()
-                kpi = kpi.upper()
-                last_found_date = first_date
-                values = list()
-                gaps = list()
-                gap = dict()
-                while start_date < end_date:
-                    result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date). \
-                        filter(kpi_basename=kpi).filter(acronym=acronym)
-                    start_date += step
-                    for row in result:
-                        dates.append(row.date)
-                        values.append(row.value)
-                        if int((row.date - last_found_date).days) > gap_size:
-                            gap = dict()
-                            gap.update({
-                                "gap_start": last_found_date,
-                                "gap_end": row.date,
-                                "gap_size": (row.date - last_found_date).days
-                            })
-                            gaps.append(gap)
-                        last_found_date = row.date
-                if (end_date - last_found_date).days > gap_size:
-                    gap = dict()
-                    gap.update({
-                        "gap_start": last_found_date,
-                        "gap_end": end_date,
-                        "gap_size": (end_date - last_found_date).days
-                    })
-                    gaps.append(gap)
-                data.append({
-                    "kpi_basename": kpi,
-                    "cord_id": cord_id,
-                    "acronym": acronym,
-                    "coverage": len(dates) * 1.0 / (end_date - first_date).days,
-                    "values": values,
-                    "dates": dates,
-                    "gaps": gaps
-                })
-                start_date = first_date
-    return data
-=======
     connection.setup([config['address']], config['keyspace'])
     step = datetime.timedelta(days=1)
     data = []
@@ -92,6 +41,7 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis, ga
             last_found_date = first_date
             values = list()
             gaps = list()
+            gap = dict()
             while start_date < end_date:
                 result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date). \
                     filter(kpi_basename=kpi).filter(acronym=acronym)
@@ -99,18 +49,23 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis, ga
                 for row in result:
                     dates.append(row.date)
                     values.append(row.value)
-                    if (row.date - last_found_date).days > (int(gap_size) + 1):
-                        gap_size = (row.date - last_found_date).days
-                        print(row.date - last_found_date)
-                        print((row.date - last_found_date).days)
+                    if int((row.date - last_found_date).days) > gap_size:
                         gap = dict()
                         gap.update({
                             "gap_start": last_found_date,
                             "gap_end": row.date,
-                            "gap_size": gap_size
+                            "gap_size": (row.date - last_found_date).days
                         })
                         gaps.append(gap)
                     last_found_date = row.date
+            if (end_date - last_found_date).days > gap_size:
+                gap = dict()
+                gap.update({
+                    "gap_start": last_found_date,
+                    "gap_end": end_date,
+                    "gap_size": (end_date - last_found_date).days
+                })
+                gaps.append(gap)
             data.append({
                 "kpi_basename": kpi,
                 "cord_id": cord_id,
@@ -123,4 +78,3 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis, ga
             start_date = first_date
 
     return data, 200
->>>>>>> a204cba016896bfbfb5218a179bff34240ba54e5
