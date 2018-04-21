@@ -113,7 +113,7 @@
           <tr *ngFor="let kpi of selectedKpiBasenames; let i = index;">
             <td>{{kpi}}</td>
             <td *ngFor="let acr of selectedAcronyms; let j = index;">
-              {{ (coverageData[((i+1)+selectedKpiBasenames.length*(j))-1].coverage * 100).toFixed(2)+'%'}}
+              {{ (coverageData[((i+1)+selectedKpiBasenames.length*(j))-1].coverage * 100).toFixed(2)}}
             </td>
           </tr>
         </table>

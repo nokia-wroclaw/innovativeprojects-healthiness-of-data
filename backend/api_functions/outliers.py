@@ -46,9 +46,6 @@ def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, **option
             ready_data["values"].append(row.value)
             ready_data["dates"].append(row.date)
 
-    if not len(ready_data['values']):
-        return {"error": "No data found for given parameters."}, 400
-
     threshold = options.get('threshold')
     if not threshold:
         threshold = 3.5

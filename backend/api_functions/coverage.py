@@ -59,9 +59,6 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis, ga
                         })
                         gaps.append(gap)
                     last_found_date = row.date
-
-            if not len(ready_data['values']):
-                return {"error": "No data found for given parameters."}, 400
             data.append({
                 "kpi_basename": kpi,
                 "cord_id": cord_id,
