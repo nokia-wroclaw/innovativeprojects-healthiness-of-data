@@ -59,7 +59,7 @@ def get_kpi_list():
     result = KpiUnits.objects.all()
     kpi_list = set()
     for row in result:
-        kpi_list.add(row.kpi_basename)
+        kpi_list.add(row.kpi_basename.upper())
 
     return list(kpi_list)
 
