@@ -1,7 +1,7 @@
 import datetime
 
 import pandas
-#import statsmodels.api
+import statsmodels.api
 import yaml
 from cassandra.cqlengine import connection
 
@@ -9,11 +9,11 @@ from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 from .utils import parse_check_date
 
 
-def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id, acronym, **options):
+def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id, acronym, frequency):
     start_date = parse_check_date(start_date)
     end_date = parse_check_date(end_date)
 
-    frequency = options.get('frequency')
+    # frequency = options.get('frequency')
     if not frequency:
         frequency = 31
     else:
