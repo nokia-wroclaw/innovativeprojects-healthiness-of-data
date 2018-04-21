@@ -1,7 +1,7 @@
 import datetime
 
 import pandas
-#import statsmodels.api
+import statsmodels.api
 import yaml
 from cassandra.cqlengine import connection
 
@@ -37,7 +37,7 @@ def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id,
             frame_setup['values'].append(row.value)
             frame_setup['dates'].append(row.date)
 
-    if not len(ready_data['values']):
+    if not len(frame_setup['values']):
         return {"error": "No data found for given parameters."}, 400
 
     if frequency >= len(frame_setup['values']):
