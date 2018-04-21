@@ -101,7 +101,7 @@
     </div>
   </mat-sidenav>
   <mat-sidenav-content style="height: 100%;">
-    <mat-card style="height: 100%;" >
+    <mat-card style="height: 100%;">
       <h1>Coverage</h1>
       <mat-card>
         <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
@@ -117,6 +117,26 @@
             </td>
           </tr>
         </table>
+      </mat-card>
+      <mat-card>
+        <mat-accordion>
+          <mat-expansion-panel *ngFor="let data of coverageData">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Acronym: <b>{{data.acronym}}</b>, KPI basename: <b>{{data.kpi_basename}}</b>
+              </mat-panel-title>
+              <mat-panel-description>
+                Gaps found: {{data.gaps.length}}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <ol>
+              <li *ngFor="let gap of data.gaps">Start: <b>{{gap.gap_start}}</b>, end: <b>{{gap.gap_end}}</b>, size: <b>{{gap.size}}</b>
+              </li>
+            </ol>
+          </mat-expansion-panel>
+
+        </mat-accordion>
+
       </mat-card>
     </mat-card>
 
