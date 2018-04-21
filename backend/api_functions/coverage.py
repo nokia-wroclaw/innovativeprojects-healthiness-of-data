@@ -19,8 +19,9 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis, ga
     start_date = parse_check_date(start_date)
     end_date = parse_check_date(end_date)
     first_date = start_date
-    print(gap_size)
-    if int(gap_size) <= 0:
+    gap_size = int(gap_size) + 1
+
+    if gap_size <= 0:
         return {"error": "Gap size is too small - min value: 1"}, 400
 
     if not start_date and not end_date:
@@ -40,6 +41,7 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis, ga
             last_found_date = first_date
             values = list()
             gaps = list()
+            gap = dict()
             while start_date < end_date:
                 result = PlmnProcessedCord.objects.filter(cord_id=cord_id).filter(date=start_date). \
                     filter(kpi_basename=kpi).filter(acronym=acronym)
@@ -47,18 +49,23 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis, ga
                 for row in result:
                     dates.append(row.date)
                     values.append(row.value)
-                    if (row.date - last_found_date).days > (int(gap_size) + 1):
-                        gap_size = (row.date - last_found_date).days
-                        print(row.date - last_found_date)
-                        print((row.date - last_found_date).days)
+                    if int((row.date - last_found_date).days) > gap_size:
                         gap = dict()
                         gap.update({
                             "gap_start": last_found_date,
                             "gap_end": row.date,
-                            "gap_size": gap_size
+                            "gap_size": (row.date - last_found_date).days
                         })
                         gaps.append(gap)
                     last_found_date = row.date
+            if (end_date - last_found_date).days > gap_size:
+                gap = dict()
+                gap.update({
+                    "gap_start": last_found_date,
+                    "gap_end": end_date,
+                    "gap_size": (end_date - last_found_date).days
+                })
+                gaps.append(gap)
             data.append({
                 "kpi_basename": kpi,
                 "cord_id": cord_id,
