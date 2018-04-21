@@ -63,6 +63,9 @@
         <mat-form-field class="full-width">
           <input matInput id="threshold" formControlName="threshold" placeholder='Threshold'>
         </mat-form-field>
+        <mat-form-field class="full-width">
+          <input matInput id="windowSize" formControlName="windowSize" placeholder='Window Size'>
+        </mat-form-field>
 
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!outlierParams.valid">Fetch data</button>
         <button mat-raised-button color="accent" type="button" (click)="imLazy()">Auto</button>

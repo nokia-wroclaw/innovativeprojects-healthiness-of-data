@@ -90,7 +90,8 @@ export class OutliersComponent implements OnInit {
       cordID: this.cordIDFormControl,
       acronym: this.acronymFormControl,
       kpiBaseName: this.kpiBasenameFormControl,
-      threshold: ''
+      threshold: '',
+      windowSize: '',
     });
   }
 
@@ -111,6 +112,9 @@ export class OutliersComponent implements OnInit {
 
     if (outliersParams.value.threshold) {
       url += '&threshold=' + outliersParams.value.threshold;
+    }
+    if (outliersParams.value.windowSize) {
+      url += '&window_size=' + outliersParams.value.windowSize;
     }
     let start = new Date().getTime();
     this.restService.getAll(url).then(response => {

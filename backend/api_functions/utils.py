@@ -30,7 +30,11 @@ def parse_check_date(entry):
     :param entry: String with date
     :return: False if date not correct, else returns date
     """
-    year, month, day = map(int, entry.split('-'))
+    try:
+        year, month, day = map(int, entry.split('-'))
+    except AttributeError:
+        return False
+
     try:
         new_date = datetime.datetime(year, month, day)
         return new_date
