@@ -1,7 +1,7 @@
 import datetime
 
 import pandas
-import statsmodels.api
+#import statsmodels.api
 import yaml
 from cassandra.cqlengine import connection
 
@@ -54,4 +54,4 @@ def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id,
             "observed_values": decomp.observed['values'].tolist(),
             "observed_dates": decomp.observed.index.tolist()
             }
-    return data
+    return data, 200

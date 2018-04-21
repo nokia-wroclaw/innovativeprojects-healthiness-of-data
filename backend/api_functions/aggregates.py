@@ -66,7 +66,7 @@ def calculate_operator_aggregates(start_date, end_date, kpi, cord, **options):
             "distribution": distribution
             }
 
-    return data
+    return data, 200
 
 
 def calculate_cluster_aggregates(start_date, end_date, kpi, cord, acronym, **options):
@@ -128,4 +128,4 @@ def calculate_cluster_aggregates(start_date, end_date, kpi, cord, acronym, **opt
             "distribution": distribution
             }
 
-    return data
+    return data, 200

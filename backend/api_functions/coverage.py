@@ -70,4 +70,4 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis, ga
             })
             start_date = first_date
 
-    return data
+    return data, 200

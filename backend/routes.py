@@ -57,8 +57,9 @@ def get_operator_outliers(cord_id, acronym):
     date_end = request.args.get('date_end')
     kpi_basename = request.args.get('kpi_basename')
     threshold = request.args.get('threshold')
+    window_size = request.args.get('window_size')
 
-    data, status_code = find_outliers(date_start, date_end, kpi_basename, cord_id, acronym, threshold)
+    data, status_code = find_outliers(date_start, date_end, kpi_basename, cord_id, acronym, threshold=threshold, window_size=window_size)
     return jsonify(data), status_code
 
 
