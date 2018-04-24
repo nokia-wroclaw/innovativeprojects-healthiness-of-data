@@ -76,6 +76,7 @@
   <mat-sidenav-content style="height: 100%;">
     <mat-card style="height: 100%;">
       <h1>Decomposition</h1>
+      <app-decomposition-display [decompositionParams]="decompositionParams"></app-decomposition-display>
       <mat-card>
         <mat-spinner *ngIf="decompositionChartLoading"></mat-spinner>
         <canvas id="trendChart" width="1000" height="220"></canvas>

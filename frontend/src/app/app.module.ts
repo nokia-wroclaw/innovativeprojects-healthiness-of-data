@@ -54,6 +54,7 @@ import {AggregatesHistogramComponent} from './components/aggregates-histogram/ag
 import {SharedFunctionsService} from './shared/services/shared.functions.service';
 import {NotfoundComponent} from './shared/components/notfound/notfound.component';
 import {DecompositionComponent} from './components/decomposition/decomposition.component';
+import { DecompositionDisplayComponent } from './components/decomposition/decomposition-display/decomposition-display.component';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import {DecompositionComponent} from './components/decomposition/decomposition.c
     Map2dComponent,
     AggregatesHistogramComponent,
     NotfoundComponent,
-    DecompositionComponent
+    DecompositionComponent,
+    DecompositionDisplayComponent
   ],
   imports: [
     BrowserModule,

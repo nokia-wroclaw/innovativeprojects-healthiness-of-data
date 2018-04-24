@@ -1,31 +1,24 @@
-import {Component, OnInit, Output} from '@angular/core';
-import {RestService} from '../../shared/services/rest.service';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
-import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
-import {Observable} from 'rxjs/Observable';
-import {startWith} from 'rxjs/operators/startWith';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {FormBuilder, FormControl} from '@angular/forms';
 import {map} from 'rxjs/operators/map';
-import {forEach} from '@angular/router/src/utils/collection';
+import {startWith} from 'rxjs/operators/startWith';
+import {RestService} from '../../../shared/services/rest.service';
+import {SharedFunctionsService} from '../../../shared/services/shared.functions.service';
 
 declare var Chart: any;
 
 @Component({
-  selector: 'app-decomposition',
-  templateUrl: './decomposition.component.html',
-  styleUrls: ['./decomposition.component.css']
+  selector: 'app-decomposition-display',
+  templateUrl: './decomposition-display.component.html',
+  styleUrls: ['./decomposition-display.component.css']
 })
-export class DecompositionComponent implements OnInit {
+export class DecompositionDisplayComponent implements OnInit, OnChanges {
 
-  fullKpiBasenamesList: any = [];
-  fullCordIDsList: any = [];
-  fullCordIDsAcronymsSet: any = [];
-  acronymsByCordID: any = [];
 
-  filteredKpiBasenames: Observable<string[]>;
-  filteredCordIDs: Observable<string[]>;
-  filteredAcronyms: Observable<string[]>;
+  @Input() decompositionParams;
 
+  decompositionChartLoading = false;
+  decompositionChartLoaded = false;
   observedDates: any;
   observedValues: any;
   seasonalDates: any;
@@ -47,121 +40,35 @@ export class DecompositionComponent implements OnInit {
   trendChartElement;
   seasonalChartElement;
 
-  decompositionChartLoading = false;
-  decompositionChartLoaded = false;
-
   startDate: any;
   endDate: any;
   kpiBaseName: any;
   acronym: any;
   cordID: any;
 
-  @Output() decompositionParams: FormGroup;
-  cordIDFormControl = new FormControl('', [Validators.required]);
-  acronymFormControl = new FormControl('', [Validators.required]);
-  kpiBasenameFormControl = new FormControl('', [Validators.required]);
-
-  fetchedIn: any;
-
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
-              private sharedFunctions: SharedFunctionsService,
-              private cacheData: CacheDataComponent) {
-
-    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
-    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
-    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
-
+              private sharedFunctions: SharedFunctionsService) {
   }
 
   ngOnInit() {
-    this.initForm();
-    this.trendChartElement = document.getElementById('trendChart');
-    this.seasonalChartElement = document.getElementById('seasonalChart');
-    this.sharedFunctions.hideElement(this.trendChartElement);
-    this.sharedFunctions.hideElement(this.seasonalChartElement);
-    this.generateTrendChart();
-    this.generateSeasonalChart();
-    this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
-    this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
-    // this.filteredAcronyms = this.setOnChange(this.acronymsByCordID, this.acronymFormControl);
-    this.filteredAcronyms = this.acronymFormControl.valueChanges.pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.acronymsByCordID, 50)));
-
-    this.cordIDFormControl.valueChanges.subscribe((cord) => {
-      this.acronymsByCordID = this.fullCordIDsAcronymsSet[cord];
-    });
 
   }
 
-  initForm() {
-    this.decompositionParams = this.formBuilder.group({
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      cordID: this.cordIDFormControl,
-      acronym: this.acronymFormControl,
-      kpiBaseName: this.kpiBasenameFormControl,
-      frequency: 31
-    });
-  }
-
-
-  getDecomposition(decompositionParams: FormGroup) {
+  ngOnChanges(changes: SimpleChanges): void {
     console.log('decomposition params');
-    console.log(decompositionParams);
+    console.log(this.decompositionParams);
     this.sharedFunctions.hideElement(this.trendChartElement);
     this.sharedFunctions.hideElement(this.seasonalChartElement);
 
     this.decompositionChartLoading = true;
-    this.startDate = decompositionParams.value.startDate;
-    this.endDate = decompositionParams.value.endDate;
-    this.kpiBaseName = decompositionParams.value.kpiBaseName;
-    this.cordID = decompositionParams.value.cordID;
-    this.acronym = decompositionParams.value.acronym;
-    this.startDate = this.sharedFunctions.parseDate(decompositionParams.value.startDate);
-    this.endDate = this.sharedFunctions.parseDate(decompositionParams.value.endDate);
-    let url = 'api/decomposition/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate
-      + '&kpi_basename=' + this.kpiBaseName.toUpperCase();
-
-    if (decompositionParams.value.frequency) {
-      url += '&frequency=' + decompositionParams.value.frequency;
-    }
-
-    let start = new Date().getTime();
-    this.restService.getAll(url).then(response => {
-      if (response['status'] === 200) {
-        console.log(response.data);
-        if (response.data.error) {
-          this.sharedFunctions.openSnackBar(response.data.error, 'OK');
-          this.decompositionChartLoading = false;
-        } else {
-          let end = new Date().getTime();
-          this.decompositionChartLoading = false;
-          this.fetchedIn = end - start;
-          this.observedDates = response.data.observed_dates;
-          this.observedValues = response.data.observed_values;
-
-          this.seasonalDates = response.data.seasonal_dates;
-          this.seasonalValues = response.data.seasonal_values;
-
-          this.trendDates = response.data.trend_dates;
-          this.trendValues = response.data.trend_values;
-
-
-          this.clearPreviousChartData();
-          this.fixTrend(decompositionParams.value.frequency / 2);
-          this.generateDates();
-          this.decompositionChartLoaded = true;
-          this.updateTrendChart(this.trendChart);
-          this.updateSeasonalChart(this.seasonalChart);
-        }
-
-      } else {
-        this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
-        this.decompositionChartLoading = false;
-      }
-    });
-
-
+    this.startDate = this.decompositionParams.value.startDate;
+    this.endDate = this.decompositionParams.value.endDate;
+    this.kpiBaseName = this.decompositionParams.value.kpiBaseName;
+    this.cordID = this.decompositionParams.value.cordID;
+    this.acronym = this.decompositionParams.value.acronym;
+    this.startDate = this.sharedFunctions.parseDate(this.decompositionParams.value.startDate);
+    this.endDate = this.sharedFunctions.parseDate(this.decompositionParams.value.endDate);
   }
 
   fixTrend(missing: number) {
@@ -424,16 +331,4 @@ export class DecompositionComponent implements OnInit {
     console.log('seasonal chart updated');
     this.sharedFunctions.showElement(this.seasonalChartElement);
   }
-
-
-  imLazy() {
-    this.decompositionParams.patchValue({
-      startDate: new Date('2017-06-01T00:00:00.000Z'),
-      endDate: new Date('2018-01-01T00:00:00.000Z'),
-      cordID: 'Skuntank',
-      acronym: 'dilfihess',
-      kpiBaseName: 'SGSN_2012'
-    });
-  }
 }
-
