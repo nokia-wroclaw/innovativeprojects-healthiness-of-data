@@ -130,9 +130,9 @@ export class AggregatesHistogramComponent implements OnInit {
           this.histogramIndexes = response.data.distribution[1];
           this.max = response.data.max_val;
           this.min = response.data.min_val;
-          this.coverage = parseFloat(response.data.coverage).toFixed(2)+'%';
-          this.mean = parseFloat(response.data.mean).toFixed(2);
-          this.deviation = parseFloat(response.data.std_deviation).toFixed(2);
+          this.coverage = (parseFloat(response.data.coverage) * 100).toFixed(3) + '%';
+          this.mean = parseFloat(response.data.mean).toFixed(3);
+          this.deviation = parseFloat(response.data.std_deviation).toFixed(3);
           this.clearPreviousChartData();
 
           this.generateLabels();
