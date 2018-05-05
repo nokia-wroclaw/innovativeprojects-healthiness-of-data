@@ -1,5 +1,5 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {FormBuilder, FormControl} from '@angular/forms';
+import {Component, DoCheck, Injectable, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {map} from 'rxjs/operators/map';
 import {startWith} from 'rxjs/operators/startWith';
 import {RestService} from '../../../shared/services/rest.service';
@@ -7,6 +7,7 @@ import {SharedFunctionsService} from '../../../shared/services/shared.functions.
 
 declare var Chart: any;
 
+@Injectable()
 @Component({
   selector: 'app-decomposition-display',
   templateUrl: './decomposition-display.component.html',
@@ -15,7 +16,9 @@ declare var Chart: any;
 export class DecompositionDisplayComponent implements OnInit, OnChanges {
 
 
-  @Input() decompositionParams;
+
+  @Input() decompositionParams: FormGroup;
+  @Input() formSubmitted = false;
 
   decompositionChartLoading = false;
   decompositionChartLoaded = false;
@@ -46,29 +49,78 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
   acronym: any;
   cordID: any;
 
+  fetchedIn: any;
+
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService) {
   }
 
   ngOnInit() {
-
+    console.log('child initalized');
+    this.trendChartElement = document.getElementById('trendChart2');
+    this.seasonalChartElement = document.getElementById('seasonalChart2');
+    this.sharedFunctions.hideElement(this.trendChartElement);
+    this.sharedFunctions.hideElement(this.seasonalChartElement);
+    this.generateTrendChart();
+    this.generateSeasonalChart();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('decomposition params');
-    console.log(this.decompositionParams);
-    this.sharedFunctions.hideElement(this.trendChartElement);
-    this.sharedFunctions.hideElement(this.seasonalChartElement);
+    if (this.formSubmitted) {
+      this.sharedFunctions.hideElement(this.trendChartElement);
+      this.sharedFunctions.hideElement(this.seasonalChartElement);
 
-    this.decompositionChartLoading = true;
-    this.startDate = this.decompositionParams.value.startDate;
-    this.endDate = this.decompositionParams.value.endDate;
-    this.kpiBaseName = this.decompositionParams.value.kpiBaseName;
-    this.cordID = this.decompositionParams.value.cordID;
-    this.acronym = this.decompositionParams.value.acronym;
-    this.startDate = this.sharedFunctions.parseDate(this.decompositionParams.value.startDate);
-    this.endDate = this.sharedFunctions.parseDate(this.decompositionParams.value.endDate);
+      this.decompositionChartLoading = true;
+      this.startDate = this.decompositionParams.value.startDate;
+      this.endDate = this.decompositionParams.value.endDate;
+      this.kpiBaseName = this.decompositionParams.value.kpiBaseName;
+      this.cordID = this.decompositionParams.value.cordID;
+      this.acronym = this.decompositionParams.value.acronym;
+      this.startDate = this.sharedFunctions.parseDate(this.decompositionParams.value.startDate);
+      this.endDate = this.sharedFunctions.parseDate(this.decompositionParams.value.endDate);
+      let url = 'api/decomposition/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate
+        + '&kpi_basename=' + this.kpiBaseName.toUpperCase();
+
+      if (this.decompositionParams.value.frequency) {
+        url += '&frequency=' + this.decompositionParams.value.frequency;
+      }
+
+      let start = new Date().getTime();
+      this.restService.getAll(url).then(response => {
+        if (response['status'] === 200) {
+          console.log(response.data);
+          if (response.data.error) {
+            this.sharedFunctions.openSnackBar(response.data.error, 'OK');
+            this.decompositionChartLoading = false;
+          } else {
+            let end = new Date().getTime();
+            this.fetchedIn = end - start;
+            this.decompositionChartLoading = false;
+            this.observedDates = response.data.observed_dates;
+            this.observedValues = response.data.observed_values;
+
+            this.seasonalDates = response.data.seasonal_dates;
+            this.seasonalValues = response.data.seasonal_values;
+
+            this.trendDates = response.data.trend_dates;
+            this.trendValues = response.data.trend_values;
+
+
+            this.clearPreviousChartData();
+            this.fixTrend(this.decompositionParams.value.frequency / 2);
+            this.generateDates();
+            this.decompositionChartLoaded = true;
+            this.updateTrendChart(this.trendChart);
+            this.updateSeasonalChart(this.seasonalChart);
+          }
+
+        } else {
+          this.sharedFunctions.openSnackBar('Error: ' + response.data.error, 'OK');
+          this.decompositionChartLoading = false;
+        }
+      });
+    }
   }
 
   fixTrend(missing: number) {
@@ -79,11 +131,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
     this.trendValuesFixed = missingArray;
     this.trendValuesFixed = this.trendValuesFixed.concat(this.trendValues, missingArray);
     return;
-  }
-
-  setOnChange(full: any, formControl: FormControl): any {
-    return formControl.valueChanges
-      .pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
   }
 
   generateDates() {

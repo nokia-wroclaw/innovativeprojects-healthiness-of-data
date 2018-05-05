@@ -1,6 +1,8 @@
 <mat-card>
+  <mat-card-subtitle *ngIf="decompositionChartLoaded && !decompositionChartLoading">Data fetched in: {{fetchedIn/1000}} s</mat-card-subtitle>
   <mat-spinner *ngIf="decompositionChartLoading"></mat-spinner>
-  <canvas id="trendChart" width="1000" height="220"></canvas>
+  <canvas id="trendChart2" width="1000" height="220"></canvas>
   <mat-divider></mat-divider>
-  <canvas id="seasonalChart" width="1000" height="220"></canvas>
+  <canvas id="seasonalChart2" width="1000" height="220"></canvas>
 </mat-card>
+
