@@ -103,7 +103,7 @@ export class DecompositionComponent implements OnInit {
     });
   }
 
-   setMinEndDate(event: MatDatepickerInputEvent<Date>) {
+  setMinEndDate(event: MatDatepickerInputEvent<Date>) {
     this.minEndDate = event.value;
   }
 }

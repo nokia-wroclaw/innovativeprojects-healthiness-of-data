@@ -2,17 +2,29 @@
   <mat-sidenav mode="side" opened style="width: 250px;">
     <mat-card>
       <h3>Search:</h3>
-      <form name="outliersForm" (ngSubmit)="getOutliers(outlierParams)" [formGroup]="outlierParams">
+      <form name="outliersForm" (ngSubmit)="getOutliers(outliersParams)" [formGroup]="outliersParams">
 
         <mat-form-field>
-          <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Start date"
+          <input formControlName="startDate"
+                 matInput
+                 [matDatepicker]="startDate"
+                 placeholder="Start date"
+                 [min]="minStartDate"
+                 [max]="maxStartDate"
+                 (dateChange)="setMinEndDate($event)"
                  required>
           <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
           <mat-datepicker #startDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
-          <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="End date" required>
+          <input formControlName="endDate"
+                 matInput
+                 [matDatepicker]="endDate"
+                 placeholder="End date"
+                 [min]="minEndDate"
+                 [max]="maxEndDate"
+                 required>
           <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
           <mat-datepicker #endDate></mat-datepicker>
         </mat-form-field>
@@ -67,25 +79,17 @@
           <input matInput id="windowSize" formControlName="windowSize" placeholder='Window size'>
         </mat-form-field>
 
-        <button mat-raised-button color="primary" [type]="submit" [disabled]="!outlierParams.valid">Fetch data</button>
+        <button mat-raised-button color="primary" [type]="submit" [disabled]="!outliersParams.valid">Fetch data</button>
         <button mat-raised-button color="accent" type="button" (click)="imLazy()">Auto</button>
       </form>
     </mat-card>
-    <div style="width: 100%;">
-      <div *ngIf="outliersChartLoaded && !outliersChartLoading">Data fetched in: {{fetchedIn/1000}} s</div>
-    </div>
-
   </mat-sidenav>
 
 
   <mat-sidenav-content>
     <mat-card style="height: 100%;">
       <h1>Outliers</h1>
-      <mat-card>
-        <canvas id="myChart" width="1000" height="400"></canvas>
-        <mat-spinner *ngIf="outliersChartLoading"></mat-spinner>
-      </mat-card>
-
+      <app-outliers-display [outliersParams]="outliersParams" [formSubmitted]="formSubmitted"></app-outliers-display>
     </mat-card>
   </mat-sidenav-content>
 </mat-sidenav-container>

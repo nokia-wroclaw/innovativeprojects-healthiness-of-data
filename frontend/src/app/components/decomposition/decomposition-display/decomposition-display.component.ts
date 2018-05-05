@@ -176,12 +176,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
         labels: this.labels,
         datasets: [{
           label: 'Observed',
-          backgroundColor: 'rgba(0, 0, 160, 0.5)',
-          borderColor: 'rgba(0, 0, 160, 0.5)',
-          borderWidth: 1,
-          fill: false,
-          pointRadius: 1,
-          pointBorderWidth: 1,
           options: {
             spanGaps: true,
             scales: {
@@ -195,12 +189,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
         }, {
           label: 'Trend',
           data: {},
-          backgroundColor: 'rgba(0, 160, 0, 1)',
-          borderColor: 'rgba(0, 160, 0, 1)',
-          borderWidth: 1,
-          fill: false,
-          pointRadius: 1,
-          pointBorderWidth: 1,
           options: {
             spanGaps: false,
             scales: {
@@ -257,12 +245,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
         datasets: [{
           label: 'Seasonal',
           data: {},
-          backgroundColor: 'rgba(160, 0, 0, 1)',
-          borderColor: 'rgba(160, 0, 0, 1)',
-          borderWidth: 1,
-          fill: false,
-          pointRadius: 1,
-          pointBorderWidth: 1,
           options: {
             spanGaps: false,
             scales: {
