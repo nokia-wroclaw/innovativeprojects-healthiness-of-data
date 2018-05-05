@@ -15,8 +15,6 @@ declare var Chart: any;
 })
 export class DecompositionDisplayComponent implements OnInit, OnChanges {
 
-
-
   @Input() decompositionParams: FormGroup;
   @Input() formSubmitted = false;
 
@@ -57,7 +55,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    console.log('child initalized');
     this.trendChartElement = document.getElementById('trendChart2');
     this.seasonalChartElement = document.getElementById('seasonalChart2');
     this.sharedFunctions.hideElement(this.trendChartElement);

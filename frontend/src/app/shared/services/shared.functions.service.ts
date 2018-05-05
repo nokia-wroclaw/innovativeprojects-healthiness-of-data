@@ -52,4 +52,5 @@ export class SharedFunctionsService {
   showElement(element: any) {
     element.style.display = 'block';
   }
+
 }

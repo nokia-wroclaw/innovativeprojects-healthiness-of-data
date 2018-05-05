@@ -5,13 +5,26 @@
       <form name="outliersForm" (ngSubmit)="getDecomposition(decompositionParams)" [formGroup]="decompositionParams">
 
         <mat-form-field>
-          <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Start date" required>
+          <input formControlName="startDate"
+                 matInput
+                 [matDatepicker]="startDate"
+                 placeholder="Start date"
+                 [min]="minStartDate"
+                 [max]="maxStartDate"
+                 (dateChange)="setMinEndDate($event)"
+                 required>
           <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
           <mat-datepicker #startDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
-          <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="End date" required>
+          <input formControlName="endDate"
+                 matInput
+                 [matDatepicker]="endDate"
+                 placeholder="End date"
+                 [min]="minEndDate"
+                 [max]="maxEndDate"
+                 required>
           <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
           <mat-datepicker #endDate></mat-datepicker>
         </mat-form-field>
@@ -27,7 +40,7 @@
         </mat-form-field>
         <mat-autocomplete #autoCord="matAutocomplete">
           <mat-option *ngFor="let option of filteredCordIDs |async" [value]="option">
-            {{ option }}
+            {{option}}
           </mat-option>
         </mat-autocomplete>
 
@@ -63,26 +76,21 @@
           <input matInput id="frequency" formControlName="frequency" placeholder='Frequency'>
         </mat-form-field>
 
-        <button mat-raised-button color="primary" [type]="submit" [disabled]="!decompositionParams.valid">Fetch data
+        <button mat-raised-button color="primary"
+                [type]="submit"
+                [disabled]="!decompositionParams.valid">
+          Fetch data
         </button>
         <button mat-raised-button color="accent" type="button" (click)="imLazy()">Auto</button>
       </form>
     </mat-card>
-    <div style="width: 100%;">
-      <div *ngIf="decompositionChartLoaded && !decompositionChartLoading">Data fetched in: {{fetchedIn/1000}} s</div>
-    </div>
   </mat-sidenav>
 
   <mat-sidenav-content style="height: 100%;">
     <mat-card style="height: 100%;">
       <h1>Decomposition</h1>
-      <app-decomposition-display [decompositionParams]="decompositionParamsReady" [formSubmitted]="formSubmitted"></app-decomposition-display>
-      <!--<mat-card>-->
-        <!--<mat-spinner *ngIf="decompositionChartLoading"></mat-spinner>-->
-        <!--<canvas id="trendChart" width="1000" height="220"></canvas>-->
-        <!--<mat-divider></mat-divider>-->
-        <!--<canvas id="seasonalChart" width="1000" height="220"></canvas>-->
-      <!--</mat-card>-->
+      <app-decomposition-display [decompositionParams]="decompositionParamsReady"
+                                 [formSubmitted]="formSubmitted"></app-decomposition-display>
     </mat-card>
   </mat-sidenav-content>
 

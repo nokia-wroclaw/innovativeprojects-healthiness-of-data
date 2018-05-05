@@ -7,6 +7,7 @@ import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {forEach} from '@angular/router/src/utils/collection';
+import {MatDatepickerInputEvent} from '@angular/material';
 
 declare var Chart: any;
 
@@ -29,9 +30,6 @@ export class DecompositionComponent implements OnInit {
   filteredCordIDs: Observable<string[]>;
   filteredAcronyms: Observable<string[]>;
 
-  decompositionChartLoading = false;
-  decompositionChartLoaded = false;
-
   startDate: any;
   endDate: any;
   kpiBaseName: any;
@@ -43,17 +41,18 @@ export class DecompositionComponent implements OnInit {
   acronymFormControl = new FormControl('', [Validators.required]);
   kpiBasenameFormControl = new FormControl('', [Validators.required]);
 
-  fetchedIn: any;
+  minStartDate = new Date(2014, 0);
+  maxStartDate = new Date();
+  minEndDate = new Date(2014, 0);
+  maxEndDate = new Date();
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cacheData: CacheDataComponent) {
-
     this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheData.getFullCordIDsList();
     this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
-
   }
 
   ngOnInit() {
@@ -102,6 +101,10 @@ export class DecompositionComponent implements OnInit {
       acronym: 'dilfihess',
       kpiBaseName: 'SGSN_2012'
     });
+  }
+
+   setMinEndDate(event: MatDatepickerInputEvent<Date>) {
+    this.minEndDate = event.value;
   }
 }
 
