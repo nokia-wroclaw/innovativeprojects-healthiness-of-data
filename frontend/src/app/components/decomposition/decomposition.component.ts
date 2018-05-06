@@ -93,18 +93,36 @@ export class DecompositionComponent implements OnInit {
       .pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
   }
 
-  imLazy() {
+  setMinEndDate(event: MatDatepickerInputEvent<Date>) {
+    this.minEndDate = event.value;
+  }
+
+testSet1() {
     this.decompositionParams.patchValue({
-      startDate: new Date('2017-06-01T00:00:00.000Z'),
+      startDate: new Date('2016-06-01T00:00:00.000Z'),
       endDate: new Date('2018-01-01T00:00:00.000Z'),
       cordID: 'Skuntank',
       acronym: 'dilfihess',
       kpiBaseName: 'SGSN_2012'
     });
   }
-
-  setMinEndDate(event: MatDatepickerInputEvent<Date>) {
-    this.minEndDate = event.value;
+  testSet2() {
+    this.decompositionParams.patchValue({
+      startDate: new Date('2016-06-01T00:00:00.000Z'),
+      endDate: new Date('2018-01-01T00:00:00.000Z'),
+      cordID: 'Barboach',
+      acronym: 'ubrerm',
+      kpiBaseName: 'RNC_31'
+    });
+  }
+  testSet3() {
+    this.decompositionParams.patchValue({
+      startDate: new Date('2016-01-01T00:00:00.000Z'),
+      endDate: new Date('2018-01-01T00:00:00.000Z'),
+      cordID: 'Magby',
+      acronym: 'thruphroxtron',
+      kpiBaseName: 'TRF_215'
+    });
   }
 }
 

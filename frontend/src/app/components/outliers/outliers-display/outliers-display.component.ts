@@ -12,10 +12,8 @@ declare var Chart: any;
 })
 export class OutliersDisplayComponent implements OnInit, OnChanges {
 
-
   @Input() outliersParams: FormGroup;
   @Input() formSubmitted = false;
-
 
   startDate: any;
   endDate: any;
@@ -31,16 +29,13 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
   outlierDates: any = [];
   outlierIndexes: any = [];
   outlierValues: any = [];
-
-
   outlierDatesFormatted: any = [];
-
   dataGapsFilled: any = [];
   outliersGapsFilled: any = [];
+
   chartElement;
   myChart;
   fetchedIn: any;
-
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
@@ -74,7 +69,7 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
         url += '&window_size=' + this.outliersParams.value.windowSize;
       }
       let start = new Date().getTime();
-      this.restService.getAll(url).then(response => {
+      this.restService.getAll(url).then((response) => {
         if (response['status'] === 200) {
           if (response.data.error) {
             this.sharedFunctions.openSnackBar(response.data.error, 'OK');
@@ -95,10 +90,15 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
             this.outliersChartLoaded = true;
             this.updateChart(this.myChart);
           }
-        } else {
-          this.sharedFunctions.openSnackBar('Error: ' + response.status + ' - ' + response.data.error, 'OK');
+         } else {
+          this.sharedFunctions.openSnackBar('Error: ' + response.data.error, 'OK');
           this.outliersChartLoading = false;
         }
+      }).catch((error) => {
+        console.log('error');
+        console.log(error);
+        this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
+        this.outliersChartLoading = false;
       });
     }
   }
@@ -132,7 +132,6 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
         this.outliersGapsFilled.push(null);
       }
     }
-    console.log(this.outliersGapsFilled);
   }
 
   clearPreviousChartData() {
@@ -146,40 +145,7 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
   generateChart() {
     this.myChart = new Chart(this.chartElement, {
       type: 'line',
-      data: {
-        labels: this.labels,
-        datasets: [{
-          label: 'Normal Data',
-          options: {
-            spanGaps: true,
-            scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: false
-                }
-              }]
-            }
-          }
-        }, {
-          label: 'Outliers',
-          data: this.outliersGapsFilled,
-          options: {
-            spanGaps: false,
-            scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: false
-                }
-              }]
-            }, elements: {
-              line: {
-                skipNull: true,
-                drawNull: false,
-              }
-            }
-          }
-        }]
-      },
+      data: {},
       options: {
         spanGaps: false,
         scales: {
@@ -196,8 +162,6 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
         }
       }
     });
-
-
   }
 
   updateChart(chart) {
@@ -238,6 +202,5 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
     console.log('chart updated');
     this.sharedFunctions.showElement(this.chartElement);
   }
-
 
 }

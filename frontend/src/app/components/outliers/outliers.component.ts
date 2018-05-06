@@ -31,11 +31,6 @@ export class OutliersComponent implements OnInit {
   filteredAcronyms: Observable<string[]>;
 
   outliersParams: FormGroup;
-  startDate: any;
-  endDate: any;
-  kpiBaseName: any;
-  acronym: any;
-  cordID: any;
 
   cordIDFormControl = new FormControl('', [Validators.required]);
   acronymFormControl = new FormControl('', [Validators.required]);
@@ -46,8 +41,7 @@ export class OutliersComponent implements OnInit {
   minEndDate = new Date(2014, 0);
   maxEndDate = new Date();
 
-  constructor(private router: Router,
-              private restService: RestService,
+  constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cacheData: CacheDataComponent) {
@@ -96,18 +90,36 @@ export class OutliersComponent implements OnInit {
       .pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
   }
 
-  imLazy() {
+  setMinEndDate(event: MatDatepickerInputEvent<Date>) {
+    this.minEndDate = event.value;
+  }
+
+  testSet1() {
     this.outliersParams.patchValue({
-      startDate: new Date('2016-05-01T00:00:00.000Z'),
+      startDate: new Date('2016-06-01T00:00:00.000Z'),
       endDate: new Date('2018-01-01T00:00:00.000Z'),
       cordID: 'Skuntank',
       acronym: 'dilfihess',
       kpiBaseName: 'SGSN_2012'
     });
   }
-
-  setMinEndDate(event: MatDatepickerInputEvent<Date>) {
-    this.minEndDate = event.value;
+  testSet2() {
+    this.outliersParams.patchValue({
+      startDate: new Date('2016-06-01T00:00:00.000Z'),
+      endDate: new Date('2018-01-01T00:00:00.000Z'),
+      cordID: 'Barboach',
+      acronym: 'ubrerm',
+      kpiBaseName: 'RNC_31'
+    });
+  }
+  testSet3() {
+    this.outliersParams.patchValue({
+      startDate: new Date('2016-06-01T00:00:00.000Z'),
+      endDate: new Date('2018-01-01T00:00:00.000Z'),
+      cordID: 'Magby',
+      acronym: 'thruphroxtron',
+      kpiBaseName: 'TRF_215'
+    });
   }
 }
 

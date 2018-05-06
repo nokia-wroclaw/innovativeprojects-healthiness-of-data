@@ -56,6 +56,7 @@ import {NotfoundComponent} from './shared/components/notfound/notfound.component
 import {DecompositionComponent} from './components/decomposition/decomposition.component';
 import { DecompositionDisplayComponent } from './components/decomposition/decomposition-display/decomposition-display.component';
 import { OutliersDisplayComponent } from './components/outliers/outliers-display/outliers-display.component';
+import { AggregatesHistogramDisplayComponent } from './components/aggregates-histogram/aggregates-histogram-display/aggregates-histogram-display.component';
 
 
 @NgModule({
@@ -72,7 +73,8 @@ import { OutliersDisplayComponent } from './components/outliers/outliers-display
     NotfoundComponent,
     DecompositionComponent,
     DecompositionDisplayComponent,
-    OutliersDisplayComponent
+    OutliersDisplayComponent,
+    AggregatesHistogramDisplayComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,25 @@
+<mat-card>
+  <mat-card-subtitle><div *ngIf="histogramChartLoaded && !histogramChartLoading">Data fetched in: {{fetchedIn/1000}} s</div></mat-card-subtitle>
+  <div style="text-align: center">
+    <div class="column-container">
+      <h5>MAX<br/>{{ max }}</h5>
+    </div>
+    <div class="column-container">
+      <h5>MIN<br/>{{ min }}</h5>
+    </div>
+    <div class="column-container">
+      <h5>COVERAGE<br/>{{ coverage }}</h5>
+    </div>
+    <div class="column-container">
+      <h5>DEVIATION<br/>{{ deviation }}</h5>
+    </div>
+    <div class="column-container">
+      <h5>MEAN<br/>{{ mean }}</h5>
+    </div>
+  </div>
+</mat-card>
+<mat-card>
+  <h3>Histogram chart:</h3>
+  <canvas id="myChart" width="1000" height="300"></canvas>
+  <mat-spinner *ngIf="histogramChartLoading"></mat-spinner>
+</mat-card>

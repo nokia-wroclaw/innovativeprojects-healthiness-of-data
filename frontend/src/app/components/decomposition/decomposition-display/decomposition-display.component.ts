@@ -33,11 +33,9 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
   trendValuesFixed: any = [];
   trendGapsFilled: any = [];
 
-
   labels: any = [];
   trendChart;
   seasonalChart;
-
   trendChartElement;
   seasonalChartElement;
 
@@ -52,6 +50,7 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService) {
+
   }
 
   ngOnInit() {
@@ -84,7 +83,7 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
       }
 
       let start = new Date().getTime();
-      this.restService.getAll(url).then(response => {
+      this.restService.getAll(url).then((response) => {
         if (response['status'] === 200) {
           console.log(response.data);
           if (response.data.error) {
@@ -116,6 +115,11 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
           this.sharedFunctions.openSnackBar('Error: ' + response.data.error, 'OK');
           this.decompositionChartLoading = false;
         }
+      }).catch((error) => {
+        console.log('error');
+        console.log(error);
+        this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
+        this.decompositionChartLoading = false;
       });
     }
   }
@@ -172,40 +176,7 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
   generateTrendChart() {
     this.trendChart = new Chart(this.trendChartElement, {
       type: 'line',
-      data: {
-        labels: this.labels,
-        datasets: [{
-          label: 'Observed',
-          options: {
-            spanGaps: true,
-            scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: false
-                }
-              }]
-            }
-          }
-        }, {
-          label: 'Trend',
-          data: {},
-          options: {
-            spanGaps: false,
-            scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: false
-                }
-              }]
-            }, elements: {
-              line: {
-                skipNull: true,
-                drawNull: false,
-              }
-            }
-          }
-        }]
-      },
+      data: {},
       options: {
         title: {
           display: true,
@@ -240,28 +211,7 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
   generateSeasonalChart() {
     this.seasonalChart = new Chart(this.seasonalChartElement, {
       type: 'line',
-      data: {
-        labels: this.labels,
-        datasets: [{
-          label: 'Seasonal',
-          data: {},
-          options: {
-            spanGaps: false,
-            scales: {
-              yAxes: [{
-                ticks: {
-                  beginAtZero: false
-                }
-              }]
-            }, elements: {
-              line: {
-                skipNull: true,
-                drawNull: false,
-              }
-            }
-          }
-        }]
-      },
+      data: {},
       options: {
         title: {
           display: true,
