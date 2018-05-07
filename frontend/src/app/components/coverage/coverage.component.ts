@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {RestService} from '../../shared/services/rest.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatChipInputEvent} from '@angular/material';
+import {MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatChipInputEvent, MatDatepickerInputEvent} from '@angular/material';
 import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
 
 import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
@@ -32,6 +32,7 @@ export class CoverageComponent implements OnInit {
 
   filteredCordIDs: Observable<string[]>;
   selectedKpiBasenames: any = [];
+  selectedAcronyms: any = [];
   filteredKpiBasenames: Observable<string[]>;
   filteredAcronyms: Observable<string[]>;
 
@@ -50,10 +51,6 @@ export class CoverageComponent implements OnInit {
   separatorKeysCodes = [ENTER, COMMA, TAB];
 
 
-  selectedAcronyms: any = [];
-  // selectedAcronyms: any = ['strathatuk', 'strebriszatt', 'bliulfux', 'dilfihess', 'ubrerm', 'ugrohaarm'];
-
-
   coverageParams: FormGroup;
   cordIDFormControl = new FormControl('', [Validators.required]);
   kpiBasenamesFormControl = new FormControl('', [Validators.required]);
@@ -63,11 +60,18 @@ export class CoverageComponent implements OnInit {
   removable = true;
   addOnBlur = true;
 
+  formSubmitted = false;
+
   @ViewChild('chipInputAcronym', {read: MatAutocompleteTrigger})
   private autoCompleteTrigger: MatAutocompleteTrigger;
+  coverageParamsReady: FormGroup;
 
-  constructor(private router: Router,
-              private restService: RestService,
+  minStartDate = new Date(2014, 0);
+  maxStartDate = new Date();
+  minEndDate = new Date(2014, 0);
+  maxEndDate = new Date();
+
+  constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private cacheData: CacheDataComponent,
               private sharedFunctions: SharedFunctionsService) {
@@ -90,6 +94,9 @@ export class CoverageComponent implements OnInit {
     this.acronymsFormControl.valueChanges.subscribe(val => {
       this.filterOptionsAcronym(val);
     });
+    this.coverageParams.valueChanges.subscribe(() => {
+      this.formSubmitted = false;
+    });
   }
 
   initForm() {
@@ -107,38 +114,41 @@ export class CoverageComponent implements OnInit {
   public getCoverage(coverageParams): void {
     console.log('coverage params');
     console.log(coverageParams);
-    this.coverageTableLoading = true;
-    this.startDate = this.sharedFunctions.parseDate(coverageParams.value.startDate);
-    this.endDate = this.sharedFunctions.parseDate(coverageParams.value.endDate);
-    this.cordID = this.coverageParams.value.cordID;
-    const baseURL = 'api/coverage/' + this.cordID + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
-    this.selectedKpiBasenames = this.selectedKpiBasenames.map((e) => {
-      return e.toUpperCase();
-    });
-    const kpiBaseNamesURL = this.sharedFunctions.processArguments(this.selectedKpiBasenames, 'kpi_basename');
-    const acronymsURL = this.sharedFunctions.processArguments(this.selectedAcronyms, 'acronym');
+    this.coverageParamsReady = coverageParams;
+    this.formSubmitted = true;
 
-    const url = baseURL + kpiBaseNamesURL + acronymsURL + '&gap_size=' + coverageParams.value.gapSize;
-    let start = new Date().getTime();
-    this.restService.getAll(url).then(response => {
-      if (response['status'] === 200) {
-        console.log('coverageData: ');
-        console.log(response.data);
-        if (response.data.error) {
-          this.sharedFunctions.openSnackBar(response.data.error, 'OK');
-          this.coverageTableLoading = false;
-        } else {
-          let end = new Date().getTime();
-          this.fetchedIn = end - start;
-          this.coverageTableLoading = false;
-          this.coverageData = response.data;
-          this.coverageTableLoaded = true;
-        }
-      } else {
-        this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
-        this.coverageTableLoading = false;
-      }
-    });
+    // this.coverageTableLoading = true;
+    // this.startDate = this.sharedFunctions.parseDate(coverageParams.value.startDate);
+    // this.endDate = this.sharedFunctions.parseDate(coverageParams.value.endDate);
+    // this.cordID = this.coverageParams.value.cordID;
+    // const baseURL = 'api/coverage/' + this.cordID + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
+    // this.selectedKpiBasenames = this.selectedKpiBasenames.map((e) => {
+    //   return e.toUpperCase();
+    // });
+    // const kpiBaseNamesURL = this.sharedFunctions.processArguments(this.selectedKpiBasenames, 'kpi_basename');
+    // const acronymsURL = this.sharedFunctions.processArguments(this.selectedAcronyms, 'acronym');
+    //
+    // const url = baseURL + kpiBaseNamesURL + acronymsURL + '&gap_size=' + coverageParams.value.gapSize;
+    // let start = new Date().getTime();
+    // this.restService.getAll(url).then(response => {
+    //   if (response['status'] === 200) {
+    //     console.log('coverageData: ');
+    //     console.log(response.data);
+    //     if (response.data.error) {
+    //       this.sharedFunctions.openSnackBar(response.data.error, 'OK');
+    //       this.coverageTableLoading = false;
+    //     } else {
+    //       let end = new Date().getTime();
+    //       this.fetchedIn = end - start;
+    //       this.coverageTableLoading = false;
+    //       this.coverageData = response.data;
+    //       this.coverageTableLoaded = true;
+    //     }
+    //   } else {
+    //     this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
+    //     this.coverageTableLoading = false;
+    //   }
+    // });
   }
 
   setOnChange(full: any, formControl: FormControl): any {
@@ -224,6 +234,10 @@ export class CoverageComponent implements OnInit {
     if (this.selectedAcronyms.length === 0) {
       this.filterOptionsAcronym('');
     }
+  }
+
+  setMinEndDate(event: MatDatepickerInputEvent<Date>) {
+    this.minEndDate = event.value;
   }
 
   imLazy() {

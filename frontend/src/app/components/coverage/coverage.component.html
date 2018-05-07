@@ -4,14 +4,27 @@
       <h3>Search:</h3>
       <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
 
-        <mat-form-field>
-          <input formControlName="startDate" matInput [matDatepicker]="startDate" placeholder="Start date" required>
+ <mat-form-field>
+          <input formControlName="startDate"
+                 matInput
+                 [matDatepicker]="startDate"
+                 placeholder="Start date"
+                 [min]="minStartDate"
+                 [max]="maxStartDate"
+                 (dateChange)="setMinEndDate($event)"
+                 required>
           <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
           <mat-datepicker #startDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
-          <input formControlName="endDate" matInput [matDatepicker]="endDate" placeholder="End date" required>
+          <input formControlName="endDate"
+                 matInput
+                 [matDatepicker]="endDate"
+                 placeholder="End date"
+                 [min]="minEndDate"
+                 [max]="maxEndDate"
+                 required>
           <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
           <mat-datepicker #endDate></mat-datepicker>
         </mat-form-field>
@@ -96,49 +109,51 @@
         <button mat-raised-button color="accent" type="button" (click)="imLazy()">Auto</button>
       </form>
     </mat-card>
-    <div style="width: 100%;">
-      <div *ngIf="coverageTableLoaded && !coverageTableLoading">Data fetched in: {{fetchedIn/1000}} s</div>
-    </div>
+
   </mat-sidenav>
   <mat-sidenav-content style="height: 100%;">
     <mat-card style="height: 100%;">
       <h1>Coverage</h1>
-      <mat-card>
-        <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
-        <table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
-          <tr>
-            <th>kpi \ acronym</th>
-            <th *ngFor="let acr of selectedAcronyms">{{acr}}</th>
-          </tr>
-          <tr *ngFor="let kpi of selectedKpiBasenames; let i = index;">
-            <td>{{kpi}}</td>
-            <td *ngFor="let acr of selectedAcronyms; let j = index;">
-              {{ (coverageData[((i+1)+selectedKpiBasenames.length*(j))-1].coverage * 100).toFixed(2)+'%'}}
-            </td>
-          </tr>
-        </table>
-      </mat-card>
-      <mat-card *ngIf="coverageTableLoaded && !coverageTableLoading">
-        <mat-accordion class="headers-align">
-          <mat-expansion-panel *ngFor="let data of coverageData">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                Acronym: <b>{{data.acronym}}</b>, KPI basename: <b>{{data.kpi_basename}}</b>
-              </mat-panel-title>
-              <mat-panel-description>
-                Gaps found: {{data.gaps.length}}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <h6>Todal coverage: {{(data.coverage * 100).toFixed(2)+'%'}}</h6>
-            <ol>List of gaps:
-              <li *ngFor="let gap of data.gaps">Start: <b>{{gap.gap_start}}</b>, end: <b>{{gap.gap_end}}</b>, days: <b>{{gap.gap_size}}</b>
-              </li>
-            </ol>
-          </mat-expansion-panel>
 
-        </mat-accordion>
+      <app-coverage-display [coverageParams]="coverageParamsReady" [formSubmitted]="formSubmitted" [selectedAcronyms]="selectedAcronyms" [selectedKpiBasenames]="selectedKpiBasenames"></app-coverage-display>
 
-      </mat-card>
+
+      <!--<mat-card>-->
+        <!--<mat-spinner *ngIf="coverageTableLoading"></mat-spinner>-->
+        <!--<table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">-->
+          <!--<tr>-->
+            <!--<th>kpi \ acronym</th>-->
+            <!--<th *ngFor="let acr of selectedAcronyms">{{acr}}</th>-->
+          <!--</tr>-->
+          <!--<tr *ngFor="let kpi of selectedKpiBasenames; let i = index;">-->
+            <!--<td>{{kpi}}</td>-->
+            <!--<td *ngFor="let acr of selectedAcronyms; let j = index;">-->
+              <!--{{ (coverageData[((i+1)+selectedKpiBasenames.length*(j))-1].coverage * 100).toFixed(2)+'%'}}-->
+            <!--</td>-->
+          <!--</tr>-->
+        <!--</table>-->
+      <!--</mat-card>-->
+      <!--<mat-card *ngIf="coverageTableLoaded && !coverageTableLoading">-->
+        <!--<mat-accordion class="headers-align">-->
+          <!--<mat-expansion-panel *ngFor="let data of coverageData">-->
+            <!--<mat-expansion-panel-header>-->
+              <!--<mat-panel-title>-->
+                <!--Acronym: <b>{{data.acronym}}</b>, KPI basename: <b>{{data.kpi_basename}}</b>-->
+              <!--</mat-panel-title>-->
+              <!--<mat-panel-description>-->
+                <!--Gaps found: {{data.gaps.length}}-->
+              <!--</mat-panel-description>-->
+            <!--</mat-expansion-panel-header>-->
+            <!--<h6>Todal coverage: {{(data.coverage * 100).toFixed(2)+'%'}}</h6>-->
+            <!--<ol>List of gaps:-->
+              <!--<li *ngFor="let gap of data.gaps">Start: <b>{{gap.gap_start}}</b>, end: <b>{{gap.gap_end}}</b>, days: <b>{{gap.gap_size}}</b>-->
+              <!--</li>-->
+            <!--</ol>-->
+          <!--</mat-expansion-panel>-->
+
+        <!--</mat-accordion>-->
+
+      <!--</mat-card>-->
     </mat-card>
 
   </mat-sidenav-content>

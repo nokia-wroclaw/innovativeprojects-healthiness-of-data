@@ -97,7 +97,7 @@ export class DecompositionComponent implements OnInit {
     this.minEndDate = event.value;
   }
 
-testSet1() {
+  testSet1() {
     this.decompositionParams.patchValue({
       startDate: new Date('2016-06-01T00:00:00.000Z'),
       endDate: new Date('2018-01-01T00:00:00.000Z'),
@@ -106,6 +106,7 @@ testSet1() {
       kpiBaseName: 'SGSN_2012'
     });
   }
+
   testSet2() {
     this.decompositionParams.patchValue({
       startDate: new Date('2016-06-01T00:00:00.000Z'),
@@ -115,6 +116,7 @@ testSet1() {
       kpiBaseName: 'RNC_31'
     });
   }
+
   testSet3() {
     this.decompositionParams.patchValue({
       startDate: new Date('2016-01-01T00:00:00.000Z'),

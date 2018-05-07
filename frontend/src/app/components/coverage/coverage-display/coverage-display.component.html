@@ -1,0 +1,41 @@
+<mat-card>
+  <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
+  <mat-card-subtitle>
+    <div style="width: 100%;">
+      <div *ngIf="coverageTableLoaded && !coverageTableLoading">Data fetched in: {{fetchedIn/1000}} s</div>
+    </div>
+  </mat-card-subtitle>
+  <table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
+    <tr>
+      <th>kpi \ acronym</th>
+      <th *ngFor="let acr of selectedAcronyms">{{acr}}</th>
+    </tr>
+    <tr *ngFor="let kpi of selectedKpiBasenames; let i = index;">
+      <td>{{kpi}}</td>
+      <td *ngFor="let acr of selectedAcronyms; let j = index;">
+        {{ (coverageData[((i+1)+selectedKpiBasenames.length*(j))-1].coverage * 100).toFixed(2)+'%'}}
+      </td>
+    </tr>
+  </table>
+</mat-card>
+<mat-card *ngIf="coverageTableLoaded && !coverageTableLoading">
+  <mat-accordion class="headers-align">
+    <mat-expansion-panel *ngFor="let data of coverageData">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Acronym: <b>{{data.acronym}}</b>, KPI basename: <b>{{data.kpi_basename}}</b>
+        </mat-panel-title>
+        <mat-panel-description>
+          Gaps found: {{data.gaps.length}}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <h6>Todal coverage: {{(data.coverage * 100).toFixed(2)+'%'}}</h6>
+      <ol>List of gaps:
+        <li *ngFor="let gap of data.gaps">Start: <b>{{gap.gap_start}}</b>, end: <b>{{gap.gap_end}}</b>, days: <b>{{gap.gap_size}}</b>
+        </li>
+      </ol>
+    </mat-expansion-panel>
+
+  </mat-accordion>
+
+</mat-card>
