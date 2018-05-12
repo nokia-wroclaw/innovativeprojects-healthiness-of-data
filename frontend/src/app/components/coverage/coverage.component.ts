@@ -31,25 +31,12 @@ export class CoverageComponent implements OnInit {
   acronymsByCordID: any = [];
 
   filteredCordIDs: Observable<string[]>;
-  selectedKpiBasenames: any = [];
-  selectedAcronyms: any = [];
-  filteredKpiBasenames: Observable<string[]>;
   filteredAcronyms: Observable<string[]>;
-
-  coverageData: any = [];
-
-  kpiBaseNames: any = [];
-  acronyms: any = [];
-  startDate: string;
-  endDate: string;
-  cordID: any;
-  fetchedIn: any;
-
-  coverageTableLoaded = false;
-  coverageTableLoading = false;
+  filteredKpiBasenames: Observable<string[]>;
+  selectedAcronyms: any = [];
+  selectedKpiBasenames: any = [];
 
   separatorKeysCodes = [ENTER, COMMA, TAB];
-
 
   coverageParams: FormGroup;
   cordIDFormControl = new FormControl('', [Validators.required]);
@@ -61,10 +48,12 @@ export class CoverageComponent implements OnInit {
   addOnBlur = true;
 
   formSubmitted = false;
+  coverageParamsReady: FormGroup;
+  selectedAcronymsReady: any = [];
+  selectedKpiBaseNamesReady: any = [];
 
   @ViewChild('chipInputAcronym', {read: MatAutocompleteTrigger})
   private autoCompleteTrigger: MatAutocompleteTrigger;
-  coverageParamsReady: FormGroup;
 
   minStartDate = new Date(2014, 0);
   maxStartDate = new Date();
@@ -97,6 +86,7 @@ export class CoverageComponent implements OnInit {
     this.coverageParams.valueChanges.subscribe(() => {
       this.formSubmitted = false;
     });
+
   }
 
   initForm() {
@@ -115,40 +105,10 @@ export class CoverageComponent implements OnInit {
     console.log('coverage params');
     console.log(coverageParams);
     this.coverageParamsReady = coverageParams;
+    this.selectedAcronymsReady = this.selectedAcronyms;
+    this.selectedKpiBaseNamesReady = this.selectedKpiBasenames;
     this.formSubmitted = true;
 
-    // this.coverageTableLoading = true;
-    // this.startDate = this.sharedFunctions.parseDate(coverageParams.value.startDate);
-    // this.endDate = this.sharedFunctions.parseDate(coverageParams.value.endDate);
-    // this.cordID = this.coverageParams.value.cordID;
-    // const baseURL = 'api/coverage/' + this.cordID + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
-    // this.selectedKpiBasenames = this.selectedKpiBasenames.map((e) => {
-    //   return e.toUpperCase();
-    // });
-    // const kpiBaseNamesURL = this.sharedFunctions.processArguments(this.selectedKpiBasenames, 'kpi_basename');
-    // const acronymsURL = this.sharedFunctions.processArguments(this.selectedAcronyms, 'acronym');
-    //
-    // const url = baseURL + kpiBaseNamesURL + acronymsURL + '&gap_size=' + coverageParams.value.gapSize;
-    // let start = new Date().getTime();
-    // this.restService.getAll(url).then(response => {
-    //   if (response['status'] === 200) {
-    //     console.log('coverageData: ');
-    //     console.log(response.data);
-    //     if (response.data.error) {
-    //       this.sharedFunctions.openSnackBar(response.data.error, 'OK');
-    //       this.coverageTableLoading = false;
-    //     } else {
-    //       let end = new Date().getTime();
-    //       this.fetchedIn = end - start;
-    //       this.coverageTableLoading = false;
-    //       this.coverageData = response.data;
-    //       this.coverageTableLoaded = true;
-    //     }
-    //   } else {
-    //     this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
-    //     this.coverageTableLoading = false;
-    //   }
-    // });
   }
 
   setOnChange(full: any, formControl: FormControl): any {
@@ -164,7 +124,6 @@ export class CoverageComponent implements OnInit {
     if (input) {
       input.value = '';
     }
-    this.coverageTableLoaded = false;
   }
 
   removeChipKpiBasename(chip: any): void {
@@ -173,7 +132,6 @@ export class CoverageComponent implements OnInit {
       this.selectedKpiBasenames.splice(index, 1);
       this.fullKpiBasenamesList.push(chip);
     }
-    this.coverageTableLoaded = false;
   }
 
   filterOptionsKpiBasename(opt: string) {
@@ -191,7 +149,6 @@ export class CoverageComponent implements OnInit {
     if (input) {
       input.value = '';
     }
-    this.coverageTableLoaded = false;
   }
 
   // force add chip
@@ -212,7 +169,6 @@ export class CoverageComponent implements OnInit {
       this.selectedAcronyms.splice(index, 1);
       this.acronymsByCordID.push(chip);
     }
-    this.coverageTableLoaded = false;
   }
 
   filterOptionsAcronym(opt: string) {
@@ -221,16 +177,12 @@ export class CoverageComponent implements OnInit {
   }
 
   filterAcronyms($event: MatAutocompleteSelectedEvent, inputCord: any) {
-    console.log(inputCord.value);
-    console.log(this.fullCordIDsAcronymsSet[inputCord.value]);
     this.acronymsByCordID.length = 0;
     this.selectedAcronyms.length = 0;
     this.acronymsByCordID = this.fullCordIDsAcronymsSet[inputCord.value];
   }
 
   inputFocus() {
-    // this.autoCompleteTrigger.openPanel();
-    console.log(this.selectedAcronyms.length);
     if (this.selectedAcronyms.length === 0) {
       this.filterOptionsAcronym('');
     }
@@ -242,7 +194,7 @@ export class CoverageComponent implements OnInit {
 
   imLazy() {
     this.coverageParams.patchValue({
-      startDate: new Date('2014-01-01T00:00:00.000Z'),
+      startDate: new Date('2014-09-01T00:00:00.000Z'),
       endDate: new Date('2018-03-01T00:00:00.000Z'),
       cordID: 'Mr. Mime',
     });

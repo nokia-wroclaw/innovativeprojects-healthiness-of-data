@@ -46,7 +46,7 @@ def calculate_cluster_decomposition(start_date, end_date, kpi_basename, cord_id,
     data_frame = pandas.DataFrame(frame_setup)
     data_frame = data_frame.set_index(['dates'])
 
-    decomp = statsmodels.api.tsa.seasonal_decompose(data_frame, freq=frequency, model='multiplicative')
+    decomp = statsmodels.api.tsa.seasonal_decompose(data_frame, freq=frequency, model='additive')
 
     cut_nan = int(frequency / 2)
 

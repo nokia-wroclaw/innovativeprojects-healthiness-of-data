@@ -1,6 +1,9 @@
 <mat-card>
-  <mat-card-subtitle><div *ngIf="histogramChartLoaded && !histogramChartLoading">Data fetched in: {{fetchedIn/1000}} s</div></mat-card-subtitle>
-  <div style="text-align: center">
+  <mat-card-title *ngIf="histogramChartLoaded && !histogramChartLoading">{{cordID}}, {{acronym}}, {{kpiBaseName}}</mat-card-title>
+  <!--<mat-card-title *ngIf="histogramChartLoaded && !histogramChartLoading">Cord ID: <b>{{cordID}}</b>, acronym: <b>{{acronym}}</b>, KPI basename: <b>{{kpiBaseName}}</b></mat-card-title>-->
+  <mat-card-subtitle *ngIf="histogramChartLoaded && !histogramChartLoading">Data fetched in: {{fetchedIn/1000}} s
+  </mat-card-subtitle>
+  <div *ngIf="histogramChartLoaded && !histogramChartLoading" style="text-align: center">
     <div class="column-container">
       <h5>MAX<br/>{{ max }}</h5>
     </div>
@@ -19,7 +22,7 @@
   </div>
 </mat-card>
 <mat-card>
-  <h3>Histogram chart:</h3>
+  <mat-card-title>Histogram chart:</mat-card-title>
   <canvas id="myChart" width="1000" height="300"></canvas>
   <mat-spinner *ngIf="histogramChartLoading"></mat-spinner>
 </mat-card>

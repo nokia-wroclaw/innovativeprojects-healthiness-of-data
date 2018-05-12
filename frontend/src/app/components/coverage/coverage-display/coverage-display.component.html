@@ -8,12 +8,12 @@
   <table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
     <tr>
       <th>kpi \ acronym</th>
-      <th *ngFor="let acr of selectedAcronyms">{{acr}}</th>
+      <th *ngFor="let acr of acronyms">{{acr}}</th>
     </tr>
-    <tr *ngFor="let kpi of selectedKpiBasenames; let i = index;">
+    <tr *ngFor="let kpi of kpiBasaNames; let i = index;">
       <td>{{kpi}}</td>
-      <td *ngFor="let acr of selectedAcronyms; let j = index;">
-        {{ (coverageData[((i+1)+selectedKpiBasenames.length*(j))-1].coverage * 100).toFixed(2)+'%'}}
+      <td *ngFor="let acr of acronyms; let j = index;">
+        {{ (coverageData[((i+1)+kpiBasaNames.length*(j))-1].coverage * 100).toFixed(2)+'%'}}
       </td>
     </tr>
   </table>
@@ -23,7 +23,7 @@
     <mat-expansion-panel *ngFor="let data of coverageData">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Acronym: <b>{{data.acronym}}</b>, KPI basename: <b>{{data.kpi_basename}}</b>
+          Acronym:<b>{{data.acronym}}</b>, KPI basename:<b>{{data.kpi_basename}}</b>
         </mat-panel-title>
         <mat-panel-description>
           Gaps found: {{data.gaps.length}}

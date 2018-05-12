@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Router} from '@angular/router';
-import {FormBuilder} from '@angular/forms';
 import {MatSnackBar} from '@angular/material';
-import {CacheDataComponent} from '../components/cache-data/cache-data.component';
-import {RestService} from './rest.service';
+import {FormControl} from '@angular/forms';
+import {map} from 'rxjs/operators/map';
+import {startWith} from 'rxjs/operators/startWith';
 
 
 @Injectable()
@@ -51,6 +50,28 @@ export class SharedFunctionsService {
 
   showElement(element: any) {
     element.style.display = 'block';
+  }
+
+  setOnChange(full: any, formControl: FormControl): any {
+    return formControl.valueChanges
+      .pipe(startWith(''), map((val) => this.filter(val, full, 100)));
+  }
+
+  generateDates(startDate: string, endDate: string, dates: any) {
+    const moment = require('moment');
+    require('twix');
+    let labels = [];
+    let datesFormatted = [];
+    const itr = moment.twix(new Date(startDate), new Date(endDate)).iterate('days');
+    while (itr.hasNext()) {
+      labels.push(this.parseDate(itr.next().toDate()));
+    }
+
+    for (let i = 0; i < dates.length; i++) {
+      datesFormatted.push(this.parseDate(new Date(dates[i])));
+    }
+
+    return [labels, datesFormatted];
   }
 
 }

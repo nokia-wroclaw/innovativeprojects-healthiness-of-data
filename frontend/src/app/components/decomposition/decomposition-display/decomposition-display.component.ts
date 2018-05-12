@@ -88,24 +88,23 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
           console.log(response.data);
           if (response.data.error) {
             this.sharedFunctions.openSnackBar(response.data.error, 'OK');
-            this.decompositionChartLoading = false;
           } else {
-            let end = new Date().getTime();
-            this.fetchedIn = end - start;
+            this.fetchedIn = new Date().getTime() - start;
             this.decompositionChartLoading = false;
+
             this.observedDates = response.data.observed_dates;
             this.observedValues = response.data.observed_values;
-
             this.seasonalDates = response.data.seasonal_dates;
             this.seasonalValues = response.data.seasonal_values;
-
             this.trendDates = response.data.trend_dates;
             this.trendValues = response.data.trend_values;
 
-
             this.clearPreviousChartData();
             this.fixTrend(this.decompositionParams.value.frequency / 2);
-            this.generateDates();
+            let generatedDates = this.sharedFunctions.generateDates(this.startDate, this.endDate, this.observedDates);
+            this.labels = generatedDates[0];
+            this.decompositionDatesFormatted = generatedDates[1];
+            this.fillGaps();
             this.decompositionChartLoaded = true;
             this.updateTrendChart(this.trendChart);
             this.updateSeasonalChart(this.seasonalChart);
@@ -113,8 +112,8 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
 
         } else {
           this.sharedFunctions.openSnackBar('Error: ' + response.data.error, 'OK');
-          this.decompositionChartLoading = false;
         }
+        this.decompositionChartLoading = false;
       }).catch((error) => {
         console.log('error');
         console.log(error);
@@ -131,21 +130,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
     });
     this.trendValuesFixed = missingArray;
     this.trendValuesFixed = this.trendValuesFixed.concat(this.trendValues, missingArray);
-    return;
-  }
-
-  generateDates() {
-    const moment = require('moment');
-    require('twix');
-    const itr = moment.twix(new Date(this.startDate), new Date(this.endDate)).iterate('days');
-    while (itr.hasNext()) {
-      this.labels.push(this.sharedFunctions.parseDate(itr.next().toDate()));
-    }
-
-    for (let i = 0; i < this.observedDates.length; i++) {
-      this.decompositionDatesFormatted.push(this.sharedFunctions.parseDate(new Date(this.observedDates[i])));
-    }
-    this.fillGaps();
   }
 
   fillGaps() {
@@ -170,7 +154,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
     this.trendGapsFilled.length = 0;
     this.decompositionDatesFormatted.length = 0;
     console.log('previous chart data cleared');
-    return;
   }
 
   generateTrendChart() {
@@ -183,12 +166,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
           text: 'Trend chart'
         },
         responsive: true,
-        zoom: {
-          enabled: true,
-          mode: 'x',
-          drag: true
-
-        },
         spanGaps: false,
         scales: {
           yAxes: [{
@@ -204,8 +181,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
         }
       }
     });
-
-
   }
 
   generateSeasonalChart() {
@@ -218,12 +193,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
           text: 'Seasonal chart'
         },
         responsive: true,
-        zoom: {
-          enabled: true,
-          mode: 'x',
-          drag: true
-
-        },
         spanGaps: false,
         scales: {
           yAxes: [{
@@ -239,8 +208,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
         }
       }
     });
-
-
   }
 
   updateTrendChart(chart): any {
@@ -278,7 +245,6 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
     chart.update();
     console.log('trend chart updated');
     this.sharedFunctions.showElement(this.trendChartElement);
-
   }
 
   updateSeasonalChart(chart): any {

@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, DoCheck, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
@@ -21,6 +21,8 @@ export class CoverageDisplayComponent implements OnInit, OnChanges {
   @Input() selectedKpiBasenames: any = [];
 
 
+  acronyms: any = [];
+  kpiBasaNames: any = [];
   coverageData: any = [];
 
   startDate: string;
@@ -40,7 +42,10 @@ export class CoverageDisplayComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.formSubmitted);
     if (this.formSubmitted) {
+      this.acronyms = this.selectedAcronyms;
+      this.kpiBasaNames = this.selectedKpiBasenames;
 
       this.coverageTableLoading = true;
       this.startDate = this.sharedFunctions.parseDate(this.coverageParams.value.startDate);

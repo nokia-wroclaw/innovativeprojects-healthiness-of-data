@@ -80,14 +80,15 @@
         </mat-form-field>
 
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!outliersParams.valid">Fetch data</button>
-        <div>
-          <br>
-          <button mat-raised-button color="accent" type="button" (click)="testSet1()">Test 1</button>
-          <br>
-          <button mat-raised-button color="accent" type="button" (click)="testSet2()">Test 2</button>
-          <br>
-          <button mat-raised-button color="accent" type="button" (click)="testSet3()">Test 3</button>
-        </div>
+        <br><br>
+        <mat-form-field>
+          <mat-select placeholder="Select example">
+            <mat-option *ngFor="let example of examplesService.EXAMPLES; let i = index "
+                        (click)="examplesService.testCase(outliersParams, example)" [value]="example">
+              Test {{i+1}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </form>
     </mat-card>
   </mat-sidenav>
