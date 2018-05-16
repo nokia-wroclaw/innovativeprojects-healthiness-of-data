@@ -1,5 +1,5 @@
 <mat-sidenav-container class="sidenav-container" style="height: 100%;">
-  <mat-sidenav mode="side" opened style="width: 250px;">
+  <mat-sidenav #sidenav mode="side" opened style="width: 250px;">
     <mat-card>
       <h3>Search:</h3>
       <form name="histogramsForm" (ngSubmit)="getHistogram(histogramParams)" [formGroup]="histogramParams">
@@ -93,7 +93,10 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-card style="height: 100%;">
+    <mat-card >
+      <div class="rotate">
+        <button mat-raised-button color="accent" (click)="sidenav.toggle()" >^</button>
+      </div>
       <h1>Aggregates & histogram</h1>
       <app-aggregates-histogram-display [histogramParams]="histogramParamsReady"
                                         [formSubmitted]="formSubmitted"></app-aggregates-histogram-display>

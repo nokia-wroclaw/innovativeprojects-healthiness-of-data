@@ -17,12 +17,12 @@ export class CoverageDisplayComponent implements OnInit, OnChanges {
 
   @Input() coverageParams: FormGroup;
   @Input() formSubmitted = false;
-  @Input() selectedAcronyms: any = [];
-  @Input() selectedKpiBasenames: any = [];
+  @Input() selectedAcronyms;
+  @Input() selectedKpiBasenames;
 
 
   acronyms: any = [];
-  kpiBasaNames: any = [];
+  kpiBaseNames: any = [];
   coverageData: any = [];
 
   startDate: string;
@@ -36,16 +36,25 @@ export class CoverageDisplayComponent implements OnInit, OnChanges {
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService) {
+    console.log('constructor');
+    console.log(this.kpiBaseNames.length);
+    console.log(this.acronyms.length);
   }
 
   ngOnInit() {
+    console.log('on init');
+    console.log(this.kpiBaseNames.length);
+    console.log(this.acronyms.length);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.formSubmitted);
+    console.log('on changes: ' + this.formSubmitted);
+    console.log(this.selectedKpiBasenames);
+    console.log(this.selectedAcronyms);
+    console.log(this.kpiBaseNames.length);
+    console.log(this.acronyms.length);
     if (this.formSubmitted) {
-      this.acronyms = this.selectedAcronyms;
-      this.kpiBasaNames = this.selectedKpiBasenames;
+
 
       this.coverageTableLoading = true;
       this.startDate = this.sharedFunctions.parseDate(this.coverageParams.value.startDate);
@@ -70,6 +79,8 @@ export class CoverageDisplayComponent implements OnInit, OnChanges {
           } else {
             let end = new Date().getTime();
             this.fetchedIn = end - start;
+            this.acronyms = this.selectedAcronyms;
+            this.kpiBaseNames = this.selectedKpiBasenames;
             this.coverageTableLoading = false;
             this.coverageData = response.data;
             this.coverageTableLoaded = true;

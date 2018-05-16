@@ -3,3 +3,10 @@
   width: 15%;
   text-align: center;
 }
+
+.rotate {
+    position:fixed;
+    transform:  rotate(+90deg) ;
+    transform-origin:left top;
+    background-color:#e1e1e1;
+}

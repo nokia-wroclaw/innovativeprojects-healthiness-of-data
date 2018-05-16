@@ -48,7 +48,6 @@ import {
   MatTooltipModule
 } from '@angular/material';
 import {DraftComponent} from './components/draft/draft.component';
-import {AutocompleteChipsComponent} from './shared/components/autocomplete-chips/autocomplete-chips.component';
 import {CacheDataComponent} from './shared/components/cache-data/cache-data.component';
 import {AggregatesHistogramComponent} from './components/aggregates-histogram/aggregates-histogram.component';
 import {SharedFunctionsService} from './shared/services/shared.functions.service';
@@ -69,7 +68,6 @@ import {ExamplesService} from './shared/services/examples.service';
     HomepageComponent,
     OutliersComponent,
     DraftComponent,
-    AutocompleteChipsComponent,
     CacheDataComponent,
     Map2dComponent,
     AggregatesHistogramComponent,
@@ -159,7 +157,8 @@ import {ExamplesService} from './shared/services/examples.service';
     MatNativeDateModule,
   ],
   providers: [RestService, CacheDataComponent, SharedFunctionsService, ExamplesService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [AggregatesHistogramDisplayComponent, CoverageDisplayComponent, DecompositionDisplayComponent, OutliersDisplayComponent, Map2dDisplayComponent]
 })
 export class AppModule {
 }

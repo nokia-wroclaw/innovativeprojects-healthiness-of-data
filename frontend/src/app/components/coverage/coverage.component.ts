@@ -119,6 +119,7 @@ export class CoverageComponent implements OnInit {
   addChipKpiBasename(event: MatAutocompleteSelectedEvent, input: any): void {
     const selection = event.option.value;
     this.selectedKpiBasenames.push(selection);
+    this.formSubmitted = false;
     this.fullKpiBasenamesList = this.fullKpiBasenamesList.filter(obj => obj !== selection);
     this.filteredKpiBasenames = this.fullKpiBasenamesList.slice(0, 50);
     if (input) {
@@ -128,6 +129,7 @@ export class CoverageComponent implements OnInit {
 
   removeChipKpiBasename(chip: any): void {
     const index = this.selectedKpiBasenames.indexOf(chip);
+    this.formSubmitted = false;
     if (index >= 0) {
       this.selectedKpiBasenames.splice(index, 1);
       this.fullKpiBasenamesList.push(chip);
@@ -144,6 +146,7 @@ export class CoverageComponent implements OnInit {
   addChipAcronym(event: MatAutocompleteSelectedEvent, input: any): void {
     const selection = event.option.value;
     this.selectedAcronyms.push(selection);
+    this.formSubmitted = false;
     this.acronymsByCordID = this.acronymsByCordID.filter(obj => obj !== selection);
     this.filteredAcronyms = this.acronymsByCordID;
     if (input) {
@@ -165,6 +168,7 @@ export class CoverageComponent implements OnInit {
 
   removeChipAcronym(chip: any): void {
     const index = this.selectedAcronyms.indexOf(chip);
+    this.formSubmitted = false;
     if (index >= 0) {
       this.selectedAcronyms.splice(index, 1);
       this.acronymsByCordID.push(chip);
@@ -194,7 +198,7 @@ export class CoverageComponent implements OnInit {
 
   imLazy() {
     this.coverageParams.patchValue({
-      startDate: new Date('2014-09-01T00:00:00.000Z'),
+      startDate: new Date('2016-09-01T00:00:00.000Z'),
       endDate: new Date('2018-03-01T00:00:00.000Z'),
       cordID: 'Mr. Mime',
     });

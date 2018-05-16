@@ -2,7 +2,7 @@
   <mat-sidenav mode="side" opened style="width: 250px;">
     <mat-card>
       <h3>Search:</h3>
-      <form name="outliersForm" (ngSubmit)="getOutliers(outliersParams)" [formGroup]="outliersParams">
+      <form name="outliersForm" (ngSubmit)="getOutliers(outliersParams, outliersDisplayComponent)" [formGroup]="outliersParams">
 
         <mat-form-field>
           <input formControlName="startDate"
@@ -97,7 +97,10 @@
   <mat-sidenav-content>
     <mat-card style="height: 100%;">
       <h1>Outliers</h1>
-      <app-outliers-display [outliersParams]="outliersParams" [formSubmitted]="formSubmitted"></app-outliers-display>
+      <div>
+        <ng-container #container></ng-container>
+      </div>
+      <!--<app-outliers-display [outliersParams]="outliersParams" [formSubmitted]="formSubmitted"></app-outliers-display>-->
     </mat-card>
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {RestService} from '../../../shared/services/rest.service';
 import {SharedFunctionsService} from '../../../shared/services/shared.functions.service';
@@ -10,10 +10,14 @@ declare var Chart: any;
   templateUrl: './outliers-display.component.html',
   styleUrls: ['./outliers-display.component.css']
 })
-export class OutliersDisplayComponent implements OnInit, OnChanges {
+export class OutliersDisplayComponent implements OnInit, AfterViewInit {
+
 
   @Input() outliersParams: FormGroup;
   @Input() formSubmitted = false;
+  @Input() id = 0;
+
+  outliersChartId = 'outliersChart';
 
   startDate: any;
   endDate: any;
@@ -39,19 +43,22 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
-              private sharedFunctions: SharedFunctionsService) {
+              private sharedFunctions: SharedFunctionsService,
+              public cdRef: ChangeDetectorRef) {
+    this.outliersChartId = 'outliersChart' + this.id.toString();
   }
 
   ngOnInit() {
-    this.chartElement = document.getElementById('outliersChart');
-    this.sharedFunctions.hideElement(this.chartElement);
-    this.generateChart();
+
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngAfterViewInit(): void {
+    this.chartElement = document.getElementById(this.outliersChartId);
+    this.sharedFunctions.hideElement(this.chartElement);
     if (this.formSubmitted) {
       this.sharedFunctions.hideElement(this.chartElement);
       this.outliersChartLoading = true;
+      this.cdRef.detectChanges();
       this.startDate = this.outliersParams.value.startDate;
       this.endDate = this.outliersParams.value.endDate;
       this.kpiBaseName = this.outliersParams.value.kpiBaseName;
@@ -84,13 +91,12 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
             this.outlierValues = response.data.outlier_values;
             this.outlierIndexes = response.data.outliers;
             this.outlierDates = response.data.dates;
-            this.clearPreviousChartData();
 
             this.generateDates();
             this.outliersChartLoaded = true;
-            this.updateChart(this.myChart);
+            this.generateChart();
           }
-         } else {
+        } else {
           this.sharedFunctions.openSnackBar('Error: ' + response.data.error, 'OK');
           this.outliersChartLoading = false;
         }
@@ -102,6 +108,7 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
       });
     }
   }
+
 
   generateDates() {
     const moment = require('moment');
@@ -134,38 +141,12 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
     }
   }
 
-  clearPreviousChartData() {
-    this.labels.length = 0;
-    this.dataGapsFilled.length = 0;
-    this.outliersGapsFilled.length = 0;
-    this.outlierDatesFormatted.length = 0;
-    console.log('previous chart data cleared');
-  }
+
 
   generateChart() {
     this.myChart = new Chart(this.chartElement, {
       type: 'line',
-      data: {},
-      options: {
-        spanGaps: false,
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: false
-            }
-          }]
-        }, elements: {
-          line: {
-            skipNull: true,
-            drawNull: false,
-          }
-        }
-      }
-    });
-  }
-
-  updateChart(chart) {
-    const newData = chart.data = {
+      data: {
       labels: this.labels,
       datasets: [{
         label: 'Normal Data',
@@ -187,19 +168,23 @@ export class OutliersDisplayComponent implements OnInit, OnChanges {
         pointBorderWidth: 1,
         pointStyle: 'star',
       }]
-    };
-
-    chart.data.labels.pop();
-    chart.data.datasets.forEach((dataset) => {
-      dataset.data.pop();
+    },
+      options: {
+        spanGaps: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: false
+            }
+          }]
+        }, elements: {
+          line: {
+            skipNull: true,
+            drawNull: false,
+          }
+        }
+      }
     });
-    chart.update();
-
-    chart.data.datasets.forEach((dataset) => {
-      dataset.data.push(newData);
-    });
-    chart.update();
-    console.log('chart updated');
     this.sharedFunctions.showElement(this.chartElement);
   }
 

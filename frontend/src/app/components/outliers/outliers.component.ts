@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ComponentFactoryResolver, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {RestService} from '../../shared/services/rest.service';
 import {Observable} from 'rxjs/Observable';
@@ -8,6 +8,7 @@ import {SharedFunctionsService} from '../../shared/services/shared.functions.ser
 import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
 import {MatDatepickerInputEvent} from '@angular/material';
 import {ExamplesService} from '../../shared/services/examples.service';
+import {OutliersDisplayComponent} from './outliers-display/outliers-display.component';
 
 @Component({
   selector: 'app-outliers',
@@ -18,6 +19,7 @@ export class OutliersComponent implements OnInit {
 
   outliersParamsReady: FormGroup;
   formSubmitted = false;
+  id = 0;
 
   fullKpiBasenamesList: any = [];
   fullCordIDsList: any = [];
@@ -39,11 +41,17 @@ export class OutliersComponent implements OnInit {
   minEndDate = new Date(2014, 0);
   maxEndDate = new Date();
 
+
+  @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
+  outliersDisplayComponent = OutliersDisplayComponent;
+  outlierComponents = [];
+
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cacheData: CacheDataComponent,
-              public examplesService: ExamplesService) {
+              public examplesService: ExamplesService,
+              private componentFactoryResolver: ComponentFactoryResolver) {
     this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheData.getFullCordIDsList();
     this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
@@ -77,11 +85,12 @@ export class OutliersComponent implements OnInit {
     });
   }
 
-  getOutliers(outliersParams: FormGroup) {
+  getOutliers(outliersParams: FormGroup, componentClass: Type<any>) {
     console.log('outliers params');
     console.log(outliersParams);
     this.outliersParamsReady = outliersParams;
     this.formSubmitted = true;
+    this.addDynamicChild(componentClass, outliersParams);
   }
 
   setOnChange(full: any, formControl: FormControl): any {
@@ -91,6 +100,27 @@ export class OutliersComponent implements OnInit {
 
   setMinEndDate(event: MatDatepickerInputEvent<Date>) {
     this.minEndDate = event.value;
+  }
+
+  addDynamicChild(componentClass: Type<any>, formParams: FormGroup) {
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
+    const component = this.container.createComponent(componentFactory, 0);
+    component.instance.id = this.id;
+    component.instance.formSubmitted = this.formSubmitted;
+    component.instance.outliersParams = formParams;
+    this.outlierComponents.push(component);
+    this.id++;
+  }
+
+  removeDynamicChild(dynamicChildClass: Type<any>) {
+    const component = this.outlierComponents.find((comp) => comp.instance instanceof dynamicChildClass);
+    const componentIndex = this.outlierComponents.indexOf(component);
+    console.log(this.outlierComponents);
+    console.log(componentIndex);
+    if (componentIndex !== -1) {
+      this.container.remove(this.container.indexOf(component));
+      this.outlierComponents.splice(componentIndex, 1);
+    }
   }
 }
 
