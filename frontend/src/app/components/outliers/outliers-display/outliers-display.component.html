@@ -1,8 +1,10 @@
 <mat-card>
+  <mat-card-title *ngIf="outliersChartLoaded && !outliersChartLoading">{{cordID}}, {{acronym}}, {{kpiBaseName}}
+  </mat-card-title>
+
   <mat-card-subtitle *ngIf="outliersChartLoaded && !outliersChartLoading">Data fetched in: {{fetchedIn/1000}}
     s
   </mat-card-subtitle>
-  <canvas [id]="outliersChartId"  width="1000" height="400"></canvas>
-  <!--<canvas id="outliersChart" width="1000" height="400"></canvas>-->
+  <canvas [id]="outliersChartId" width="1000" height="200" ></canvas>
   <mat-spinner *ngIf="outliersChartLoading"></mat-spinner>
 </mat-card>

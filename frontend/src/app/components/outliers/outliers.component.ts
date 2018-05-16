@@ -17,8 +17,6 @@ import {OutliersDisplayComponent} from './outliers-display/outliers-display.comp
 })
 export class OutliersComponent implements OnInit {
 
-  outliersParamsReady: FormGroup;
-  formSubmitted = false;
   id = 0;
 
   fullKpiBasenamesList: any = [];
@@ -60,17 +58,15 @@ export class OutliersComponent implements OnInit {
   ngOnInit() {
     this.initForm();
 
-    this.filteredKpiBasenames = this.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
-    this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
+    this.filteredKpiBasenames = this.sharedFunctions.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
+    this.filteredCordIDs = this.sharedFunctions.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
     // this.filteredAcronyms = this.setOnChange(this.acronymsByCordID, this.acronymFormControl);
     this.filteredAcronyms = this.acronymFormControl.valueChanges.pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.acronymsByCordID, 50)));
 
     this.cordIDFormControl.valueChanges.subscribe((cord) => {
       this.acronymsByCordID = this.fullCordIDsAcronymsSet[cord];
     });
-    this.outliersParams.valueChanges.subscribe(() => {
-      this.formSubmitted = false;
-    });
+
   }
 
   initForm() {
@@ -88,26 +84,10 @@ export class OutliersComponent implements OnInit {
   getOutliers(outliersParams: FormGroup, componentClass: Type<any>) {
     console.log('outliers params');
     console.log(outliersParams);
-    this.outliersParamsReady = outliersParams;
-    this.formSubmitted = true;
-    this.addDynamicChild(componentClass, outliersParams);
-  }
-
-  setOnChange(full: any, formControl: FormControl): any {
-    return formControl.valueChanges
-      .pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
-  }
-
-  setMinEndDate(event: MatDatepickerInputEvent<Date>) {
-    this.minEndDate = event.value;
-  }
-
-  addDynamicChild(componentClass: Type<any>, formParams: FormGroup) {
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
     const component = this.container.createComponent(componentFactory, 0);
     component.instance.id = this.id;
-    component.instance.formSubmitted = this.formSubmitted;
-    component.instance.outliersParams = formParams;
+    component.instance.outliersParams = outliersParams;
     this.outlierComponents.push(component);
     this.id++;
   }
@@ -115,12 +95,14 @@ export class OutliersComponent implements OnInit {
   removeDynamicChild(dynamicChildClass: Type<any>) {
     const component = this.outlierComponents.find((comp) => comp.instance instanceof dynamicChildClass);
     const componentIndex = this.outlierComponents.indexOf(component);
-    console.log(this.outlierComponents);
-    console.log(componentIndex);
     if (componentIndex !== -1) {
       this.container.remove(this.container.indexOf(component));
       this.outlierComponents.splice(componentIndex, 1);
     }
+  }
+
+  setMinEndDate(event: MatDatepickerInputEvent<Date>) {
+    this.minEndDate = event.value;
   }
 }
 

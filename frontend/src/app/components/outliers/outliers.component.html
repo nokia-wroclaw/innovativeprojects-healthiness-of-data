@@ -1,5 +1,5 @@
 <mat-sidenav-container class="sidenav-container" style="height: 100%;">
-  <mat-sidenav mode="side" opened style="width: 250px;">
+  <mat-sidenav #sidenav mode="side" opened style="width: 250px;">
     <mat-card>
       <h3>Search:</h3>
       <form name="outliersForm" (ngSubmit)="getOutliers(outliersParams, outliersDisplayComponent)" [formGroup]="outliersParams">
@@ -80,6 +80,7 @@
         </mat-form-field>
 
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!outliersParams.valid">Fetch data</button>
+
         <br><br>
         <mat-form-field>
           <mat-select placeholder="Select example">
@@ -90,17 +91,20 @@
           </mat-select>
         </mat-form-field>
       </form>
+      <button mat-raised-button color="warn" [type]="button" (click)="removeDynamicChild(outliersDisplayComponent)">Remove oldest component</button>
     </mat-card>
   </mat-sidenav>
 
 
   <mat-sidenav-content>
     <mat-card style="height: 100%;">
-      <h1>Outliers</h1>
+      <h3>Outliers</h3>
+      <div class="rotate">
+        <button mat-mini-fab color="accent" (click)="sidenav.toggle()" >^</button>
+      </div>
       <div>
         <ng-container #container></ng-container>
       </div>
-      <!--<app-outliers-display [outliersParams]="outliersParams" [formSubmitted]="formSubmitted"></app-outliers-display>-->
     </mat-card>
   </mat-sidenav-content>
 </mat-sidenav-container>

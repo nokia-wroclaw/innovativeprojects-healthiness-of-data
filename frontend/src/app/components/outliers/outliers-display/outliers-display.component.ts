@@ -14,7 +14,6 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
 
 
   @Input() outliersParams: FormGroup;
-  @Input() formSubmitted = false;
   @Input() id = 0;
 
   outliersChartId = 'outliersChart';
@@ -55,60 +54,48 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.chartElement = document.getElementById(this.outliersChartId);
     this.sharedFunctions.hideElement(this.chartElement);
-    if (this.formSubmitted) {
-      this.sharedFunctions.hideElement(this.chartElement);
-      this.outliersChartLoading = true;
-      this.cdRef.detectChanges();
-      this.startDate = this.outliersParams.value.startDate;
-      this.endDate = this.outliersParams.value.endDate;
-      this.kpiBaseName = this.outliersParams.value.kpiBaseName;
-      this.cordID = this.outliersParams.value.cordID;
-      this.acronym = this.outliersParams.value.acronym;
-      this.startDate = this.sharedFunctions.parseDate(this.outliersParams.value.startDate);
-      this.endDate = this.sharedFunctions.parseDate(this.outliersParams.value.endDate);
-      let url = 'api/outliers/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate
-        + '&kpi_basename=' + this.kpiBaseName.toUpperCase();
 
-      if (this.outliersParams.value.threshold) {
-        url += '&threshold=' + this.outliersParams.value.threshold;
-      }
-      if (this.outliersParams.value.windowSize) {
-        url += '&window_size=' + this.outliersParams.value.windowSize;
-      }
-      let start = new Date().getTime();
-      this.restService.getAll(url).then((response) => {
-        if (response['status'] === 200) {
-          if (response.data.error) {
-            this.sharedFunctions.openSnackBar(response.data.error, 'OK');
-            this.outliersChartLoading = false;
-          } else {
-            let end = new Date().getTime();
-            this.fetchedIn = end - start;
-            console.log('outlierData: ');
-            console.log(response.data);
-            this.outliersChartLoading = false;
-            this.outlierData = response.data.values;
-            this.outlierValues = response.data.outlier_values;
-            this.outlierIndexes = response.data.outliers;
-            this.outlierDates = response.data.dates;
+    this.outliersChartLoading = true;
+    this.cdRef.detectChanges();
+    this.startDate = this.outliersParams.value.startDate;
+    this.endDate = this.outliersParams.value.endDate;
+    this.kpiBaseName = this.outliersParams.value.kpiBaseName;
+    this.cordID = this.outliersParams.value.cordID;
+    this.acronym = this.outliersParams.value.acronym;
+    this.startDate = this.sharedFunctions.parseDate(this.outliersParams.value.startDate);
+    this.endDate = this.sharedFunctions.parseDate(this.outliersParams.value.endDate);
+    let url = 'api/outliers/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate
+      + '&kpi_basename=' + this.kpiBaseName.toUpperCase();
 
-            this.generateDates();
-            this.outliersChartLoaded = true;
-            this.generateChart();
-          }
-        } else {
-          this.sharedFunctions.openSnackBar('Error: ' + response.data.error, 'OK');
-          this.outliersChartLoading = false;
-        }
-      }).catch((error) => {
-        console.log('error');
-        console.log(error);
-        this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
-        this.outliersChartLoading = false;
-      });
+    if (this.outliersParams.value.threshold) {
+      url += '&threshold=' + this.outliersParams.value.threshold;
     }
-  }
+    if (this.outliersParams.value.windowSize) {
+      url += '&window_size=' + this.outliersParams.value.windowSize;
+    }
 
+    let start = new Date().getTime();
+    this.restService.getAll(url).then((response) => {
+      this.outliersChartLoading = false;
+      if (response['status'] === 200) {
+        let end = new Date().getTime();
+        this.fetchedIn = end - start;
+        this.outlierData = response.data.values;
+        this.outlierValues = response.data.outlier_values;
+        this.outlierDates = response.data.dates;
+
+        this.generateDates();
+        this.outliersChartLoaded = true;
+        this.generateChart();
+      } else {
+        this.sharedFunctions.openSnackBar('Error: ' + response.data.error, 'OK');
+      }
+    }).catch((error) => {
+      console.log('error');
+      console.log(error);
+      this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
+    });
+  }
 
   generateDates() {
     const moment = require('moment');
@@ -141,34 +128,32 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-
   generateChart() {
     this.myChart = new Chart(this.chartElement, {
       type: 'line',
       data: {
-      labels: this.labels,
-      datasets: [{
-        label: 'Normal Data',
-        data: this.dataGapsFilled,
-        backgroundColor: 'rgba(0, 0, 160, 1)',
-        borderColor: 'rgba(0, 0, 160, 1)',
-        borderWidth: 1,
-        fill: false,
-        pointRadius: 1,
-        pointBorderWidth: 1
-      }, {
-        label: 'Outliers',
-        data: this.outliersGapsFilled,
-        backgroundColor: 'rgba(255, 153, 0, 1)',
-        borderColor: 'rgba(255, 153, 0, 1)',
-        borderWidth: 4,
-        fill: false,
-        pointRadius: 8,
-        pointBorderWidth: 1,
-        pointStyle: 'star',
-      }]
-    },
+        labels: this.labels,
+        datasets: [{
+          label: 'Normal Data',
+          data: this.dataGapsFilled,
+          backgroundColor: 'rgba(0, 0, 160, 1)',
+          borderColor: 'rgba(0, 0, 160, 1)',
+          borderWidth: 1,
+          fill: false,
+          pointRadius: 1,
+          pointBorderWidth: 1
+        }, {
+          label: 'Outliers',
+          data: this.outliersGapsFilled,
+          backgroundColor: 'rgba(255, 153, 0, 1)',
+          borderColor: 'rgba(255, 153, 0, 1)',
+          borderWidth: 4,
+          fill: false,
+          pointRadius: 8,
+          pointBorderWidth: 1,
+          pointStyle: 'star',
+        }]
+      },
       options: {
         spanGaps: false,
         scales: {
