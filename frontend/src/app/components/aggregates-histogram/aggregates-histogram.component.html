@@ -2,7 +2,7 @@
   <mat-sidenav #sidenav mode="side" opened style="width: 250px;">
     <mat-card>
       <h3>Search:</h3>
-      <form name="histogramsForm" (ngSubmit)="getHistogram(histogramParams)" [formGroup]="histogramParams">
+      <form name="histogramsForm" (ngSubmit)="getHistogram(histogramParams, histogramDisplayComponent)" [formGroup]="histogramParams">
 
         <mat-form-field>
           <input formControlName="startDate"
@@ -89,17 +89,20 @@
           </mat-select>
         </mat-form-field>
       </form>
+      <button mat-raised-button color="warn" [type]="button" (click)="removeDynamicChild(histogramDisplayComponent)">Remove oldest component</button>
     </mat-card>
   </mat-sidenav>
 
-  <mat-sidenav-content>
-    <mat-card >
-      <h1>Aggregates & histogram</h1>
-      <div class="rotate">
-        <button mat-raised-button color="accent" (click)="sidenav.toggle()" >^</button>
+  <mat-sidenav-content style="background-color: white;">
+    <mat-card>
+      <h3>Aggregates & histogram</h3>
+       <div class="rotate">
+        <button mat-mini-fab color="accent" (click)="sidenav.toggle()" >^</button>
       </div>
-      <app-aggregates-histogram-display [histogramParams]="histogramParamsReady"
-                                        [formSubmitted]="formSubmitted"></app-aggregates-histogram-display>
+
+      <div>
+        <ng-container #container></ng-container>
+      </div>
     </mat-card>
   </mat-sidenav-content>
 </mat-sidenav-container>

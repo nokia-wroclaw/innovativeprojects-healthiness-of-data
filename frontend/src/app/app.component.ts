@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {CacheDataComponent} from './shared/components/cache-data/cache-data.component';
 
 
 @Component({
@@ -11,7 +10,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  constructor(private cacheData: CacheDataComponent) {
+  constructor() {
   }
 
 }

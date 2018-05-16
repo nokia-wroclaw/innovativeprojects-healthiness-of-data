@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ComponentFactoryResolver, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {RestService} from '../../shared/services/rest.service';
 import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
-import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
 import {MatDatepickerInputEvent} from '@angular/material';
 import {ExamplesService} from '../../shared/services/examples.service';
-import {async} from 'rxjs/scheduler/async';
-
+import {CacheDataService} from '../../shared/services/cache.data.service';
+import {OutliersDisplayComponent} from '../outliers/outliers-display/outliers-display.component';
+import {AggregatesHistogramDisplayComponent} from './aggregates-histogram-display/aggregates-histogram-display.component';
 
 
 @Component({
@@ -42,14 +42,20 @@ export class AggregatesHistogramComponent implements OnInit {
   minEndDate = new Date(2014, 0);
   maxEndDate = new Date();
 
+  id = 0;
+  @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
+  histogramDisplayComponent = AggregatesHistogramDisplayComponent;
+  histogramComponents = [];
+
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
-              private cacheData: CacheDataComponent,
-              private examplesService: ExamplesService) {
-    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
-    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
-    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
+              private cacheDataService: CacheDataService,
+              private examplesService: ExamplesService,
+              private componentFactoryResolver: ComponentFactoryResolver) {
+    this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
+    this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
+    this.fullCordIDsAcronymsSet = this.cacheDataService.getFullCordIDsAcronymsSet();
   }
 
   ngOnInit() {
@@ -79,20 +85,24 @@ export class AggregatesHistogramComponent implements OnInit {
     });
   }
 
-  getHistogram(histogramParams) {
+  getHistogram(histogramParams, componentClass: Type<any>) {
     console.log('coverage params');
     console.log(this.histogramParams);
-    this.histogramParamsReady = histogramParams;
-    this.formSubmitted = true;
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
+    const component = this.container.createComponent(componentFactory, 0);
+    component.instance.id = this.id;
+    component.instance.histogramParams = histogramParams;
+    this.histogramComponents.push(component);
+    this.id++;
   }
 
-  // setOnChange(full: any, formControl: FormControl): any {
-  //   return formControl.valueChanges
-  //     .pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
-  // }
-
-  inputFocus() {
-
+  removeDynamicChild(dynamicChildClass: Type<any>) {
+    const component = this.histogramComponents.find((comp) => comp.instance instanceof dynamicChildClass);
+    const componentIndex = this.histogramComponents.indexOf(component);
+    if (componentIndex !== -1) {
+      this.container.remove(this.container.indexOf(component));
+      this.histogramComponents.splice(componentIndex, 1);
+    }
   }
 
   setMinEndDate(event: MatDatepickerInputEvent<Date>) {

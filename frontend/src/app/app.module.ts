@@ -47,8 +47,6 @@ import {
   MatToolbarModule,
   MatTooltipModule
 } from '@angular/material';
-import {DraftComponent} from './components/draft/draft.component';
-import {CacheDataComponent} from './shared/components/cache-data/cache-data.component';
 import {AggregatesHistogramComponent} from './components/aggregates-histogram/aggregates-histogram.component';
 import {SharedFunctionsService} from './shared/services/shared.functions.service';
 import {NotfoundComponent} from './shared/components/notfound/notfound.component';
@@ -59,6 +57,7 @@ import {AggregatesHistogramDisplayComponent} from './components/aggregates-histo
 import {CoverageDisplayComponent} from './components/coverage/coverage-display/coverage-display.component';
 import {Map2dDisplayComponent} from './components/map2d/map2d-display/map2d-display.component';
 import {ExamplesService} from './shared/services/examples.service';
+import {CacheDataService} from './shared/services/cache.data.service';
 
 
 @NgModule({
@@ -67,8 +66,6 @@ import {ExamplesService} from './shared/services/examples.service';
     CoverageComponent,
     HomepageComponent,
     OutliersComponent,
-    DraftComponent,
-    CacheDataComponent,
     Map2dComponent,
     AggregatesHistogramComponent,
     NotfoundComponent,
@@ -156,9 +153,14 @@ import {ExamplesService} from './shared/services/examples.service';
     MatPaginatorModule,
     MatNativeDateModule,
   ],
-  providers: [RestService, CacheDataComponent, SharedFunctionsService, ExamplesService],
+  providers: [RestService, SharedFunctionsService, ExamplesService, CacheDataService],
   bootstrap: [AppComponent],
-  entryComponents: [AggregatesHistogramDisplayComponent, CoverageDisplayComponent, DecompositionDisplayComponent, OutliersDisplayComponent, Map2dDisplayComponent]
+  entryComponents: [
+    AggregatesHistogramDisplayComponent,
+    CoverageDisplayComponent,
+    DecompositionDisplayComponent,
+    OutliersDisplayComponent,
+    Map2dDisplayComponent]
 })
 export class AppModule {
 }

@@ -1,28 +1,20 @@
-<mat-card>
-  <mat-card-title *ngIf="histogramChartLoaded && !histogramChartLoading">{{cordID}}, {{acronym}}, {{kpiBaseName}}</mat-card-title>
-  <!--<mat-card-title *ngIf="histogramChartLoaded && !histogramChartLoading">Cord ID: <b>{{cordID}}</b>, acronym: <b>{{acronym}}</b>, KPI basename: <b>{{kpiBaseName}}</b></mat-card-title>-->
-  <mat-card-subtitle *ngIf="histogramChartLoaded && !histogramChartLoading">Data fetched in: {{fetchedIn/1000}} s
-  </mat-card-subtitle>
-  <div *ngIf="histogramChartLoaded && !histogramChartLoading" style="text-align: center">
-    <div class="column-container">
-      <h5>MAX<br/>{{ max }}</h5>
+<mat-card *ngIf="histogramChartLoaded && !histogramChartLoading">
+    <mat-card-title-group>
+      <mat-card-title>{{cordID}}, {{acronym}}, {{kpiBaseName}}
+      </mat-card-title>
+      <mat-card-subtitle>Data fetched in: {{fetchedIn/1000}} s
+      </mat-card-subtitle>
+      <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
+    </mat-card-title-group>
+    <div style="text-align: center" class="column-container">
+      <div>MAX<br/> {{max}} </div>
+      <div>MIN<br/> {{min}} </div>
+      <div>COVERAGE<br/> {{coverage}} </div>
+      <div>DEVIATION<br/> {{deviation}} </div>
+      <div>MEAN<br/> {{mean}} </div>
     </div>
-    <div class="column-container">
-      <h5>MIN<br/>{{ min }}</h5>
-    </div>
-    <div class="column-container">
-      <h5>COVERAGE<br/>{{ coverage }}</h5>
-    </div>
-    <div class="column-container">
-      <h5>DEVIATION<br/>{{ deviation }}</h5>
-    </div>
-    <div class="column-container">
-      <h5>MEAN<br/>{{ mean }}</h5>
-    </div>
-  </div>
 </mat-card>
 <mat-card>
-  <mat-card-title>Histogram chart:</mat-card-title>
-  <canvas id="myChart" width="1000" height="300" style="width: 1000px; height: 300px;"></canvas>
+  <canvas [id]="histogramChartId" width="1000" height="300" style="width: 1000px; height: 300px;"></canvas>
   <mat-spinner *ngIf="histogramChartLoading"></mat-spinner>
 </mat-card>

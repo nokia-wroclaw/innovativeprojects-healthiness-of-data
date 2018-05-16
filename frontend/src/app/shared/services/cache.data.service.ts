@@ -1,15 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {RestService} from '../../services/rest.service';
-import {map} from 'rxjs/operators/map';
-import {startWith} from 'rxjs/operators/startWith';
-import {SharedFunctionsService} from '../../services/shared.functions.service';
+import {Injectable} from '@angular/core';
+import {RestService} from './rest.service';
+import {SharedFunctionsService} from './shared.functions.service';
 
-@Component({
-  selector: 'app-cache-data',
-  templateUrl: './cache-data.component.html',
-  styleUrls: ['./cache-data.component.css']
-})
-export class CacheDataComponent implements OnInit {
+@Injectable()
+export class CacheDataService {
+
 
   fullKpiBasenamesList: any = [];
   fullAcronymsList: any = [];
@@ -20,8 +15,7 @@ export class CacheDataComponent implements OnInit {
               private sharedFunctions: SharedFunctionsService) {
   }
 
-  ngOnInit() {
-  }
+
 
   // kpi basenames
   setFullKpiBasenamesList(): any {
@@ -121,8 +115,4 @@ export class CacheDataComponent implements OnInit {
     localStorage.removeItem('fullCordIDsAcronymsSet');
     console.log('local storage cleared');
   }
-
 }
-
-
-

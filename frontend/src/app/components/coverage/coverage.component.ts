@@ -1,22 +1,21 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
 import {RestService} from '../../shared/services/rest.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatChipInputEvent, MatDatepickerInputEvent} from '@angular/material';
-import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
+import {MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatDatepickerInputEvent} from '@angular/material';
 
 import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
 import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
 import {map} from 'rxjs/operators/map';
 import {startWith} from 'rxjs/operators/startWith';
 import {Observable} from 'rxjs/Observable';
+import {CacheDataService} from '../../shared/services/cache.data.service';
 
 @Component({
   moduleId: module.id,
   selector: 'app-coverage',
   templateUrl: './coverage.component.html',
   styleUrls: ['./coverage.component.css'],
-  providers: [CacheDataComponent
+  providers: [
     // {provide: MAT_DATE_LOCALE, useValue: 'pl-PL'},
     // {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
     // {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS}
@@ -62,11 +61,11 @@ export class CoverageComponent implements OnInit {
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
-              private cacheData: CacheDataComponent,
+              private cacheDataService: CacheDataService,
               private sharedFunctions: SharedFunctionsService) {
-    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
-    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
-    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
+    this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
+    this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
+    this.fullCordIDsAcronymsSet = this.cacheDataService.getFullCordIDsAcronymsSet();
   }
 
   ngOnInit() {
@@ -100,7 +99,6 @@ export class CoverageComponent implements OnInit {
     });
   }
 
-
   public getCoverage(coverageParams): void {
     console.log('coverage params');
     console.log(coverageParams);
@@ -108,7 +106,6 @@ export class CoverageComponent implements OnInit {
     this.selectedAcronymsReady = this.selectedAcronyms;
     this.selectedKpiBaseNamesReady = this.selectedKpiBasenames;
     this.formSubmitted = true;
-
   }
 
   setOnChange(full: any, formControl: FormControl): any {

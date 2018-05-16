@@ -2,12 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {RestService} from '../../shared/services/rest.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
-import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
 import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {MatDatepickerInputEvent} from '@angular/material';
 import {ExamplesService} from '../../shared/services/examples.service';
+import {CacheDataService} from '../../shared/services/cache.data.service';
 
 @Component({
   selector: 'app-decomposition',
@@ -47,11 +47,11 @@ export class DecompositionComponent implements OnInit {
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
-              private cacheData: CacheDataComponent,
+              private cacheDataService: CacheDataService,
               public examplesService: ExamplesService) {
-    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
-    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
-    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
+    this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
+    this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
+    this.fullCordIDsAcronymsSet = this.cacheDataService.getFullCordIDsAcronymsSet();
   }
 
   ngOnInit() {

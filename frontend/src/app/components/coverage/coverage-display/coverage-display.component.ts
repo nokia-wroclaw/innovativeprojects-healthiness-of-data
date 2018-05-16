@@ -1,10 +1,6 @@
-import {Component, DoCheck, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
-import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {Observable} from 'rxjs/Observable';
-import {MatAutocompleteTrigger} from '@angular/material';
 import {SharedFunctionsService} from '../../../shared/services/shared.functions.service';
-import {CacheDataComponent} from '../../../shared/components/cache-data/cache-data.component';
 import {RestService} from '../../../shared/services/rest.service';
 
 @Component({

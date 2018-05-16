@@ -5,10 +5,10 @@ import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
-import {CacheDataComponent} from '../../shared/components/cache-data/cache-data.component';
 import {MatDatepickerInputEvent} from '@angular/material';
 import {ExamplesService} from '../../shared/services/examples.service';
 import {OutliersDisplayComponent} from './outliers-display/outliers-display.component';
+import {CacheDataService} from '../../shared/services/cache.data.service';
 
 @Component({
   selector: 'app-outliers',
@@ -16,8 +16,6 @@ import {OutliersDisplayComponent} from './outliers-display/outliers-display.comp
   styleUrls: ['./outliers.component.css']
 })
 export class OutliersComponent implements OnInit {
-
-  id = 0;
 
   fullKpiBasenamesList: any = [];
   fullCordIDsList: any = [];
@@ -39,7 +37,7 @@ export class OutliersComponent implements OnInit {
   minEndDate = new Date(2014, 0);
   maxEndDate = new Date();
 
-
+  id = 0;
   @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
   outliersDisplayComponent = OutliersDisplayComponent;
   outlierComponents = [];
@@ -47,12 +45,12 @@ export class OutliersComponent implements OnInit {
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
-              private cacheData: CacheDataComponent,
+              private cacheDataService: CacheDataService,
               public examplesService: ExamplesService,
               private componentFactoryResolver: ComponentFactoryResolver) {
-    this.fullKpiBasenamesList = this.cacheData.getKpiBasenamesList();
-    this.fullCordIDsList = this.cacheData.getFullCordIDsList();
-    this.fullCordIDsAcronymsSet = this.cacheData.getFullCordIDsAcronymsSet();
+    this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
+    this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
+    this.fullCordIDsAcronymsSet = this.cacheDataService.getFullCordIDsAcronymsSet();
   }
 
   ngOnInit() {
@@ -60,13 +58,12 @@ export class OutliersComponent implements OnInit {
 
     this.filteredKpiBasenames = this.sharedFunctions.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
     this.filteredCordIDs = this.sharedFunctions.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
-    // this.filteredAcronyms = this.setOnChange(this.acronymsByCordID, this.acronymFormControl);
+    // this.filteredAcronyms = this.sharedFunctions.setOnChange(this.acronymsByCordID, this.acronymFormControl);
     this.filteredAcronyms = this.acronymFormControl.valueChanges.pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.acronymsByCordID, 50)));
 
     this.cordIDFormControl.valueChanges.subscribe((cord) => {
       this.acronymsByCordID = this.fullCordIDsAcronymsSet[cord];
     });
-
   }
 
   initForm() {
@@ -82,8 +79,6 @@ export class OutliersComponent implements OnInit {
   }
 
   getOutliers(outliersParams: FormGroup, componentClass: Type<any>) {
-    console.log('outliers params');
-    console.log(outliersParams);
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
     const component = this.container.createComponent(componentFactory, 0);
     component.instance.id = this.id;

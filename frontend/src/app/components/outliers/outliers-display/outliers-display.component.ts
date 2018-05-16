@@ -43,12 +43,11 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
-              public cdRef: ChangeDetectorRef) {
-    this.outliersChartId = 'outliersChart' + this.id.toString();
+              private cdRef: ChangeDetectorRef) {
   }
 
   ngOnInit() {
-
+    this.outliersChartId = 'outliersChart' + this.id.toString();
   }
 
   ngAfterViewInit(): void {
@@ -84,7 +83,10 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
         this.outlierValues = response.data.outlier_values;
         this.outlierDates = response.data.dates;
 
-        this.generateDates();
+        const generatedDates = this.sharedFunctions.generateDates(this.startDate, this.endDate, this.outlierDates);
+        this.labels = generatedDates[0];
+        this.outlierDatesFormatted = generatedDates[1];
+        this.fillGaps();
         this.outliersChartLoaded = true;
         this.generateChart();
       } else {
@@ -95,20 +97,6 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
       console.log(error);
       this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
     });
-  }
-
-  generateDates() {
-    const moment = require('moment');
-    require('twix');
-    const itr = moment.twix(new Date(this.startDate), new Date(this.endDate)).iterate('days');
-    while (itr.hasNext()) {
-      this.labels.push(this.sharedFunctions.parseDate(itr.next().toDate()));
-    }
-
-    for (let i = 0; i < this.outlierDates.length; i++) {
-      this.outlierDatesFormatted.push(this.sharedFunctions.parseDate(new Date(this.outlierDates[i])));
-    }
-    this.fillGaps();
   }
 
   fillGaps() {
@@ -156,13 +144,7 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
       },
       options: {
         spanGaps: false,
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: false
-            }
-          }]
-        }, elements: {
+        elements: {
           line: {
             skipNull: true,
             drawNull: false,
@@ -173,4 +155,7 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
     this.sharedFunctions.showElement(this.chartElement);
   }
 
+  removeComponent() {
+    console.log('component removed');
+  }
 }

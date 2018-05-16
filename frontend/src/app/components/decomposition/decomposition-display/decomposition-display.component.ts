@@ -85,30 +85,27 @@ export class DecompositionDisplayComponent implements OnInit, OnChanges {
       let start = new Date().getTime();
       this.restService.getAll(url).then((response) => {
         if (response['status'] === 200) {
-          console.log(response.data);
-          if (response.data.error) {
-            this.sharedFunctions.openSnackBar(response.data.error, 'OK');
-          } else {
-            this.fetchedIn = new Date().getTime() - start;
-            this.decompositionChartLoading = false;
 
-            this.observedDates = response.data.observed_dates;
-            this.observedValues = response.data.observed_values;
-            this.seasonalDates = response.data.seasonal_dates;
-            this.seasonalValues = response.data.seasonal_values;
-            this.trendDates = response.data.trend_dates;
-            this.trendValues = response.data.trend_values;
+          this.fetchedIn = new Date().getTime() - start;
+          this.decompositionChartLoading = false;
 
-            this.clearPreviousChartData();
-            this.fixTrend(this.decompositionParams.value.frequency / 2);
-            let generatedDates = this.sharedFunctions.generateDates(this.startDate, this.endDate, this.observedDates);
-            this.labels = generatedDates[0];
-            this.decompositionDatesFormatted = generatedDates[1];
-            this.fillGaps();
-            this.decompositionChartLoaded = true;
-            this.updateTrendChart(this.trendChart);
-            this.updateSeasonalChart(this.seasonalChart);
-          }
+          this.observedDates = response.data.observed_dates;
+          this.observedValues = response.data.observed_values;
+          this.seasonalDates = response.data.seasonal_dates;
+          this.seasonalValues = response.data.seasonal_values;
+          this.trendDates = response.data.trend_dates;
+          this.trendValues = response.data.trend_values;
+
+          this.clearPreviousChartData();
+          this.fixTrend(this.decompositionParams.value.frequency / 2);
+          const generatedDates = this.sharedFunctions.generateDates(this.startDate, this.endDate, this.observedDates);
+          this.labels = generatedDates[0];
+          this.decompositionDatesFormatted = generatedDates[1];
+          this.fillGaps();
+          this.decompositionChartLoaded = true;
+          this.updateTrendChart(this.trendChart);
+          this.updateSeasonalChart(this.seasonalChart);
+
 
         } else {
           this.sharedFunctions.openSnackBar('Error: ' + response.data.error, 'OK');

@@ -24,6 +24,13 @@ export class ExamplesService {
       cordID: 'Magby',
       acronym: 'thruphroxtron',
       kpiBaseName: 'TRF_215'
+    },
+    {
+      startDate: new Date('2017-01-01T00:00:00.000Z'),
+      endDate: new Date('2017-03-01T00:00:00.000Z'),
+      cordID: 'Magby',
+      acronym: 'thruphroxtron',
+      kpiBaseName: 'TRF_215'
     }
   ];
 
