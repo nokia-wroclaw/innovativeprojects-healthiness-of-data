@@ -81,24 +81,29 @@ export class OutliersComponent implements OnInit {
   getOutliers(outliersParams: FormGroup, componentClass: Type<any>) {
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
     const component = this.container.createComponent(componentFactory, 0);
+    component.instance.removeId.subscribe(
+      (event: any) => {
+        this.removeSpecificChild(this.outliersDisplayComponent, event);
+      }
+    );
     component.instance.id = this.id;
     component.instance.outliersParams = outliersParams;
-    this.outlierComponents.push(component);
+    this.outlierComponents[this.id] = component;
     this.id++;
   }
 
-  removeDynamicChild(dynamicChildClass: Type<any>) {
-    const component = this.outlierComponents.find((comp) => comp.instance instanceof dynamicChildClass);
+  removeSpecificChild(dynamicChildClass: Type<any>, id: number) {
+    const component = this.outlierComponents[id];
     const componentIndex = this.outlierComponents.indexOf(component);
     if (componentIndex !== -1) {
       this.container.remove(this.container.indexOf(component));
-      this.outlierComponents.splice(componentIndex, 1);
     }
   }
 
   setMinEndDate(event: MatDatepickerInputEvent<Date>) {
     this.minEndDate = event.value;
   }
+
 }
 
 
