@@ -13,7 +13,12 @@ export class SharedFunctionsService {
   }
 
   parseDate(date: any): string {
-    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+    if (date._d !== undefined) {
+      date = date._d;
+      return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+    } else {
+      return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+    }
   }
 
   filter(value: string, list: any, sliceSize: number): string[] {

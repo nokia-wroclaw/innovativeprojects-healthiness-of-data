@@ -15,6 +15,9 @@ import {ChartModule} from 'primeng/chart';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TabMenuModule} from 'primeng/tabmenu';
 import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
   MatAutocompleteModule,
   MatButtonModule,
   MatButtonToggleModule,
@@ -58,6 +61,7 @@ import {CoverageDisplayComponent} from './components/coverage/coverage-display/c
 import {Map2dDisplayComponent} from './components/map2d/map2d-display/map2d-display.component';
 import {ExamplesService} from './shared/services/examples.service';
 import {CacheDataService} from './shared/services/cache.data.service';
+import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
 
 
 @NgModule({
@@ -153,7 +157,17 @@ import {CacheDataService} from './shared/services/cache.data.service';
     MatPaginatorModule,
     MatNativeDateModule,
   ],
-  providers: [RestService, SharedFunctionsService, ExamplesService, CacheDataService],
+  providers: [RestService, SharedFunctionsService, ExamplesService, CacheDataService, {
+    provide: MAT_DATE_LOCALE,
+    useValue: 'pl-PL'
+  }, {
+    provide: DateAdapter,
+    useClass: MomentDateAdapter,
+    deps: [MAT_DATE_LOCALE]
+  }, {
+    provide: MAT_DATE_FORMATS,
+    useValue: MAT_MOMENT_DATE_FORMATS
+  }],
   bootstrap: [AppComponent],
   entryComponents: [
     AggregatesHistogramDisplayComponent,
@@ -164,3 +178,5 @@ import {CacheDataService} from './shared/services/cache.data.service';
 })
 export class AppModule {
 }
+
+

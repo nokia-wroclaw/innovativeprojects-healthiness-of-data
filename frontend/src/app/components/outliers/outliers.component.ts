@@ -1,4 +1,4 @@
-import {Component, ComponentFactoryResolver, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ComponentFactoryResolver, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {RestService} from '../../shared/services/rest.service';
 import {Observable} from 'rxjs/Observable';
@@ -15,7 +15,8 @@ import {CacheDataService} from '../../shared/services/cache.data.service';
   templateUrl: './outliers.component.html',
   styleUrls: ['./outliers.component.css']
 })
-export class OutliersComponent implements OnInit {
+export class OutliersComponent implements OnInit, OnDestroy {
+
 
   fullKpiBasenamesList: any = [];
   fullCordIDsList: any = [];
@@ -79,6 +80,8 @@ export class OutliersComponent implements OnInit {
   }
 
   getOutliers(outliersParams: FormGroup, componentClass: Type<any>) {
+    console.log('outliers params');
+    console.log(this.outliersParams);
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
     const component = this.container.createComponent(componentFactory, 0);
     component.instance.removeId.subscribe(
@@ -104,6 +107,9 @@ export class OutliersComponent implements OnInit {
     this.minEndDate = event.value;
   }
 
+  ngOnDestroy(): void {
+    console.log('on destroy');
+  }
 }
 
 

@@ -60,8 +60,6 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
 
     this.outliersChartLoading = true;
     this.cdRef.detectChanges();
-    this.startDate = this.outliersParams.value.startDate;
-    this.endDate = this.outliersParams.value.endDate;
     this.kpiBaseName = this.outliersParams.value.kpiBaseName;
     this.cordID = this.outliersParams.value.cordID;
     this.acronym = this.outliersParams.value.acronym;
