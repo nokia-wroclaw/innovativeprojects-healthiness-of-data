@@ -19,9 +19,6 @@ import {AggregatesHistogramDisplayComponent} from './aggregates-histogram-displa
 })
 export class AggregatesHistogramComponent implements OnInit {
 
-  histogramParamsReady: FormGroup;
-  formSubmitted = false;
-
   fullKpiBasenamesList: any = [];
   fullCordIDsList: any = [];
   fullCordIDsAcronymsSet: any = [];
@@ -69,9 +66,6 @@ export class AggregatesHistogramComponent implements OnInit {
       this.acronymsByCordID = this.fullCordIDsAcronymsSet[cord];
     });
 
-    this.histogramParams.valueChanges.subscribe(() => {
-      this.formSubmitted = false;
-    });
   }
 
   initForm() {
@@ -86,26 +80,36 @@ export class AggregatesHistogramComponent implements OnInit {
   }
 
   getHistogram(histogramParams, componentClass: Type<any>) {
-    console.log('coverage params');
-    console.log(this.histogramParams);
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
     const component = this.container.createComponent(componentFactory, 0);
+    component.instance.removeId.subscribe(
+      (event: any) => {
+        this.removeSpecificChild(this.histogramDisplayComponent, event);
+      }
+    );
     component.instance.id = this.id;
     component.instance.histogramParams = histogramParams;
     this.histogramComponents.push(component);
     this.id++;
   }
 
-  removeDynamicChild(dynamicChildClass: Type<any>) {
-    const component = this.histogramComponents.find((comp) => comp.instance instanceof dynamicChildClass);
+  removeSpecificChild(dynamicChildClass: Type<any>, id: number) {
+    const component = this.histogramComponents[id];
     const componentIndex = this.histogramComponents.indexOf(component);
     if (componentIndex !== -1) {
       this.container.remove(this.container.indexOf(component));
-      this.histogramComponents.splice(componentIndex, 1);
     }
   }
+
 
   setMinEndDate(event: MatDatepickerInputEvent<Date>) {
     this.minEndDate = event.value;
   }
+
+  inputFocus() {
+    if (this.acronymFormControl.value === '') {
+      this.histogramParams.patchValue({acronym: ''});
+    }
+  }
 }
+

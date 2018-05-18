@@ -1,5 +1,5 @@
 <mat-sidenav-container class="sidenav-container" style="height: 100%;">
-  <mat-sidenav mode="side" opened style="width: 250px;">
+  <mat-sidenav #sidenav mode="side" opened style="width: 250px;">
     <mat-card>
       <h3>Search:</h3>
       <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
@@ -112,9 +112,15 @@
 
   </mat-sidenav>
   <mat-sidenav-content style="height: 100%;">
-    <mat-card style="height: 100%;">
-      <h1>Coverage</h1>
-      <app-coverage-display [coverageParams]="coverageParamsReady" [formSubmitted]="formSubmitted" [selectedAcronyms]="selectedAcronymsReady" [selectedKpiBasenames]="selectedKpiBaseNamesReady"></app-coverage-display>
+    <mat-card>
+      <h3>Coverage</h3>
+      <div class="rotate">
+        <button mat-mini-fab color="accent" (click)="sidenav.toggle()" >^</button>
+      </div>
+      <div>
+        <ng-container #container></ng-container>
+      </div>
+      <!--<app-coverage-display [coverageParams]="coverageParamsReady" [formSubmitted]="formSubmitted" [selectedAcronyms]="selectedAcronymsReady" [selectedKpiBasenames]="selectedKpiBaseNamesReady"></app-coverage-display>-->
     </mat-card>
 
   </mat-sidenav-content>

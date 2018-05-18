@@ -93,5 +93,11 @@ export class DecompositionComponent implements OnInit {
   setMinEndDate(event: MatDatepickerInputEvent<Date>) {
     this.minEndDate = event.value;
   }
+
+  inputFocus() {
+    if (this.acronymFormControl.value === '') {
+      this.decompositionParams.patchValue({acronym: ''});
+    }
+  }
 }
 

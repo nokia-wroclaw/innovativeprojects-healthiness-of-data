@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {RestService} from '../../../shared/services/rest.service';
 import {SharedFunctionsService} from '../../../shared/services/shared.functions.service';
@@ -14,6 +14,7 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
 
   @Input() histogramParams: FormGroup;
   @Input() id = 0;
+  @Output() removeId = new EventEmitter<number>();
 
   histogramChartId = 'histogramChart';
 
@@ -81,7 +82,7 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
         this.min = response.data.min_val;
         this.coverage = (parseFloat(response.data.coverage) * 100).toFixed(3) + '%';
         this.mean = parseFloat(response.data.mean).toFixed(3);
-        this.deviation = parseFloat(response.data.std_deviation).toFixed(23);
+        this.deviation = parseFloat(response.data.std_deviation).toFixed(3);
 
         this.generateLabels();
         this.histogramChartLoaded = true;
@@ -140,5 +141,6 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
 
   removeComponent() {
     console.log('component removed');
+    this.removeId.emit(this.id);
   }
 }

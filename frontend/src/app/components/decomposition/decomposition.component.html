@@ -50,7 +50,8 @@
                  matInput
                  placeholder='Acronym'
                  [matAutocomplete]="autoAcro"
-                 required>
+                 required
+                 (focus)="inputFocus()">
         </mat-form-field>
         <mat-autocomplete #autoAcro="matAutocomplete">
           <mat-option *ngFor="let option of filteredAcronyms | async" [value]="option">
@@ -81,7 +82,7 @@
                 [disabled]="!decompositionParams.valid">
           Fetch data
         </button>
-       <br><br>
+        <br><br>
         <mat-form-field>
           <mat-select placeholder="Select example">
             <mat-option *ngFor="let example of examplesService.EXAMPLES; let i = index "

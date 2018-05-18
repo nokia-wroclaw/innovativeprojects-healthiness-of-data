@@ -2,7 +2,8 @@
   <mat-sidenav #sidenav mode="side" opened style="width: 250px;">
     <mat-card>
       <h3>Search:</h3>
-      <form name="outliersForm" (ngSubmit)="getOutliers(outliersParams, outliersDisplayComponent)" [formGroup]="outliersParams">
+      <form name="outliersForm" (ngSubmit)="getOutliers(outliersParams, outliersDisplayComponent)"
+            [formGroup]="outliersParams">
 
         <mat-form-field>
           <input formControlName="startDate"
@@ -50,9 +51,10 @@
                  matInput
                  placeholder='Acronym'
                  [matAutocomplete]="autoAcro"
-                 required>
+                 required
+                 (focus)="inputFocus()">
         </mat-form-field>
-        <mat-autocomplete #autoAcro="matAutocomplete">
+        <mat-autocomplete #autoAcro="matAutocomplete" autoActiveFirstOption>
           <mat-option *ngFor="let option of filteredAcronyms | async" [value]="option">
             {{ option }}
           </mat-option>
@@ -99,7 +101,7 @@
     <mat-card>
       <h3>Outliers</h3>
       <div class="rotate">
-        <button mat-mini-fab color="accent" (click)="sidenav.toggle()" >^</button>
+        <button mat-mini-fab color="accent" (click)="sidenav.toggle()">^</button>
       </div>
       <div>
         <ng-container #container></ng-container>

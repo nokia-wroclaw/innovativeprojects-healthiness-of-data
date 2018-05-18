@@ -80,8 +80,6 @@ export class OutliersComponent implements OnInit, OnDestroy {
   }
 
   getOutliers(outliersParams: FormGroup, componentClass: Type<any>) {
-    console.log('outliers params');
-    console.log(this.outliersParams);
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
     const component = this.container.createComponent(componentFactory, 0);
     component.instance.removeId.subscribe(
@@ -109,6 +107,12 @@ export class OutliersComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     console.log('on destroy');
+  }
+
+  inputFocus() {
+    if (this.acronymFormControl.value === '') {
+      this.outliersParams.patchValue({acronym: ''});
+    }
   }
 }
 

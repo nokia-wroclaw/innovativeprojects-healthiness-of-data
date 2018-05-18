@@ -2,7 +2,8 @@
   <mat-sidenav #sidenav mode="side" opened style="width: 250px;">
     <mat-card>
       <h3>Search:</h3>
-      <form name="histogramsForm" (ngSubmit)="getHistogram(histogramParams, histogramDisplayComponent)" [formGroup]="histogramParams">
+      <form name="histogramsForm" (ngSubmit)="getHistogram(histogramParams, histogramDisplayComponent)"
+            [formGroup]="histogramParams">
 
         <mat-form-field>
           <input formControlName="startDate"
@@ -50,7 +51,8 @@
                  matInput
                  placeholder='Acronym'
                  [matAutocomplete]="autoAcro"
-                 required>
+                 required
+                 (focus)="inputFocus()">
         </mat-form-field>
         <mat-autocomplete #autoAcro="matAutocomplete">
           <mat-option *ngFor="let option of filteredAcronyms | async" [value]="option">
@@ -89,15 +91,14 @@
           </mat-select>
         </mat-form-field>
       </form>
-      <button mat-raised-button color="warn" [type]="button" (click)="removeDynamicChild(histogramDisplayComponent)">Remove oldest component</button>
     </mat-card>
   </mat-sidenav>
 
   <mat-sidenav-content style="background-color: white;">
     <mat-card>
       <h3>Aggregates & histogram</h3>
-       <div class="rotate">
-        <button mat-mini-fab color="accent" (click)="sidenav.toggle()" >^</button>
+      <div class="rotate">
+        <button mat-mini-fab color="accent" (click)="sidenav.toggle()">^</button>
       </div>
 
       <div>

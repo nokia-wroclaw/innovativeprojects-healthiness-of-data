@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
 import {RestService} from '../../shared/services/rest.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatDatepickerInputEvent} from '@angular/material';
@@ -9,6 +9,7 @@ import {map} from 'rxjs/operators/map';
 import {startWith} from 'rxjs/operators/startWith';
 import {Observable} from 'rxjs/Observable';
 import {CacheDataService} from '../../shared/services/cache.data.service';
+import {OutliersDisplayComponent} from '../outliers/outliers-display/outliers-display.component';
 
 @Component({
   moduleId: module.id,
@@ -59,6 +60,11 @@ export class CoverageComponent implements OnInit {
   minEndDate = new Date(2014, 0);
   maxEndDate = new Date();
 
+  id = 0;
+  @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
+  outliersDisplayComponent = OutliersDisplayComponent;
+  outlierComponents = [];
+
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private cacheDataService: CacheDataService,
@@ -108,6 +114,15 @@ export class CoverageComponent implements OnInit {
     this.formSubmitted = true;
   }
 
+  removeSpecificChild(dynamicChildClass: Type<any>, id: number) {
+    const component = this.outlierComponents[id];
+    const componentIndex = this.outlierComponents.indexOf(component);
+    if (componentIndex !== -1) {
+      this.container.remove(this.container.indexOf(component));
+    }
+  }
+
+
   setOnChange(full: any, formControl: FormControl): any {
     return formControl.valueChanges.pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
   }
@@ -137,7 +152,6 @@ export class CoverageComponent implements OnInit {
     this.filteredKpiBasenames = this.fullKpiBasenamesList
       .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0).slice(0, 50);
   }
-
 
   // acronyms
   addChipAcronym(event: MatAutocompleteSelectedEvent, input: any): void {
