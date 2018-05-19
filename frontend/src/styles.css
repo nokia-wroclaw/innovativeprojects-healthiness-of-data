@@ -13,6 +13,9 @@ body {
   width: 100%;
 }
 .sidenav-container {
-  height: 600px;
-}
+  height: 100%;
 
+}
+.sidenav-form{
+  width: 250px;
+}

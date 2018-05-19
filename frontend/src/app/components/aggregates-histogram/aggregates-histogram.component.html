@@ -1,5 +1,5 @@
-<mat-sidenav-container class="sidenav-container" style="height: 100%;">
-  <mat-sidenav #sidenav mode="side" opened style="width: 250px;">
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side" opened class="sidenav-form" >
     <mat-card>
       <h3>Search:</h3>
       <form name="histogramsForm" (ngSubmit)="getHistogram(histogramParams, histogramDisplayComponent)"
@@ -94,7 +94,7 @@
     </mat-card>
   </mat-sidenav>
 
-  <mat-sidenav-content style="background-color: white;">
+  <mat-sidenav-content>
     <mat-card>
       <h3>Aggregates & histogram</h3>
       <div class="rotate">
