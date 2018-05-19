@@ -21,15 +21,13 @@ export class Map2dComponent implements OnInit {
 
   fullKpiBasenamesList: any = [];
   fullCordIDsList: any = [];
-  fullCordIDsAcronymsSet: any = [];
-  acronymsByCordID: any = [];
   filteredKpiBasenames: Observable<string[]>;
-  filteredCordIDs: Observable<string[]>;
-  filteredAcronyms: Observable<string[]>;
+  filteredCordID1s: Observable<string[]>;
+  filteredCordID2s: Observable<string[]>;
 
   map2DParams: FormGroup;
-  cordIDFormControl = new FormControl('', [Validators.required]);
-  acronymFormControl = new FormControl('', [Validators.required]);
+  cordID1FormControl = new FormControl('', [Validators.required]);
+  cordID2FormControl = new FormControl('', [Validators.required]);
   kpiBasenameFormControl = new FormControl('', [Validators.required]);
 
   minStartDate = new Date(2014, 0);
@@ -46,25 +44,23 @@ export class Map2dComponent implements OnInit {
               private routerCommunicationService: RouterCommunicationService) {
     this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
-    this.fullCordIDsAcronymsSet = this.cacheDataService.getFullCordIDsAcronymsSet();
   }
 
   ngOnInit() {
     this.initForm();
     this.filteredKpiBasenames = this.sharedFunctions.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
-    this.filteredCordIDs = this.sharedFunctions.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
-    // this.filteredAcronyms = this.sharedFunctions.setOnChange(this.acronymsByCordID, this.acronymFormControl);
-    this.filteredAcronyms = this.acronymFormControl.valueChanges.pipe(startWith(''), map(val => this.sharedFunctions.filter(val, this.acronymsByCordID, 50)));
-    this.cordIDFormControl.valueChanges.subscribe((cord) => {
-      this.acronymsByCordID = this.fullCordIDsAcronymsSet[cord];
-    });
+    this.filteredCordID1s = this.sharedFunctions.setOnChange(this.fullCordIDsList, this.cordID1FormControl);
+    this.filteredCordID2s = this.sharedFunctions.setOnChange(this.fullCordIDsList, this.cordID2FormControl);
+
   }
 
   initForm() {
     this.map2DParams = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      cordID: this.cordIDFormControl
+      cordID1: this.cordID1FormControl,
+      cordID2: this.cordID1FormControl,
+      kpiBaseName: this.kpiBasenameFormControl,
     });
   }
 

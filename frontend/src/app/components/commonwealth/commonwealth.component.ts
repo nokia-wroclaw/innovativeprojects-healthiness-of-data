@@ -12,15 +12,12 @@ export class CommonwealthComponent implements OnInit {
 
   id = 0;
   @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
-  histogramDisplayComponent = AggregatesHistogramDisplayComponent;
-  outliersDisplayComponent = OutliersDisplayComponent;
   components = [];
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
               private routerCommunicationService: RouterCommunicationService) {
     this.routerCommunicationService.changeEmitted$.subscribe((readyPackage) => {
-      console.log(readyPackage);
-      this.createComponent(readyPackage.params, readyPackage.componentClass );
+      this.createComponent(readyPackage.params, readyPackage.componentClass);
     });
   }
 

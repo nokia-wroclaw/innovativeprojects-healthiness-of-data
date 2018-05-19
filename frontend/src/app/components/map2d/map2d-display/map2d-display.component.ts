@@ -10,10 +10,11 @@ import {SharedFunctionsService} from '../../../shared/services/shared.functions.
 })
 export class Map2DDisplayComponent implements OnInit, AfterViewInit {
 
-
-  @Input() map2DParams: FormGroup;
+  @Input() params: FormGroup;
   @Input() id = 0;
-  @Output() removeId = new EventEmitter<number>();
+  @Output() removeId = new EventEmitter<any>();
+
+  map2DParams: FormGroup;
 
   fetchedIn: number;
 
@@ -23,6 +24,8 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
   map2DLoading = false;
   map2DLoaded = false;
 
+  map2DDisplayComponent = Map2DDisplayComponent;
+
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
@@ -30,6 +33,7 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.map2DParams = this.params;
   }
 
   ngAfterViewInit(): void {
@@ -62,9 +66,12 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
     });
   }
 
-
   removeComponent() {
     console.log('component removed: ' + this.id);
-    this.removeId.emit(this.id);
+    const toRemove = {
+      removeId: this.id,
+      typeOfComponent: this.map2DDisplayComponent
+    };
+    this.removeId.emit(toRemove);
   }
 }

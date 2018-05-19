@@ -29,20 +29,58 @@
     </mat-form-field>
 
     <mat-form-field class="full-width">
-      <input [formControlName]="'cordID'"
-             [formControl]="cordIDFormControl"
-             placeholder='Cord ID'
-             [matAutocomplete]="autoCord"
+      <input [formControlName]="'cordID1'"
+             [formControl]="cordID1FormControl"
+             placeholder='Cord ID 1'
+             [matAutocomplete]="autoCord1"
              matInput
              required>
     </mat-form-field>
-    <mat-autocomplete #autoCord="matAutocomplete">
-      <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
+    <mat-autocomplete #autoCord1="matAutocomplete">
+      <mat-option *ngFor="let option of filteredCordID1s | async" [value]="option">
         {{option}}
       </mat-option>
     </mat-autocomplete>
 
+    <mat-form-field class="full-width">
+      <input [formControlName]="'cordID2'"
+             [formControl]="cordID2FormControl"
+             placeholder='Cord ID 2'
+             [matAutocomplete]="autoCord2"
+             matInput
+             required>
+    </mat-form-field>
+    <mat-autocomplete #autoCord2="matAutocomplete">
+      <mat-option *ngFor="let option of filteredCordID2s | async" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
+
+    <mat-form-field class="full-width">
+      <input [formControlName]="'kpiBaseName'"
+             [formControl]="kpiBasenameFormControl"
+             placeholder='KPI basename'
+             [matAutocomplete]="autoKpi"
+             matInput
+             required>
+    </mat-form-field>
+    <mat-autocomplete #autoKpi="matAutocomplete">
+      <mat-option *ngFor="let optionKpi of filteredKpiBasenames | async" [value]="optionKpi">
+        {{optionKpi}}
+      </mat-option>
+    </mat-autocomplete>
+
     <button mat-raised-button color="primary" [type]="submit" [disabled]="!map2DParams.valid">Fetch data</button>
+
+    <br><br>
+    <mat-form-field>
+      <mat-select placeholder="Select example">
+        <mat-option *ngFor="let example of examplesService.EXAMPLES_2DMAP; let i = index "
+                    (click)="examplesService.testCase(map2DParams, example)" [value]="example">
+          Test {{i+1}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </form>
 </mat-card>
 
