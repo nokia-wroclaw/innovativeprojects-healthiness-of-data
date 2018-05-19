@@ -1,4 +1,7 @@
-import {Component, ComponentFactoryResolver, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+  Component, ComponentFactoryResolver, EventEmitter, OnDestroy, OnInit, Output, Type, ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {RestService} from '../../shared/services/rest.service';
 import {Observable} from 'rxjs/Observable';
@@ -9,6 +12,7 @@ import {MatDatepickerInputEvent} from '@angular/material';
 import {ExamplesService} from '../../shared/services/examples.service';
 import {OutliersDisplayComponent} from './outliers-display/outliers-display.component';
 import {CacheDataService} from '../../shared/services/cache.data.service';
+import {RouterCommunicationService} from '../../shared/services/router-communication/router-communication.service';
 
 @Component({
   selector: 'app-outliers',
@@ -40,12 +44,15 @@ export class OutliersComponent implements OnInit {
   outliersDisplayComponent = OutliersDisplayComponent;
   outlierComponents = [];
 
+  @Output() params = new EventEmitter<any>();
+
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cacheDataService: CacheDataService,
               public examplesService: ExamplesService,
-              private componentFactoryResolver: ComponentFactoryResolver) {
+              private componentFactoryResolver: ComponentFactoryResolver,
+              private routerCommunicationService: RouterCommunicationService) {
     this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
     this.fullCordIDsAcronymsSet = this.cacheDataService.getFullCordIDsAcronymsSet();
@@ -75,25 +82,23 @@ export class OutliersComponent implements OnInit {
   }
 
   getOutliers(outliersParams: FormGroup, componentClass: Type<any>) {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
-    const component = this.container.createComponent(componentFactory, 0);
-    component.instance.removeId.subscribe(
-      (event: any) => {
-        this.removeSpecificChild(this.outliersDisplayComponent, event);
-      }
-    );
-    component.instance.id = this.id;
-    component.instance.outliersParams = outliersParams;
-    this.outlierComponents[this.id] = component;
-    this.id++;
-  }
+    const paramsAndComponentclass = {
+      params: outliersParams,
+      componentClass: componentClass
+    };
+    this.routerCommunicationService.emitChange(paramsAndComponentclass);
 
-  removeSpecificChild(dynamicChildClass: Type<any>, id: number) {
-    const component = this.outlierComponents[id];
-    const componentIndex = this.outlierComponents.indexOf(component);
-    if (componentIndex !== -1) {
-      this.container.remove(this.container.indexOf(component));
-    }
+    // const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
+    // const component = this.container.createComponent(componentFactory, 0);
+    // component.instance.removeId.subscribe(
+    //   (event: any) => {
+    //     this.removeSpecificChild(this.outliersDisplayComponent, event);
+    //   }
+    // );
+    // component.instance.id = this.id;
+    // component.instance.outliersParams = outliersParams;
+    // this.outlierComponents[this.id] = component;
+    // this.id++;
   }
 
   setMinEndDate(event: MatDatepickerInputEvent<Date>) {

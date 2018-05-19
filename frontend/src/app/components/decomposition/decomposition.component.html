@@ -1,110 +1,94 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav mode="side" opened class="sidenav-form" >
-    <mat-card>
-      <h3>Search:</h3>
-      <form name="outliersForm" (ngSubmit)="getDecomposition(decompositionParams, decompositionDisplayComponent)"
-            [formGroup]="decompositionParams">
+<mat-card>
+  <h3>Decomposition:</h3>
+  <form name="outliersForm" (ngSubmit)="getDecomposition(decompositionParams, decompositionDisplayComponent)"
+        [formGroup]="decompositionParams">
 
-        <mat-form-field>
-          <input formControlName="startDate"
-                 placeholder="Start date"
-                 [matDatepicker]="startDate"
-                 [min]="minStartDate"
-                 [max]="maxStartDate"
-                 matInput
-                 required
-                 (dateChange)="setMinEndDate($event)">
-          <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
-          <mat-datepicker #startDate></mat-datepicker>
-        </mat-form-field>
+    <mat-form-field>
+      <input formControlName="startDate"
+             placeholder="Start date"
+             [matDatepicker]="startDate"
+             [min]="minStartDate"
+             [max]="maxStartDate"
+             matInput
+             required
+             (dateChange)="setMinEndDate($event)">
+      <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+      <mat-datepicker #startDate></mat-datepicker>
+    </mat-form-field>
 
-        <mat-form-field>
-          <input formControlName="endDate"
-                 placeholder="End date"
-                 [matDatepicker]="endDate"
-                 [min]="minEndDate"
-                 [max]="maxEndDate"
-                 matInput
-                 required>
-          <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
-          <mat-datepicker #endDate></mat-datepicker>
-        </mat-form-field>
+    <mat-form-field>
+      <input formControlName="endDate"
+             placeholder="End date"
+             [matDatepicker]="endDate"
+             [min]="minEndDate"
+             [max]="maxEndDate"
+             matInput
+             required>
+      <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+      <mat-datepicker #endDate></mat-datepicker>
+    </mat-form-field>
 
-        <mat-form-field class="full-width">
-          <input [formControlName]="'cordID'"
-                 [formControl]="cordIDFormControl"
-                 placeholder='Cord ID'
-                 [matAutocomplete]="autoCord"
-                 matInput
-                 required>
-        </mat-form-field>
-        <mat-autocomplete #autoCord="matAutocomplete">
-          <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
-            {{option}}
-          </mat-option>
-        </mat-autocomplete>
+    <mat-form-field class="full-width">
+      <input [formControlName]="'cordID'"
+             [formControl]="cordIDFormControl"
+             placeholder='Cord ID'
+             [matAutocomplete]="autoCord"
+             matInput
+             required>
+    </mat-form-field>
+    <mat-autocomplete #autoCord="matAutocomplete">
+      <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
 
-        <mat-form-field class="full-width">
-          <input [formControlName]="'acronym'"
-                 [formControl]="acronymFormControl"
-                 placeholder='Acronym'
-                 [matAutocomplete]="autoAcro"
-                 matInput
-                 required
-                 (focus)="inputFocus()">
-        </mat-form-field>
-        <mat-autocomplete #autoAcro="matAutocomplete">
-          <mat-option *ngFor="let option of filteredAcronyms | async" [value]="option">
-            {{ option }}
-          </mat-option>
-        </mat-autocomplete>
+    <mat-form-field class="full-width">
+      <input [formControlName]="'acronym'"
+             [formControl]="acronymFormControl"
+             placeholder='Acronym'
+             [matAutocomplete]="autoAcro"
+             matInput
+             required
+             (focus)="inputFocus()">
+    </mat-form-field>
+    <mat-autocomplete #autoAcro="matAutocomplete">
+      <mat-option *ngFor="let option of filteredAcronyms | async" [value]="option">
+        {{ option }}
+      </mat-option>
+    </mat-autocomplete>
 
-        <mat-form-field class="full-width">
-          <input [formControlName]="'kpiBaseName'"
-                 [formControl]="kpiBasenameFormControl"
-                 placeholder='KPI basename'
-                 [matAutocomplete]="autoKpi"
-                 matInput
-                 required>
-        </mat-form-field>
-        <mat-autocomplete #autoKpi="matAutocomplete">
-          <mat-option *ngFor="let optionKpi of filteredKpiBasenames | async" [value]="optionKpi">
-            {{optionKpi}}
-          </mat-option>
-        </mat-autocomplete>
+    <mat-form-field class="full-width">
+      <input [formControlName]="'kpiBaseName'"
+             [formControl]="kpiBasenameFormControl"
+             placeholder='KPI basename'
+             [matAutocomplete]="autoKpi"
+             matInput
+             required>
+    </mat-form-field>
+    <mat-autocomplete #autoKpi="matAutocomplete">
+      <mat-option *ngFor="let optionKpi of filteredKpiBasenames | async" [value]="optionKpi">
+        {{optionKpi}}
+      </mat-option>
+    </mat-autocomplete>
 
-        <mat-form-field class="full-width">
-          <input formControlName="frequency"
-                 placeholder='Frequency'
-                 matInput>
-        </mat-form-field>
+    <mat-form-field class="full-width">
+      <input formControlName="frequency"
+             placeholder='Frequency'
+             matInput>
+    </mat-form-field>
 
-        <button mat-raised-button color="primary" [type]="submit" [disabled]="!decompositionParams.valid">Fetch data
-        </button>
+    <button mat-raised-button color="primary" [type]="submit" [disabled]="!decompositionParams.valid">Fetch data
+    </button>
 
-        <br><br>
-        <mat-form-field>
-          <mat-select placeholder="Select example">
-            <mat-option *ngFor="let example of examplesService.EXAMPLES; let i = index "
-                        (click)="examplesService.testCase(decompositionParams, example)" [value]="example">
-              Test {{i+1}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+    <br><br>
+    <mat-form-field>
+      <mat-select placeholder="Select example">
+        <mat-option *ngFor="let example of examplesService.EXAMPLES; let i = index "
+                    (click)="examplesService.testCase(decompositionParams, example)" [value]="example">
+          Test {{i+1}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      </form>
-    </mat-card>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <mat-card>
-      <h3>Decomposition</h3>
-      <div class="rotate">
-        <button mat-mini-fab color="accent" (click)="sidenav.toggle()">^</button>
-      </div>
-      <div>
-        <ng-container #container></ng-container>
-      </div>
-    </mat-card>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  </form>
+</mat-card>

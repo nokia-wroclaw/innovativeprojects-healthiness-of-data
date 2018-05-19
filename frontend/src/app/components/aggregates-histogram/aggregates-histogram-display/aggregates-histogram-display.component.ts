@@ -12,9 +12,11 @@ declare var Chart: any;
 })
 export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewInit {
 
-  @Input() histogramParams: FormGroup;
+  @Input() params: any;
   @Input() id = 0;
-  @Output() removeId = new EventEmitter<number>();
+  @Output() removeId = new EventEmitter<any>();
+
+  histogramParams: FormGroup;
 
   histogramChartId = 'histogramChart';
   histogramChartElement;
@@ -42,15 +44,18 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
   mean: string;
   deviation: string;
 
+  histogramDisplayComponent = AggregatesHistogramDisplayComponent;
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cdRef: ChangeDetectorRef) {
+
   }
 
   ngOnInit() {
     this.histogramChartId = 'histogramChartId' + this.id.toString();
+    this.histogramParams = this.params;
   }
 
   ngAfterViewInit(): void {
@@ -99,7 +104,11 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
 
   removeComponent() {
     console.log('component removed: ' + this.id);
-    this.removeId.emit(this.id);
+    const toRemove = {
+      removeId: this.id,
+      typeOfComponent: this.histogramDisplayComponent
+    };
+    this.removeId.emit(toRemove);
   }
 
   generateChart() {

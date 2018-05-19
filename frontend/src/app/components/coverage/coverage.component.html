@@ -1,129 +1,113 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav mode="side" opened class="sidenav-form" >
-    <mat-card>
-      <h3>Search:</h3>
-      <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams,coverageDisplayComponent)"
-            [formGroup]="coverageParams">
+<mat-card>
+  <h3>Coverage:</h3>
+  <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams,coverageDisplayComponent)"
+        [formGroup]="coverageParams">
 
-        <mat-form-field>
-          <input formControlName="startDate"
-                 placeholder="Start date"
-                 [matDatepicker]="startDate"
-                 [min]="minStartDate"
-                 [max]="maxStartDate"
-                 matInput
-                 required
-                 (dateChange)="setMinEndDate($event)">
-          <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
-          <mat-datepicker #startDate></mat-datepicker>
-        </mat-form-field>
+    <mat-form-field>
+      <input formControlName="startDate"
+             placeholder="Start date"
+             [matDatepicker]="startDate"
+             [min]="minStartDate"
+             [max]="maxStartDate"
+             matInput
+             required
+             (dateChange)="setMinEndDate($event)">
+      <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+      <mat-datepicker #startDate></mat-datepicker>
+    </mat-form-field>
 
-        <mat-form-field>
-          <input formControlName="endDate"
-                 placeholder="End date"
-                 [matDatepicker]="endDate"
-                 [min]="minEndDate"
-                 [max]="maxEndDate"
-                 matInput
-                 required>
-          <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
-          <mat-datepicker #endDate></mat-datepicker>
-        </mat-form-field>
+    <mat-form-field>
+      <input formControlName="endDate"
+             placeholder="End date"
+             [matDatepicker]="endDate"
+             [min]="minEndDate"
+             [max]="maxEndDate"
+             matInput
+             required>
+      <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+      <mat-datepicker #endDate></mat-datepicker>
+    </mat-form-field>
 
-        <mat-form-field>
-          <input [formControlName]="'cordID'"
-                 [formControl]="cordIDFormControl"
-                 placeholder="Cord ID"
-                 [matAutocomplete]="autoCord"
-                 #inputCord
-                 matInput
-                 required>
-        </mat-form-field>
-        <mat-autocomplete #autoCord="matAutocomplete" (optionSelected)="filterAcronyms($event, inputCord)">
-          <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
-            {{option}}
-          </mat-option>
-        </mat-autocomplete>
+    <mat-form-field>
+      <input [formControlName]="'cordID'"
+             [formControl]="cordIDFormControl"
+             placeholder="Cord ID"
+             [matAutocomplete]="autoCord"
+             #inputCord
+             matInput
+             required>
+    </mat-form-field>
+    <mat-autocomplete #autoCord="matAutocomplete" (optionSelected)="filterAcronyms($event, inputCord)">
+      <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
 
-        <mat-form-field>
-          <mat-chip-list #acronymList>
-            <mat-chip *ngFor="let chip of selectedAcronyms" [selectable]="selectable" [removable]="removable"
-                      (remove)="removeChipAcronym(chip)">
-              {{chip}}
-              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip>
+    <mat-form-field>
+      <mat-chip-list #acronymList>
+        <mat-chip *ngFor="let chip of selectedAcronyms" [selectable]="selectable" [removable]="removable"
+                  (remove)="removeChipAcronym(chip)">
+          {{chip}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
 
-            <input [formControlName]="'acronyms'"
-                   [formControl]="acronymsFormControl"
-                   placeholder="Acronyms"
-                   [matChipInputFor]="acronymList"
-                   [matChipInputAddOnBlur]="addOnBlur"
-                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                   [matAutocomplete]="autoAcr"
-                   #chipInputAcronym
-                   matInput
-                   (focus)="inputFocus()"
-            />
-            <!--(matChipInputTokenEnd)="add($event)"-->
+        <input [formControlName]="'acronyms'"
+               [formControl]="acronymsFormControl"
+               placeholder="Acronyms"
+               [matChipInputFor]="acronymList"
+               [matChipInputAddOnBlur]="addOnBlur"
+               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+               [matAutocomplete]="autoAcr"
+               #chipInputAcronym
+               matInput
+               (focus)="inputFocus()"
+        />
+        <!--(matChipInputTokenEnd)="add($event)"-->
 
 
-          </mat-chip-list>
-          <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChipAcronym($event, chipInputAcronym)">
-            <mat-option *ngFor="let optionAcr of filteredAcronyms" [value]="optionAcr">
-              {{optionAcr}}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
+      </mat-chip-list>
+      <mat-autocomplete #autoAcr="matAutocomplete" (optionSelected)="addChipAcronym($event, chipInputAcronym)">
+        <mat-option *ngFor="let optionAcr of filteredAcronyms" [value]="optionAcr">
+          {{optionAcr}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
 
-        <mat-form-field class="full-width">
-          <mat-chip-list #kpiList>
-            <mat-chip *ngFor="let chip of selectedKpiBasenames" [selectable]="selectable" [removable]="removable"
-                      (remove)="removeChipKpiBasename(chip)">
-              {{chip}}
-              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip>
+    <mat-form-field class="full-width">
+      <mat-chip-list #kpiList>
+        <mat-chip *ngFor="let chip of selectedKpiBasenames" [selectable]="selectable" [removable]="removable"
+                  (remove)="removeChipKpiBasename(chip)">
+          {{chip}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
 
-            <input [formControlName]="'kpiBaseNames'"
-                   [formControl]="kpiBasenamesFormControl"
-                   placeholder="KPI basenames"
-                   [matChipInputFor]="kpiList"
-                   [matAutocomplete]="autoKpi"
-                   [matChipInputAddOnBlur]="addOnBlur"
-                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                   #chipInputKpi
-                   matInput
-            />
+        <input [formControlName]="'kpiBaseNames'"
+               [formControl]="kpiBasenamesFormControl"
+               placeholder="KPI basenames"
+               [matChipInputFor]="kpiList"
+               [matAutocomplete]="autoKpi"
+               [matChipInputAddOnBlur]="addOnBlur"
+               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+               #chipInputKpi
+               matInput
+        />
 
-          </mat-chip-list>
-          <mat-autocomplete #autoKpi="matAutocomplete" (optionSelected)="addChipKpiBasename($event, chipInputKpi)">
-            <mat-option *ngFor="let optionKpi of filteredKpiBasenames" [value]="optionKpi">
-              {{optionKpi}}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
+      </mat-chip-list>
+      <mat-autocomplete #autoKpi="matAutocomplete" (optionSelected)="addChipKpiBasename($event, chipInputKpi)">
+        <mat-option *ngFor="let optionKpi of filteredKpiBasenames" [value]="optionKpi">
+          {{optionKpi}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
 
-        <mat-form-field class="full-width">
-          <input formControlName="gapSize"
-                 placeholder='Gap size (min 1)'
-                 matInput
-                 required>
-        </mat-form-field>
+    <mat-form-field class="full-width">
+      <input formControlName="gapSize"
+             placeholder='Gap size (min 1)'
+             matInput
+             required>
+    </mat-form-field>
 
-        <button mat-raised-button color="primary" [type]="submit" [disabled]="!coverageParams.valid">Fetch data</button>
-        <button mat-raised-button color="accent" type="button" (click)="imLazy()">Auto</button>
-      </form>
-    </mat-card>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <mat-card>
-      <h3>Coverage</h3>
-      <div class="rotate">
-        <button mat-mini-fab color="accent" (click)="sidenav.toggle()">^</button>
-      </div>
-      <div>
-        <ng-container #container></ng-container>
-      </div>
-    </mat-card>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+    <button mat-raised-button color="primary" [type]="submit" [disabled]="!coverageParams.valid">Fetch data</button>
+    <button mat-raised-button color="accent" type="button" (click)="imLazy()">Auto</button>
+  </form>
+</mat-card>

@@ -10,6 +10,7 @@ import {ExamplesService} from '../../shared/services/examples.service';
 import {CacheDataService} from '../../shared/services/cache.data.service';
 import {OutliersDisplayComponent} from '../outliers/outliers-display/outliers-display.component';
 import {AggregatesHistogramDisplayComponent} from './aggregates-histogram-display/aggregates-histogram-display.component';
+import {RouterCommunicationService} from '../../shared/services/router-communication/router-communication.service';
 
 
 @Component({
@@ -48,7 +49,8 @@ export class AggregatesHistogramComponent implements OnInit {
               private sharedFunctions: SharedFunctionsService,
               private cacheDataService: CacheDataService,
               private examplesService: ExamplesService,
-              private componentFactoryResolver: ComponentFactoryResolver) {
+              private componentFactoryResolver: ComponentFactoryResolver,
+              private routerCommunicationService: RouterCommunicationService) {
     this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
     this.fullCordIDsAcronymsSet = this.cacheDataService.getFullCordIDsAcronymsSet();
@@ -79,17 +81,23 @@ export class AggregatesHistogramComponent implements OnInit {
   }
 
   getHistogram(histogramParams, componentClass: Type<any>) {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
-    const component = this.container.createComponent(componentFactory, 0);
-    component.instance.removeId.subscribe(
-      (event: any) => {
-        this.removeSpecificChild(this.histogramDisplayComponent, event);
-      }
-    );
-    component.instance.id = this.id;
-    component.instance.histogramParams = histogramParams;
-    this.histogramComponents.push(component);
-    this.id++;
+    const paramsAndComponentclass = {
+      params: histogramParams,
+      componentClass: componentClass
+    };
+    this.routerCommunicationService.emitChange(paramsAndComponentclass);
+
+    // const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
+    // const component = this.container.createComponent(componentFactory, 0);
+    // component.instance.removeId.subscribe(
+    //   (event: any) => {
+    //     this.removeSpecificChild(this.histogramDisplayComponent, event);
+    //   }
+    // );
+    // component.instance.id = this.id;
+    // component.instance.histogramParams = histogramParams;
+    // this.histogramComponents.push(component);
+    // this.id++;
   }
 
   removeSpecificChild(dynamicChildClass: Type<any>, id: number) {

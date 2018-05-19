@@ -15,9 +15,11 @@ declare var Chart: any;
 })
 export class OutliersDisplayComponent implements OnInit, AfterViewInit {
 
-  @Input() outliersParams: FormGroup;
+  @Input() params: any;
   @Input() id = 0;
-  @Output() removeId = new EventEmitter<number>();
+  @Output() removeId = new EventEmitter<any>();
+
+  outliersParams: FormGroup;
 
   outliersChartId = 'outliersChart';
   outliersChartElement;
@@ -42,6 +44,8 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
   dataGapsFilled: any = [];
   outliersGapsFilled: any = [];
 
+  outliersDisplayComponent = OutliersDisplayComponent;
+
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
@@ -50,6 +54,7 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.outliersChartId = 'outliersChart' + this.id.toString();
+    this.outliersParams = this.params;
   }
 
   ngAfterViewInit(): void {
@@ -111,7 +116,11 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
 
   removeComponent() {
     console.log('component removed: ' + this.id);
-    this.removeId.emit(this.id);
+    const toRemove = {
+      removeId: this.id,
+      typeOfComponent: this.outliersDisplayComponent
+    };
+    this.removeId.emit(toRemove);
   }
 
   generateChart() {

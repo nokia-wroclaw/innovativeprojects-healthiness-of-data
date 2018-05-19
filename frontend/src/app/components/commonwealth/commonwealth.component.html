@@ -1,0 +1,18 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side" opened class="sidenav-form">
+    <router-outlet></router-outlet>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-card>
+      <h3>Results</h3>
+      <div class="rotate">
+        <button mat-mini-fab color="accent" (click)="sidenav.toggle()">^</button>
+      </div>
+      <div>
+        <ng-container #container></ng-container>
+      </div>
+    </mat-card>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

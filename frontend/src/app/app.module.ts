@@ -62,7 +62,9 @@ import {Map2DDisplayComponent} from './components/map2d/map2d-display/map2d-disp
 import {ExamplesService} from './shared/services/examples.service';
 import {CacheDataService} from './shared/services/cache.data.service';
 import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
-import { NavbarComponent } from './shared/components/navbar/navbar.component';
+import {NavbarComponent} from './shared/components/navbar/navbar.component';
+import {CommonwealthComponent} from './components/commonwealth/commonwealth.component';
+import {RouterCommunicationService} from './shared/services/router-communication/router-communication.service';
 
 
 @NgModule({
@@ -80,7 +82,8 @@ import { NavbarComponent } from './shared/components/navbar/navbar.component';
     AggregatesHistogramDisplayComponent,
     CoverageDisplayComponent,
     Map2DDisplayComponent,
-    NavbarComponent
+    NavbarComponent,
+    CommonwealthComponent
   ],
   imports: [
     BrowserModule,
@@ -159,7 +162,7 @@ import { NavbarComponent } from './shared/components/navbar/navbar.component';
     MatPaginatorModule,
     MatNativeDateModule,
   ],
-  providers: [RestService, SharedFunctionsService, ExamplesService, CacheDataService, {
+  providers: [RestService, SharedFunctionsService, ExamplesService, CacheDataService, RouterCommunicationService, {
     provide: MAT_DATE_LOCALE,
     useValue: 'pl-PL'
   }, {
