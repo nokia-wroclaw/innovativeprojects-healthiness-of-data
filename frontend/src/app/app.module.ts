@@ -62,6 +62,7 @@ import {Map2DDisplayComponent} from './components/map2d/map2d-display/map2d-disp
 import {ExamplesService} from './shared/services/examples.service';
 import {CacheDataService} from './shared/services/cache.data.service';
 import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
+import { NavbarComponent } from './shared/components/navbar/navbar.component';
 
 
 @NgModule({
@@ -78,7 +79,8 @@ import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-mome
     OutliersDisplayComponent,
     AggregatesHistogramDisplayComponent,
     CoverageDisplayComponent,
-    Map2DDisplayComponent
+    Map2DDisplayComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

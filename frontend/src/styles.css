@@ -2,20 +2,37 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 body {
-	font-family: 'Lato', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
+
 .rotate {
-    position:fixed;
-    transform: rotate(90deg) ;
-    transform-origin:left top;
+  position: fixed;
+  transform: rotate(90deg);
+  transform-origin: left top;
 }
+
 .full-width {
   width: 100%;
 }
+
 .sidenav-container {
   height: 100%;
 
 }
-.sidenav-form{
+
+.sidenav-form {
   width: 250px;
+}
+
+.white {
+  color: white;
+}
+
+.nav-link {
+  line-height: 48px
+}
+
+.main-content {
+  min-height: 800px;
+  height: calc(100vh - 64px);
 }
