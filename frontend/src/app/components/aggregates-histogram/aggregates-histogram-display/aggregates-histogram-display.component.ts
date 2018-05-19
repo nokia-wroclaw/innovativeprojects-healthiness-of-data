@@ -17,29 +17,31 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
   @Output() removeId = new EventEmitter<number>();
 
   histogramChartId = 'histogramChart';
+  histogramChartElement;
+  histogramChart;
+  fetchedIn: any;
 
   startDate: any;
   endDate: any;
-  kpiBaseName: any;
-  acronym: any;
-  cordID: any;
-  histBins: any;
+  cordID: string;
+  acronym: string;
+  kpiBaseName: string;
+  histBins: number;
   histogramChartLoading = false;
   histogramChartLoaded = false;
+
+  labels: any = [];
 
   histogramData: any = [];
   histogramIndexes: any = [];
   histogramValues: any = [];
-  labels: any = [];
 
-  chart;
-  myChart;
   max: string;
   min: string;
   coverage: string;
   mean: string;
   deviation: string;
-  fetchedIn: any;
+
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
@@ -52,29 +54,20 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
   }
 
   ngAfterViewInit(): void {
-    this.chart = document.getElementById(this.histogramChartId);
-    this.sharedFunctions.hideElement(this.chart);
+    this.histogramChartElement = document.getElementById(this.histogramChartId);
+    this.sharedFunctions.hideElement(this.histogramChartElement);
 
     this.histogramChartLoading = true;
     this.cdRef.detectChanges();
-    this.startDate = this.histogramParams.value.startDate;
-    this.endDate = this.histogramParams.value.endDate;
-    this.kpiBaseName = this.histogramParams.value.kpiBaseName;
     this.cordID = this.histogramParams.value.cordID;
     this.acronym = this.histogramParams.value.acronym;
-    this.startDate = this.sharedFunctions.parseDate(this.histogramParams.value.startDate);
-    this.endDate = this.sharedFunctions.parseDate(this.histogramParams.value.endDate);
-    this.histBins = this.histogramParams.value.histBins;
-    if (typeof this.histBins == 'undefined') {
-      this.histBins = 10;
-    }
-    const url = 'api/clusters/aggregates' + '/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate + '&kpi_basename=' + this.kpiBaseName.toUpperCase() + '&bins=' + this.histBins;
-    let start = new Date().getTime();
+    this.kpiBaseName = this.histogramParams.value.kpiBaseName;
+
+    const url = this.sharedFunctions.generateURL(this.histogramParams, 'histogram');
+    const start = new Date().getTime();
     this.restService.getAll(url).then(response => {
-      this.histogramChartLoading = false;
-      if (response['status'] === 200) {
-        let end = new Date().getTime();
-        this.fetchedIn = end - start;
+      if (response.status === 200) {
+        this.fetchedIn = new Date().getTime() - start;
         this.histogramData = response.data;
         this.histogramValues = response.data.distribution[0];
         this.histogramIndexes = response.data.distribution[1];
@@ -85,11 +78,12 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
         this.deviation = parseFloat(response.data.std_deviation).toFixed(3);
 
         this.generateLabels();
-        this.histogramChartLoaded = true;
         this.generateChart();
+        this.histogramChartLoaded = true;
       } else {
         this.sharedFunctions.openSnackBar('Error: ' + response.status + ' - ' + response.data.error, 'OK');
       }
+      this.histogramChartLoading = false;
     }).catch((error) => {
       console.log('error');
       console.log(error);
@@ -103,8 +97,13 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
     }
   }
 
+  removeComponent() {
+    console.log('component removed: ' + this.id);
+    this.removeId.emit(this.id);
+  }
+
   generateChart() {
-    this.myChart = new Chart(this.chart, {
+    this.histogramChart = new Chart(this.histogramChartElement, {
       type: 'bar',
       data: {
         labels: this.labels,
@@ -136,11 +135,6 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
         }
       }
     });
-    this.sharedFunctions.showElement(this.chart);
-  }
-
-  removeComponent() {
-    console.log('component removed');
-    this.removeId.emit(this.id);
+    this.sharedFunctions.showElement(this.histogramChartElement);
   }
 }

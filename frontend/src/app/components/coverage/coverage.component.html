@@ -2,40 +2,41 @@
   <mat-sidenav #sidenav mode="side" opened style="width: 250px;">
     <mat-card>
       <h3>Search:</h3>
-      <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams)" [formGroup]="coverageParams">
+      <form name="coverageForm" (ngSubmit)="getCoverage(coverageParams,coverageDisplayComponent)"
+            [formGroup]="coverageParams">
 
- <mat-form-field>
+        <mat-form-field>
           <input formControlName="startDate"
-                 matInput
-                 [matDatepicker]="startDate"
                  placeholder="Start date"
+                 [matDatepicker]="startDate"
                  [min]="minStartDate"
                  [max]="maxStartDate"
-                 (dateChange)="setMinEndDate($event)"
-                 required>
+                 matInput
+                 required
+                 (dateChange)="setMinEndDate($event)">
           <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
           <mat-datepicker #startDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
           <input formControlName="endDate"
-                 matInput
-                 [matDatepicker]="endDate"
                  placeholder="End date"
+                 [matDatepicker]="endDate"
                  [min]="minEndDate"
                  [max]="maxEndDate"
+                 matInput
                  required>
           <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
           <mat-datepicker #endDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
-          <input [formControl]="cordIDFormControl"
-                 [formControlName]="'cordID'"
+          <input [formControlName]="'cordID'"
+                 [formControl]="cordIDFormControl"
                  placeholder="Cord ID"
-                 matInput
                  [matAutocomplete]="autoCord"
                  #inputCord
+                 matInput
                  required>
         </mat-form-field>
         <mat-autocomplete #autoCord="matAutocomplete" (optionSelected)="filterAcronyms($event, inputCord)">
@@ -44,7 +45,7 @@
           </mat-option>
         </mat-autocomplete>
 
-        <mat-form-field class="full-width">
+        <mat-form-field>
           <mat-chip-list #acronymList>
             <mat-chip *ngFor="let chip of selectedAcronyms" [selectable]="selectable" [removable]="removable"
                       (remove)="removeChipAcronym(chip)">
@@ -52,15 +53,15 @@
               <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
             </mat-chip>
 
-            <input [formControl]="acronymsFormControl"
-                   [formControlName]="'acronyms'"
+            <input [formControlName]="'acronyms'"
+                   [formControl]="acronymsFormControl"
                    placeholder="Acronyms"
                    [matChipInputFor]="acronymList"
                    [matChipInputAddOnBlur]="addOnBlur"
                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                    [matAutocomplete]="autoAcr"
-                   matInput
                    #chipInputAcronym
+                   matInput
                    (focus)="inputFocus()"
             />
             <!--(matChipInputTokenEnd)="add($event)"-->
@@ -82,15 +83,15 @@
               <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
             </mat-chip>
 
-            <input [formControl]="kpiBasenamesFormControl"
-                   [formControlName]="'kpiBaseNames'"
+            <input [formControlName]="'kpiBaseNames'"
+                   [formControl]="kpiBasenamesFormControl"
                    placeholder="KPI basenames"
                    [matChipInputFor]="kpiList"
                    [matAutocomplete]="autoKpi"
                    [matChipInputAddOnBlur]="addOnBlur"
                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                   matInput
                    #chipInputKpi
+                   matInput
             />
 
           </mat-chip-list>
@@ -102,26 +103,27 @@
         </mat-form-field>
 
         <mat-form-field class="full-width">
-          <input matInput id="gapSize" formControlName="gapSize" placeholder='Gap size'>
+          <input formControlName="gapSize"
+                 placeholder='Gap size (min 1)'
+                 matInput
+                 required>
         </mat-form-field>
 
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!coverageParams.valid">Fetch data</button>
         <button mat-raised-button color="accent" type="button" (click)="imLazy()">Auto</button>
       </form>
     </mat-card>
-
   </mat-sidenav>
-  <mat-sidenav-content style="height: 100%;">
+
+  <mat-sidenav-content>
     <mat-card>
       <h3>Coverage</h3>
       <div class="rotate">
-        <button mat-mini-fab color="accent" (click)="sidenav.toggle()" >^</button>
+        <button mat-mini-fab color="accent" (click)="sidenav.toggle()">^</button>
       </div>
       <div>
         <ng-container #container></ng-container>
       </div>
-      <!--<app-coverage-display [coverageParams]="coverageParamsReady" [formSubmitted]="formSubmitted" [selectedAcronyms]="selectedAcronymsReady" [selectedKpiBasenames]="selectedKpiBaseNamesReady"></app-coverage-display>-->
     </mat-card>
-
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -32,7 +32,6 @@ export class AggregatesHistogramComponent implements OnInit {
   cordIDFormControl = new FormControl('', [Validators.required]);
   acronymFormControl = new FormControl('', [Validators.required]);
   kpiBasenameFormControl = new FormControl('', [Validators.required]);
-  histBinsFormControl = new FormControl('',);
 
   minStartDate = new Date(2014, 0);
   maxStartDate = new Date();
@@ -75,7 +74,7 @@ export class AggregatesHistogramComponent implements OnInit {
       cordID: this.cordIDFormControl,
       acronym: this.acronymFormControl,
       kpiBaseName: this.kpiBasenameFormControl,
-      histBins: this.histBinsFormControl
+      histBins: 10
     });
   }
 

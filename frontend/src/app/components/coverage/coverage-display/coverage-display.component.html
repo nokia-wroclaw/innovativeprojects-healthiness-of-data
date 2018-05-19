@@ -1,10 +1,11 @@
 <mat-card>
   <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
-  <mat-card-subtitle>
-    <div style="width: 100%;">
-      <div *ngIf="coverageTableLoaded && !coverageTableLoading">Data fetched in: {{fetchedIn/1000}} s</div>
-    </div>
-  </mat-card-subtitle>
+  <mat-card-title-group *ngIf="coverageTableLoaded && !coverageTableLoading">
+    <mat-card-title>{{cordID}}</mat-card-title>
+    <mat-card-subtitle>Data fetched in: {{fetchedIn/1000}} s</mat-card-subtitle>
+    <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
+  </mat-card-title-group>
+
   <table *ngIf="coverageTableLoaded && !coverageTableLoading" border="1" style="border-collapse: collapse;">
     <tr>
       <th>kpi \ acronym</th>

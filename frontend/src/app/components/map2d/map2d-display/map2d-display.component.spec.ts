@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Map2dDisplayComponent } from './map2d-display.component';
+import { Map2DDisplayComponent } from './map2d-display.component';
 
-describe('Map2dDisplayComponent', () => {
-  let component: Map2dDisplayComponent;
-  let fixture: ComponentFixture<Map2dDisplayComponent>;
+describe('Map2DDisplayComponent', () => {
+  let component: Map2DDisplayComponent;
+  let fixture: ComponentFixture<Map2DDisplayComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ Map2dDisplayComponent ]
+      declarations: [ Map2DDisplayComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(Map2dDisplayComponent);
+    fixture = TestBed.createComponent(Map2DDisplayComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

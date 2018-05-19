@@ -58,7 +58,7 @@ import {DecompositionDisplayComponent} from './components/decomposition/decompos
 import {OutliersDisplayComponent} from './components/outliers/outliers-display/outliers-display.component';
 import {AggregatesHistogramDisplayComponent} from './components/aggregates-histogram/aggregates-histogram-display/aggregates-histogram-display.component';
 import {CoverageDisplayComponent} from './components/coverage/coverage-display/coverage-display.component';
-import {Map2dDisplayComponent} from './components/map2d/map2d-display/map2d-display.component';
+import {Map2DDisplayComponent} from './components/map2d/map2d-display/map2d-display.component';
 import {ExamplesService} from './shared/services/examples.service';
 import {CacheDataService} from './shared/services/cache.data.service';
 import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
@@ -78,7 +78,7 @@ import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-mome
     OutliersDisplayComponent,
     AggregatesHistogramDisplayComponent,
     CoverageDisplayComponent,
-    Map2dDisplayComponent
+    Map2DDisplayComponent
   ],
   imports: [
     BrowserModule,
@@ -174,7 +174,7 @@ import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-mome
     CoverageDisplayComponent,
     DecompositionDisplayComponent,
     OutliersDisplayComponent,
-    Map2dDisplayComponent]
+    Map2DDisplayComponent]
 })
 export class AppModule {
 }

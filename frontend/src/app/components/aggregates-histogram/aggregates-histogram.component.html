@@ -7,50 +7,49 @@
 
         <mat-form-field>
           <input formControlName="startDate"
-                 matInput
-                 [matDatepicker]="startDate"
                  placeholder="Start date"
+                 [matDatepicker]="startDate"
                  [min]="minStartDate"
                  [max]="maxStartDate"
-                 (dateChange)="setMinEndDate($event)"
-                 required>
+                 matInput
+                 required
+                 (dateChange)="setMinEndDate($event)">
           <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
           <mat-datepicker #startDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
           <input formControlName="endDate"
-                 matInput
-                 [matDatepicker]="endDate"
                  placeholder="End date"
+                 [matDatepicker]="endDate"
                  [min]="minEndDate"
                  [max]="maxEndDate"
+                 matInput
                  required>
           <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
           <mat-datepicker #endDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field class="full-width">
-          <input [formControl]="cordIDFormControl"
-                 [formControlName]="'cordID'"
+          <input [formControlName]="'cordID'"
+                 [formControl]="cordIDFormControl"
                  placeholder='Cord ID'
-                 id="cordID"
-                 matInput
                  [matAutocomplete]="autoCord"
+                 matInput
                  required>
         </mat-form-field>
         <mat-autocomplete #autoCord="matAutocomplete">
           <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
-            {{ option }}
+            {{option}}
           </mat-option>
         </mat-autocomplete>
 
         <mat-form-field class="full-width">
-          <input [formControl]="acronymFormControl"
-                 [formControlName]="'acronym'"
-                 matInput
+          <input [formControlName]="'acronym'"
+                 [formControl]="acronymFormControl"
                  placeholder='Acronym'
                  [matAutocomplete]="autoAcro"
+                 matInput
                  required
                  (focus)="inputFocus()">
         </mat-form-field>
@@ -61,11 +60,11 @@
         </mat-autocomplete>
 
         <mat-form-field class="full-width">
-          <input [formControl]="kpiBasenameFormControl"
-                 [formControlName]="'kpiBaseName'"
-                 matInput
+          <input [formControlName]="'kpiBaseName'"
+                 [formControl]="kpiBasenameFormControl"
                  placeholder='Kpi basename'
                  [matAutocomplete]="autoKpi"
+                 matInput
                  required>
         </mat-form-field>
         <mat-autocomplete #autoKpi="matAutocomplete">
@@ -74,8 +73,9 @@
           </mat-option>
         </mat-autocomplete>
         <mat-form-field class="full-width">
-          <input matInput id="bins" formControlName="histBins" [formControl]="histBinsFormControl"
-                 placeholder='Histogram bins'>
+          <input formControlName="histBins"
+                 placeholder='Histogram bins'
+                 matInput>
         </mat-form-field>
 
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!histogramParams.valid">Fetch data

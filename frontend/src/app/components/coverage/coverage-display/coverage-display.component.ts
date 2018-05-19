@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {SharedFunctionsService} from '../../../shared/services/shared.functions.service';
 import {RestService} from '../../../shared/services/rest.service';
@@ -8,84 +8,70 @@ import {RestService} from '../../../shared/services/rest.service';
   templateUrl: './coverage-display.component.html',
   styleUrls: ['./coverage-display.component.css']
 })
-export class CoverageDisplayComponent implements OnInit, OnChanges {
+export class CoverageDisplayComponent implements OnInit, AfterViewInit {
 
+  @Input() coveragePackage: any;
+  @Input() id = 0;
+  @Output() removeId = new EventEmitter<number>();
 
-  @Input() coverageParams: FormGroup;
-  @Input() formSubmitted = false;
-  @Input() selectedAcronyms;
-  @Input() selectedKpiBasenames;
-
-
-  acronyms: any = [];
-  kpiBaseNames: any = [];
-  coverageData: any = [];
+  fetchedIn: any;
 
   startDate: string;
   endDate: string;
-  cordID: any;
-  fetchedIn: any;
-
+  cordID: string;
+  acronyms: any = [];
+  kpiBaseNames: any = [];
+  coverageData: any = [];
   coverageTableLoaded = false;
   coverageTableLoading = false;
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
-              private sharedFunctions: SharedFunctionsService) {
-    console.log('constructor');
-    console.log(this.kpiBaseNames.length);
-    console.log(this.acronyms.length);
+              private sharedFunctions: SharedFunctionsService,
+              private cdRef: ChangeDetectorRef) {
   }
 
   ngOnInit() {
-    console.log('on init');
-    console.log(this.kpiBaseNames.length);
-    console.log(this.acronyms.length);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('on changes: ' + this.formSubmitted);
-    console.log(this.selectedKpiBasenames);
-    console.log(this.selectedAcronyms);
-    console.log(this.kpiBaseNames.length);
-    console.log(this.acronyms.length);
-    if (this.formSubmitted) {
+  ngAfterViewInit(): void {
+    this.coverageTableLoading = true;
+    this.cdRef.detectChanges();
 
+    this.startDate = this.sharedFunctions.parseDate(this.coveragePackage.coverageParams.value.startDate);
+    this.endDate = this.sharedFunctions.parseDate(this.coveragePackage.coverageParams.value.endDate);
+    this.cordID = this.coveragePackage.coverageParams.value.cordID;
+    this.kpiBaseNames = this.coveragePackage.kpiBaseNames;
+    this.acronyms = this.coveragePackage.acronyms;
 
-      this.coverageTableLoading = true;
-      this.startDate = this.sharedFunctions.parseDate(this.coverageParams.value.startDate);
-      this.endDate = this.sharedFunctions.parseDate(this.coverageParams.value.endDate);
-      this.cordID = this.coverageParams.value.cordID;
-      const baseURL = 'api/coverage/' + this.cordID + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
-      this.selectedKpiBasenames = this.selectedKpiBasenames.map((e) => {
-        return e.toUpperCase();
-      });
-      const kpiBaseNamesURL = this.sharedFunctions.processArguments(this.selectedKpiBasenames, 'kpi_basename');
-      const acronymsURL = this.sharedFunctions.processArguments(this.selectedAcronyms, 'acronym');
+    const baseURL = 'api/coverage/' + this.cordID + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
-      const url = baseURL + kpiBaseNamesURL + acronymsURL + '&gap_size=' + this.coverageParams.value.gapSize;
-      let start = new Date().getTime();
-      this.restService.getAll(url).then(response => {
-        if (response['status'] === 200) {
-          console.log('coverageData: ');
-          console.log(response.data);
-          if (response.data.error) {
-            this.sharedFunctions.openSnackBar(response.data.error, 'OK');
-            this.coverageTableLoading = false;
-          } else {
-            let end = new Date().getTime();
-            this.fetchedIn = end - start;
-            this.acronyms = this.selectedAcronyms;
-            this.kpiBaseNames = this.selectedKpiBasenames;
-            this.coverageTableLoading = false;
-            this.coverageData = response.data;
-            this.coverageTableLoaded = true;
-          }
-        } else {
-          this.sharedFunctions.openSnackBar('Error: ' + response['status'], 'OK');
-          this.coverageTableLoading = false;
-        }
-      });
-    }
+    this.kpiBaseNames = this.kpiBaseNames.map((e) => {
+      return e.toUpperCase();
+    });
+    const kpiBaseNamesURL = this.sharedFunctions.processArguments(this.kpiBaseNames, 'kpi_basename');
+    const acronymsURL = this.sharedFunctions.processArguments(this.acronyms, 'acronym');
+
+    const url = baseURL + kpiBaseNamesURL + acronymsURL + '&gap_size=' + this.coveragePackage.coverageParams.value.gapSize;
+    const start = new Date().getTime();
+    this.restService.getAll(url).then(response => {
+      if (response.status === 200) {
+        this.fetchedIn = new Date().getTime() - start;
+        this.coverageData = response.data;
+        this.coverageTableLoaded = true;
+      } else {
+        this.sharedFunctions.openSnackBar('Error ' + response.status + ': ' + response.data.error, 'OK');
+      }
+      this.coverageTableLoading = false;
+    }).catch((error) => {
+      console.log('error');
+      console.log(error);
+      this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
+    });
+  }
+
+  removeComponent() {
+    console.log('component removed: ' + this.id);
+    this.removeId.emit(this.id);
   }
 }

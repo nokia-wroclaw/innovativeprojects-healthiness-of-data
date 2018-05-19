@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material';
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {map} from 'rxjs/operators/map';
 import {startWith} from 'rxjs/operators/startWith';
 
@@ -65,8 +65,8 @@ export class SharedFunctionsService {
   generateDates(startDate: string, endDate: string, dates: any) {
     const moment = require('moment');
     require('twix');
-    let labels = [];
-    let datesFormatted = [];
+    const labels = [];
+    const datesFormatted = [];
     const itr = moment.twix(new Date(startDate), new Date(endDate)).iterate('days');
     while (itr.hasNext()) {
       labels.push(this.parseDate(itr.next().toDate()));
@@ -77,6 +77,67 @@ export class SharedFunctionsService {
     }
 
     return [labels, datesFormatted];
+  }
+
+  generateURL(params: any, component: string): string {
+    let url = 'api/';
+    let baseURL = '';
+    if (component === 'coverage') {
+      const startDate = this.parseDate(params.coverageParams.value.startDate);
+      const endDate = this.parseDate(params.coverageParams.value.endDate);
+      const cordID = params.coverageParams.value.cordID;
+      // const kpiBaseName = params.coverageParams.value.kpiBaseName.toUpperCase();
+      // const acronym = params.coverageParams.value.acronym;
+      baseURL = cordID + '?date_start=' + startDate + '&date_end=' + endDate;
+    } else {
+      const startDate = this.parseDate(params.value.startDate);
+      const endDate = this.parseDate(params.value.endDate);
+      const cordID = params.value.cordID;
+      const kpiBaseName = params.value.kpiBaseName.toUpperCase();
+      const acronym = params.value.acronym;
+      baseURL = cordID + '/' + acronym + '?date_start=' + startDate + '&date_end=' + endDate + '&kpi_basename=' + kpiBaseName;
+    }
+
+    switch (component) {
+      case 'histogram': {
+        url += 'clusters/aggregates/' + baseURL;
+        if (!!params.value.histBins) {
+          url += '&bins=' + params.value.histBins;
+        }
+        break;
+      }
+      case 'coverage': {
+
+        break;
+      }
+      case 'decomposition': {
+        url += 'decomposition/' + baseURL;
+        if (!!params.value.frequency) {
+          url += '&frequency=' + params.value.frequency;
+        }
+        break;
+      }
+      case 'outliers': {
+        url += 'outliers/' + baseURL;
+        if (!!params.value.threshold) {
+          url += '&threshold=' + params.value.threshold;
+        }
+        if (!!params.value.windowSize) {
+          url += '&window_size=' + params.value.windowSize;
+        }
+        break;
+      }
+      case 'map2D': {
+
+        break;
+      }
+      default: {
+        console.log('invalid component');
+        break;
+      }
+
+    }
+    return url;
   }
 
 }

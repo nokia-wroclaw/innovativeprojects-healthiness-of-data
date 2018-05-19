@@ -1,12 +1,12 @@
 <mat-card>
-  <mat-card-title-group *ngIf="decompositionChartLoaded && !decompositionChartLoading">
-    <mat-card-title>{{cordID}}, {{acronym}}, {{kpiBaseName}}
-      </mat-card-title>
-    <mat-card-subtitle>Data fetched in: {{fetchedIn/1000}} s</mat-card-subtitle>
-  </mat-card-title-group>
   <mat-spinner *ngIf="decompositionChartLoading"></mat-spinner>
-  <canvas id="trendChart2" width="1000" height="220"></canvas>
+  <mat-card-title-group *ngIf="decompositionChartLoaded && !decompositionChartLoading">
+    <mat-card-title>{{cordID}}, {{acronym}}, {{kpiBaseName}}</mat-card-title>
+    <mat-card-subtitle>Data fetched in: {{fetchedIn/1000}} s</mat-card-subtitle>
+    <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
+  </mat-card-title-group>
+  <canvas [id]="trendChartId" width="1000" height="220"></canvas>
   <mat-divider></mat-divider>
-  <canvas id="seasonalChart2" width="1000" height="220"></canvas>
+  <canvas [id]="seasonalChartId" width="1000" height="220"></canvas>
 </mat-card>
 

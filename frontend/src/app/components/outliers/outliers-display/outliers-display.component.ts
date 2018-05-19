@@ -15,18 +15,20 @@ declare var Chart: any;
 })
 export class OutliersDisplayComponent implements OnInit, AfterViewInit {
 
-
   @Input() outliersParams: FormGroup;
   @Input() id = 0;
   @Output() removeId = new EventEmitter<number>();
 
   outliersChartId = 'outliersChart';
+  outliersChartElement;
+  outliersChart;
+  fetchedIn: number;
 
   startDate: any;
   endDate: any;
-  kpiBaseName: any;
-  acronym: any;
-  cordID: any;
+  cordID: string;
+  acronym: string;
+  kpiBaseName: string;
   outliersChartLoading = false;
   outliersChartLoaded = false;
 
@@ -40,10 +42,6 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
   dataGapsFilled: any = [];
   outliersGapsFilled: any = [];
 
-  chartElement;
-  myChart;
-  fetchedIn: any;
-
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
@@ -55,32 +53,24 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.chartElement = document.getElementById(this.outliersChartId);
-    this.sharedFunctions.hideElement(this.chartElement);
+    this.outliersChartElement = document.getElementById(this.outliersChartId);
+    this.sharedFunctions.hideElement(this.outliersChartElement);
 
     this.outliersChartLoading = true;
     this.cdRef.detectChanges();
-    this.kpiBaseName = this.outliersParams.value.kpiBaseName;
-    this.cordID = this.outliersParams.value.cordID;
-    this.acronym = this.outliersParams.value.acronym;
+
     this.startDate = this.sharedFunctions.parseDate(this.outliersParams.value.startDate);
     this.endDate = this.sharedFunctions.parseDate(this.outliersParams.value.endDate);
-    let url = 'api/outliers/' + this.cordID + '/' + this.acronym + '?date_start=' + this.startDate + '&date_end=' + this.endDate
-      + '&kpi_basename=' + this.kpiBaseName.toUpperCase();
+    this.cordID = this.outliersParams.value.cordID;
+    this.acronym = this.outliersParams.value.acronym;
+    this.kpiBaseName = this.outliersParams.value.kpiBaseName;
 
-    if (this.outliersParams.value.threshold) {
-      url += '&threshold=' + this.outliersParams.value.threshold;
-    }
-    if (this.outliersParams.value.windowSize) {
-      url += '&window_size=' + this.outliersParams.value.windowSize;
-    }
-
-    let start = new Date().getTime();
+    const url = this.sharedFunctions.generateURL(this.outliersParams, 'outliers');
+    const start = new Date().getTime();
     this.restService.getAll(url).then((response) => {
-      this.outliersChartLoading = false;
-      if (response['status'] === 200) {
-        let end = new Date().getTime();
-        this.fetchedIn = end - start;
+      if (response.status === 200) {
+        this.fetchedIn = new Date().getTime() - start;
+
         this.outlierData = response.data.values;
         this.outlierValues = response.data.outlier_values;
         this.outlierDates = response.data.dates;
@@ -89,11 +79,12 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
         this.labels = generatedDates[0];
         this.outlierDatesFormatted = generatedDates[1];
         this.fillGaps();
-        this.outliersChartLoaded = true;
         this.generateChart();
+        this.outliersChartLoaded = true;
       } else {
-        this.sharedFunctions.openSnackBar('Error: ' + response.data.error, 'OK');
+        this.sharedFunctions.openSnackBar('Error ' + response.status + ': ' + response.data.error, 'OK');
       }
+      this.outliersChartLoading = false;
     }).catch((error) => {
       console.log('error');
       console.log(error);
@@ -118,8 +109,13 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
     }
   }
 
+  removeComponent() {
+    console.log('component removed: ' + this.id);
+    this.removeId.emit(this.id);
+  }
+
   generateChart() {
-    this.myChart = new Chart(this.chartElement, {
+    this.outliersChart = new Chart(this.outliersChartElement, {
       type: 'line',
       data: {
         labels: this.labels,
@@ -155,11 +151,6 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
         }
       }
     });
-    this.sharedFunctions.showElement(this.chartElement);
-  }
-
-  removeComponent() {
-    console.log('component removed');
-    this.removeId.emit(this.id);
+    this.sharedFunctions.showElement(this.outliersChartElement);
   }
 }

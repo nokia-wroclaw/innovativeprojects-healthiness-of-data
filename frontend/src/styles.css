@@ -9,3 +9,10 @@ body {
     transform: rotate(90deg) ;
     transform-origin:left top;
 }
+.full-width {
+  width: 100%;
+}
+.sidenav-container {
+  height: 600px;
+}
+

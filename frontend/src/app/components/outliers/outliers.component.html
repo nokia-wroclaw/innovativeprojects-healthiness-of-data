@@ -7,65 +7,64 @@
 
         <mat-form-field>
           <input formControlName="startDate"
-                 matInput
-                 [matDatepicker]="startDate"
                  placeholder="Start date"
+                 [matDatepicker]="startDate"
                  [min]="minStartDate"
                  [max]="maxStartDate"
-                 (dateChange)="setMinEndDate($event)"
-                 required>
+                 matInput
+                 required
+                 (dateChange)="setMinEndDate($event)">
           <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
           <mat-datepicker #startDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
           <input formControlName="endDate"
-                 matInput
-                 [matDatepicker]="endDate"
                  placeholder="End date"
+                 [matDatepicker]="endDate"
                  [min]="minEndDate"
                  [max]="maxEndDate"
+                 matInput
                  required>
           <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
           <mat-datepicker #endDate></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field class="full-width">
-          <input [formControl]="cordIDFormControl"
-                 [formControlName]="'cordID'"
+          <input [formControlName]="'cordID'"
+                 [formControl]="cordIDFormControl"
                  placeholder='Cord ID'
-                 id="cordID"
-                 matInput
                  [matAutocomplete]="autoCord"
+                 matInput
                  required>
         </mat-form-field>
         <mat-autocomplete #autoCord="matAutocomplete">
-          <mat-option *ngFor="let option of filteredCordIDs  | async" [value]="option">
-            {{ option }}
+          <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
+            {{option}}
           </mat-option>
         </mat-autocomplete>
 
         <mat-form-field class="full-width">
-          <input [formControl]="acronymFormControl"
-                 [formControlName]="'acronym'"
-                 matInput
+          <input [formControlName]="'acronym'"
+                 [formControl]="acronymFormControl"
                  placeholder='Acronym'
                  [matAutocomplete]="autoAcro"
+                 matInput
                  required
                  (focus)="inputFocus()">
         </mat-form-field>
-        <mat-autocomplete #autoAcro="matAutocomplete" autoActiveFirstOption>
+        <mat-autocomplete #autoAcro="matAutocomplete">
           <mat-option *ngFor="let option of filteredAcronyms | async" [value]="option">
             {{ option }}
           </mat-option>
         </mat-autocomplete>
 
         <mat-form-field class="full-width">
-          <input [formControl]="kpiBasenameFormControl"
-                 [formControlName]="'kpiBaseName'"
-                 matInput
+          <input [formControlName]="'kpiBaseName'"
+                 [formControl]="kpiBasenameFormControl"
                  placeholder='KPI basename'
                  [matAutocomplete]="autoKpi"
+                 matInput
                  required>
         </mat-form-field>
         <mat-autocomplete #autoKpi="matAutocomplete">
@@ -75,10 +74,14 @@
         </mat-autocomplete>
 
         <mat-form-field class="full-width">
-          <input matInput id="threshold" formControlName="threshold" placeholder='Threshold'>
+          <input formControlName="threshold"
+                 placeholder='Threshold'
+                 matInput>
         </mat-form-field>
         <mat-form-field class="full-width">
-          <input matInput id="windowSize" formControlName="windowSize" placeholder='Window size'>
+          <input formControlName="windowSize"
+                 placeholder='Window size'
+                 matInput>
         </mat-form-field>
 
         <button mat-raised-button color="primary" [type]="submit" [disabled]="!outliersParams.valid">Fetch data</button>
@@ -96,8 +99,7 @@
     </mat-card>
   </mat-sidenav>
 
-
-  <mat-sidenav-content style="background-color: white;">
+  <mat-sidenav-content>
     <mat-card>
       <h3>Outliers</h3>
       <div class="rotate">

@@ -1,6 +1,6 @@
-import {Component, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ComponentFactoryResolver, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
 import {RestService} from '../../shared/services/rest.service';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Form, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatDatepickerInputEvent} from '@angular/material';
 
 import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
@@ -9,18 +9,13 @@ import {map} from 'rxjs/operators/map';
 import {startWith} from 'rxjs/operators/startWith';
 import {Observable} from 'rxjs/Observable';
 import {CacheDataService} from '../../shared/services/cache.data.service';
-import {OutliersDisplayComponent} from '../outliers/outliers-display/outliers-display.component';
+import {CoverageDisplayComponent} from './coverage-display/coverage-display.component';
 
 @Component({
   moduleId: module.id,
   selector: 'app-coverage',
   templateUrl: './coverage.component.html',
-  styleUrls: ['./coverage.component.css'],
-  providers: [
-    // {provide: MAT_DATE_LOCALE, useValue: 'pl-PL'},
-    // {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    // {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS}
-  ]
+  styleUrls: ['./coverage.component.css']
 })
 export class CoverageComponent implements OnInit {
 
@@ -29,7 +24,6 @@ export class CoverageComponent implements OnInit {
   fullCordIDsList: any = [];
   fullCordIDsAcronymsSet: any = [];
   acronymsByCordID: any = [];
-
   filteredCordIDs: Observable<string[]>;
   filteredAcronyms: Observable<string[]>;
   filteredKpiBasenames: Observable<string[]>;
@@ -37,23 +31,16 @@ export class CoverageComponent implements OnInit {
   selectedKpiBasenames: any = [];
 
   separatorKeysCodes = [ENTER, COMMA, TAB];
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+  @ViewChild('chipInputAcronym', {read: MatAutocompleteTrigger})
+  private autoCompleteTrigger: MatAutocompleteTrigger;
 
   coverageParams: FormGroup;
   cordIDFormControl = new FormControl('', [Validators.required]);
   kpiBasenamesFormControl = new FormControl('', [Validators.required]);
   acronymsFormControl: FormControl = new FormControl('', [Validators.required]);
-
-  selectable = true;
-  removable = true;
-  addOnBlur = true;
-
-  formSubmitted = false;
-  coverageParamsReady: FormGroup;
-  selectedAcronymsReady: any = [];
-  selectedKpiBaseNamesReady: any = [];
-
-  @ViewChild('chipInputAcronym', {read: MatAutocompleteTrigger})
-  private autoCompleteTrigger: MatAutocompleteTrigger;
 
   minStartDate = new Date(2014, 0);
   maxStartDate = new Date();
@@ -62,13 +49,14 @@ export class CoverageComponent implements OnInit {
 
   id = 0;
   @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
-  outliersDisplayComponent = OutliersDisplayComponent;
-  outlierComponents = [];
+  coverageDisplayComponent = CoverageDisplayComponent;
+  coverageComponents = [];
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private cacheDataService: CacheDataService,
-              private sharedFunctions: SharedFunctionsService) {
+              private sharedFunctions: SharedFunctionsService,
+              private componentFactoryResolver: ComponentFactoryResolver) {
     this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
     this.fullCordIDsAcronymsSet = this.cacheDataService.getFullCordIDsAcronymsSet();
@@ -76,22 +64,15 @@ export class CoverageComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-
-    this.filteredCordIDs = this.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
-
+    this.filteredCordIDs = this.sharedFunctions.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
     this.filteredKpiBasenames = this.fullKpiBasenamesList.slice(0, 50);
     this.kpiBasenamesFormControl.valueChanges.subscribe((val) => {
       this.filterOptionsKpiBasename(val);
     });
-
     this.filteredAcronyms = this.acronymsByCordID.slice(0, 50);
     this.acronymsFormControl.valueChanges.subscribe(val => {
       this.filterOptionsAcronym(val);
     });
-    this.coverageParams.valueChanges.subscribe(() => {
-      this.formSubmitted = false;
-    });
-
   }
 
   initForm() {
@@ -101,37 +82,41 @@ export class CoverageComponent implements OnInit {
       cordID: this.cordIDFormControl,
       acronyms: [this.selectedAcronyms],
       kpiBaseNames: [this.selectedKpiBasenames],
-      gapSize: 5
+      gapSize: [1, Validators.min(1)]
     });
   }
 
-  public getCoverage(coverageParams): void {
-    console.log('coverage params');
-    console.log(coverageParams);
-    this.coverageParamsReady = coverageParams;
-    this.selectedAcronymsReady = this.selectedAcronyms;
-    this.selectedKpiBaseNamesReady = this.selectedKpiBasenames;
-    this.formSubmitted = true;
+  public getCoverage(coverageParams: FormGroup, componentClass: Type<any>): void {
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
+    const component = this.container.createComponent(componentFactory, 0);
+    component.instance.removeId.subscribe(
+      (event: any) => {
+        this.removeSpecificChild(this.coverageDisplayComponent, event);
+      }
+    );
+    component.instance.id = this.id;
+    const coveragePackage = {
+      coverageParams: this.coverageParams,
+      acronyms: this.selectedAcronyms,
+      kpiBaseNames: this.selectedKpiBasenames
+    };
+    component.instance.coveragePackage = coveragePackage;
+    this.coverageComponents[this.id] = component;
+    this.id++;
   }
 
   removeSpecificChild(dynamicChildClass: Type<any>, id: number) {
-    const component = this.outlierComponents[id];
-    const componentIndex = this.outlierComponents.indexOf(component);
+    const component = this.coverageComponents[id];
+    const componentIndex = this.coverageComponents.indexOf(component);
     if (componentIndex !== -1) {
       this.container.remove(this.container.indexOf(component));
     }
-  }
-
-
-  setOnChange(full: any, formControl: FormControl): any {
-    return formControl.valueChanges.pipe(startWith(''), map((val) => this.sharedFunctions.filter(val, full, 100)));
   }
 
   // kpi basenames
   addChipKpiBasename(event: MatAutocompleteSelectedEvent, input: any): void {
     const selection = event.option.value;
     this.selectedKpiBasenames.push(selection);
-    this.formSubmitted = false;
     this.fullKpiBasenamesList = this.fullKpiBasenamesList.filter(obj => obj !== selection);
     this.filteredKpiBasenames = this.fullKpiBasenamesList.slice(0, 50);
     if (input) {
@@ -141,7 +126,6 @@ export class CoverageComponent implements OnInit {
 
   removeChipKpiBasename(chip: any): void {
     const index = this.selectedKpiBasenames.indexOf(chip);
-    this.formSubmitted = false;
     if (index >= 0) {
       this.selectedKpiBasenames.splice(index, 1);
       this.fullKpiBasenamesList.push(chip);
@@ -157,7 +141,6 @@ export class CoverageComponent implements OnInit {
   addChipAcronym(event: MatAutocompleteSelectedEvent, input: any): void {
     const selection = event.option.value;
     this.selectedAcronyms.push(selection);
-    this.formSubmitted = false;
     this.acronymsByCordID = this.acronymsByCordID.filter(obj => obj !== selection);
     this.filteredAcronyms = this.acronymsByCordID;
     if (input) {
@@ -179,7 +162,6 @@ export class CoverageComponent implements OnInit {
 
   removeChipAcronym(chip: any): void {
     const index = this.selectedAcronyms.indexOf(chip);
-    this.formSubmitted = false;
     if (index >= 0) {
       this.selectedAcronyms.splice(index, 1);
       this.acronymsByCordID.push(chip);
