@@ -10,6 +10,7 @@ import {Map2DDisplayComponent} from './map2d-display/map2d-display.component';
 import {MatDatepickerInputEvent} from '@angular/material';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
+import {RouterCommunicationService} from '../../shared/services/router-communication/router-communication.service';
 
 @Component({
   selector: 'app-map2d',
@@ -36,24 +37,20 @@ export class Map2dComponent implements OnInit {
   minEndDate = new Date(2014, 0);
   maxEndDate = new Date();
 
-  id = 0;
-  @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
   map2DDisplayComponent = Map2DDisplayComponent;
-  map2DComponents = [];
 
-  constructor(private restService: RestService,
-              private formBuilder: FormBuilder,
+  constructor(private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cacheDataService: CacheDataService,
               public examplesService: ExamplesService,
-              private componentFactoryResolver: ComponentFactoryResolver) {
+              private routerCommunicationService: RouterCommunicationService) {
     this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
     this.fullCordIDsAcronymsSet = this.cacheDataService.getFullCordIDsAcronymsSet();
   }
 
   ngOnInit() {
-     this.initForm();
+    this.initForm();
     this.filteredKpiBasenames = this.sharedFunctions.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
     this.filteredCordIDs = this.sharedFunctions.setOnChange(this.fullCordIDsList, this.cordIDFormControl);
     // this.filteredAcronyms = this.sharedFunctions.setOnChange(this.acronymsByCordID, this.acronymFormControl);
@@ -72,25 +69,11 @@ export class Map2dComponent implements OnInit {
   }
 
   get2DMap(map2DParams: FormGroup, componentClass: Type<any>) {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
-    const component = this.container.createComponent(componentFactory, 0);
-    component.instance.removeId.subscribe(
-      (event: any) => {
-        this.removeSpecificChild(this.map2DDisplayComponent, event);
-      }
-    );
-    component.instance.id = this.id;
-    component.instance.map2DParams = map2DParams;
-    this.map2DComponents[this.id] = component;
-    this.id++;
-  }
-
-  removeSpecificChild(dynamicChildClass: Type<any>, id: number) {
-    const component = this.map2DComponents[id];
-    const componentIndex = this.map2DComponents.indexOf(component);
-    if (componentIndex !== -1) {
-      this.container.remove(this.container.indexOf(component));
-    }
+    const paramsAndComponentclass = {
+      params: map2DParams,
+      componentClass: componentClass
+    };
+    this.routerCommunicationService.emitChange(paramsAndComponentclass);
   }
 
   setMinEndDate(event: MatDatepickerInputEvent<Date>) {

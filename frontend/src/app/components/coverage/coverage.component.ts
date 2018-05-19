@@ -10,6 +10,8 @@ import {startWith} from 'rxjs/operators/startWith';
 import {Observable} from 'rxjs/Observable';
 import {CacheDataService} from '../../shared/services/cache.data.service';
 import {CoverageDisplayComponent} from './coverage-display/coverage-display.component';
+import {RouterCommunicationService} from '../../shared/services/router-communication/router-communication.service';
+import {ExamplesService} from '../../shared/services/examples.service';
 
 @Component({
   moduleId: module.id,
@@ -18,7 +20,6 @@ import {CoverageDisplayComponent} from './coverage-display/coverage-display.comp
   styleUrls: ['./coverage.component.css']
 })
 export class CoverageComponent implements OnInit {
-
 
   fullKpiBasenamesList: any = [];
   fullCordIDsList: any = [];
@@ -47,16 +48,13 @@ export class CoverageComponent implements OnInit {
   minEndDate = new Date(2014, 0);
   maxEndDate = new Date();
 
-  id = 0;
-  @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
   coverageDisplayComponent = CoverageDisplayComponent;
-  coverageComponents = [];
 
-  constructor(private restService: RestService,
-              private formBuilder: FormBuilder,
-              private cacheDataService: CacheDataService,
+  constructor(private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
-              private componentFactoryResolver: ComponentFactoryResolver) {
+              private cacheDataService: CacheDataService,
+              private examplesService: ExamplesService,
+              private routerCommunicationService: RouterCommunicationService) {
     this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
     this.fullCordIDsAcronymsSet = this.cacheDataService.getFullCordIDsAcronymsSet();
@@ -80,38 +78,25 @@ export class CoverageComponent implements OnInit {
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       cordID: this.cordIDFormControl,
-      acronyms: [this.selectedAcronyms],
-      kpiBaseNames: [this.selectedKpiBasenames],
+      acronyms: '',
+      kpiBaseNames: '',
       gapSize: [1, Validators.min(1)]
     });
   }
 
   public getCoverage(coverageParams: FormGroup, componentClass: Type<any>): void {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
-    const component = this.container.createComponent(componentFactory, 0);
-    component.instance.removeId.subscribe(
-      (event: any) => {
-        this.removeSpecificChild(this.coverageDisplayComponent, event);
-      }
-    );
-    component.instance.id = this.id;
     const coveragePackage = {
-      coverageParams: this.coverageParams,
+      coverageParams: coverageParams,
       acronyms: this.selectedAcronyms,
       kpiBaseNames: this.selectedKpiBasenames
     };
-    component.instance.coveragePackage = coveragePackage;
-    this.coverageComponents[this.id] = component;
-    this.id++;
+    const paramsAndComponentclass = {
+      params: coveragePackage,
+      componentClass: componentClass
+    };
+    this.routerCommunicationService.emitChange(paramsAndComponentclass);
   }
 
-  removeSpecificChild(dynamicChildClass: Type<any>, id: number) {
-    const component = this.coverageComponents[id];
-    const componentIndex = this.coverageComponents.indexOf(component);
-    if (componentIndex !== -1) {
-      this.container.remove(this.container.indexOf(component));
-    }
-  }
 
   // kpi basenames
   addChipKpiBasename(event: MatAutocompleteSelectedEvent, input: any): void {

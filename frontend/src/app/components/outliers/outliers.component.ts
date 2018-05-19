@@ -39,12 +39,7 @@ export class OutliersComponent implements OnInit {
   minEndDate = new Date(2014, 0);
   maxEndDate = new Date();
 
-  id = 0;
-  @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
   outliersDisplayComponent = OutliersDisplayComponent;
-  outlierComponents = [];
-
-  @Output() params = new EventEmitter<any>();
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
@@ -87,18 +82,6 @@ export class OutliersComponent implements OnInit {
       componentClass: componentClass
     };
     this.routerCommunicationService.emitChange(paramsAndComponentclass);
-
-    // const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
-    // const component = this.container.createComponent(componentFactory, 0);
-    // component.instance.removeId.subscribe(
-    //   (event: any) => {
-    //     this.removeSpecificChild(this.outliersDisplayComponent, event);
-    //   }
-    // );
-    // component.instance.id = this.id;
-    // component.instance.outliersParams = outliersParams;
-    // this.outlierComponents[this.id] = component;
-    // this.id++;
   }
 
   setMinEndDate(event: MatDatepickerInputEvent<Date>) {

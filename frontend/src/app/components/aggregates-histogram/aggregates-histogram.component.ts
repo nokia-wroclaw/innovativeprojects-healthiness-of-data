@@ -39,17 +39,12 @@ export class AggregatesHistogramComponent implements OnInit {
   minEndDate = new Date(2014, 0);
   maxEndDate = new Date();
 
-  id = 0;
-  @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
   histogramDisplayComponent = AggregatesHistogramDisplayComponent;
-  histogramComponents = [];
 
-  constructor(private restService: RestService,
-              private formBuilder: FormBuilder,
+  constructor(private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cacheDataService: CacheDataService,
               private examplesService: ExamplesService,
-              private componentFactoryResolver: ComponentFactoryResolver,
               private routerCommunicationService: RouterCommunicationService) {
     this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
@@ -86,28 +81,7 @@ export class AggregatesHistogramComponent implements OnInit {
       componentClass: componentClass
     };
     this.routerCommunicationService.emitChange(paramsAndComponentclass);
-
-    // const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
-    // const component = this.container.createComponent(componentFactory, 0);
-    // component.instance.removeId.subscribe(
-    //   (event: any) => {
-    //     this.removeSpecificChild(this.histogramDisplayComponent, event);
-    //   }
-    // );
-    // component.instance.id = this.id;
-    // component.instance.histogramParams = histogramParams;
-    // this.histogramComponents.push(component);
-    // this.id++;
   }
-
-  removeSpecificChild(dynamicChildClass: Type<any>, id: number) {
-    const component = this.histogramComponents[id];
-    const componentIndex = this.histogramComponents.indexOf(component);
-    if (componentIndex !== -1) {
-      this.container.remove(this.container.indexOf(component));
-    }
-  }
-
 
   setMinEndDate(event: MatDatepickerInputEvent<Date>) {
     this.minEndDate = event.value;

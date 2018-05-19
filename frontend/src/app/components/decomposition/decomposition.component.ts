@@ -9,6 +9,7 @@ import {MatDatepickerInputEvent} from '@angular/material';
 import {ExamplesService} from '../../shared/services/examples.service';
 import {CacheDataService} from '../../shared/services/cache.data.service';
 import {DecompositionDisplayComponent} from './decomposition-display/decomposition-display.component';
+import {RouterCommunicationService} from '../../shared/services/router-communication/router-communication.service';
 
 @Component({
   selector: 'app-decomposition',
@@ -35,17 +36,13 @@ export class DecompositionComponent implements OnInit {
   minEndDate = new Date(2014, 0);
   maxEndDate = new Date();
 
-  id = 0;
-  @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
   decompositionDisplayComponent = DecompositionDisplayComponent;
-  decompositionComponents = [];
 
-  constructor(private restService: RestService,
-              private formBuilder: FormBuilder,
+  constructor(private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cacheDataService: CacheDataService,
-              private examplesService: ExamplesService,
-              private componentFactoryResolver: ComponentFactoryResolver) {
+              public examplesService: ExamplesService,
+              private routerCommunicationService: RouterCommunicationService) {
     this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();
     this.fullCordIDsAcronymsSet = this.cacheDataService.getFullCordIDsAcronymsSet();
@@ -74,25 +71,11 @@ export class DecompositionComponent implements OnInit {
   }
 
   getDecomposition(decompositionParams: FormGroup, componentClass: Type<any>) {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
-    const component = this.container.createComponent(componentFactory, 0);
-    component.instance.removeId.subscribe(
-      (event: any) => {
-        this.removeSpecificChild(this.decompositionDisplayComponent, event);
-      }
-    );
-    component.instance.id = this.id;
-    component.instance.decompositionParams = decompositionParams;
-    this.decompositionComponents[this.id] = component;
-    this.id++;
-  }
-
-  removeSpecificChild(dynamicChildClass: Type<any>, id: number) {
-    const component = this.decompositionComponents[id];
-    const componentIndex = this.decompositionComponents.indexOf(component);
-    if (componentIndex !== -1) {
-      this.container.remove(this.container.indexOf(component));
-    }
+      const paramsAndComponentclass = {
+      params: decompositionParams,
+      componentClass: componentClass
+    };
+    this.routerCommunicationService.emitChange(paramsAndComponentclass);
   }
 
   setMinEndDate(event: MatDatepickerInputEvent<Date>) {

@@ -10,9 +10,11 @@ import {RestService} from '../../../shared/services/rest.service';
 })
 export class CoverageDisplayComponent implements OnInit, AfterViewInit {
 
-  @Input() coveragePackage: any;
+  @Input() params: any;
   @Input() id = 0;
-  @Output() removeId = new EventEmitter<number>();
+  @Output() removeId = new EventEmitter<any>();
+
+  coverageParams: FormGroup;
 
   fetchedIn: any;
 
@@ -25,6 +27,8 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
   coverageTableLoaded = false;
   coverageTableLoading = false;
 
+  coverageDisplayComponent = CoverageDisplayComponent;
+
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
@@ -32,17 +36,18 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.coverageParams = this.params.coverageParams;
+    this.acronyms = this.params.acronyms;
+    this.kpiBaseNames = this.params.kpiBaseNames;
   }
 
   ngAfterViewInit(): void {
     this.coverageTableLoading = true;
     this.cdRef.detectChanges();
 
-    this.startDate = this.sharedFunctions.parseDate(this.coveragePackage.coverageParams.value.startDate);
-    this.endDate = this.sharedFunctions.parseDate(this.coveragePackage.coverageParams.value.endDate);
-    this.cordID = this.coveragePackage.coverageParams.value.cordID;
-    this.kpiBaseNames = this.coveragePackage.kpiBaseNames;
-    this.acronyms = this.coveragePackage.acronyms;
+    this.startDate = this.sharedFunctions.parseDate(this.coverageParams.value.startDate);
+    this.endDate = this.sharedFunctions.parseDate(this.coverageParams.value.endDate);
+    this.cordID = this.coverageParams.value.cordID;
 
     const baseURL = 'api/coverage/' + this.cordID + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
@@ -52,7 +57,7 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
     const kpiBaseNamesURL = this.sharedFunctions.processArguments(this.kpiBaseNames, 'kpi_basename');
     const acronymsURL = this.sharedFunctions.processArguments(this.acronyms, 'acronym');
 
-    const url = baseURL + kpiBaseNamesURL + acronymsURL + '&gap_size=' + this.coveragePackage.coverageParams.value.gapSize;
+    const url = baseURL + kpiBaseNamesURL + acronymsURL + '&gap_size=' + this.coverageParams.value.gapSize;
     const start = new Date().getTime();
     this.restService.getAll(url).then(response => {
       if (response.status === 200) {
@@ -72,6 +77,10 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
 
   removeComponent() {
     console.log('component removed: ' + this.id);
-    this.removeId.emit(this.id);
+    const toRemove = {
+      removeId: this.id,
+      typeOfComponent: this.coverageDisplayComponent
+    };
+    this.removeId.emit(toRemove);
   }
 }

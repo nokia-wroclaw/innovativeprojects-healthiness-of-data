@@ -1,10 +1,5 @@
-import {
-  AfterViewInit, ChangeDetectorRef, Component, DoCheck, EventEmitter, Injectable, Input, OnChanges, OnInit, Output,
-  SimpleChanges
-} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {map} from 'rxjs/operators/map';
-import {startWith} from 'rxjs/operators/startWith';
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Injectable, Input, OnInit, Output} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {RestService} from '../../../shared/services/rest.service';
 import {SharedFunctionsService} from '../../../shared/services/shared.functions.service';
 
@@ -18,9 +13,11 @@ declare var Chart: any;
 })
 export class DecompositionDisplayComponent implements OnInit, AfterViewInit {
 
-  @Input() decompositionParams: FormGroup;
+  @Input() params: FormGroup;
   @Input() id = 0;
-  @Output() removeId = new EventEmitter<number>();
+  @Output() removeId = new EventEmitter<any>();
+
+  decompositionParams: FormGroup;
 
   trendChartId = 'trendChart';
   seasonalChartId = 'seasonalChart';
@@ -51,6 +48,8 @@ export class DecompositionDisplayComponent implements OnInit, AfterViewInit {
   trendValuesFixed: any = [];
   trendGapsFilled: any = [];
 
+  decompositionDisplayComponent = DecompositionDisplayComponent;
+
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
@@ -60,6 +59,7 @@ export class DecompositionDisplayComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.trendChartId = 'trendChart' + this.id.toString();
     this.seasonalChartId = 'seasonalChart' + this.id.toString();
+    this.decompositionParams = this.params;
   }
 
   ngAfterViewInit(): void {
@@ -136,7 +136,11 @@ export class DecompositionDisplayComponent implements OnInit, AfterViewInit {
 
   removeComponent() {
     console.log('component removed: ' + this.id);
-    this.removeId.emit(this.id);
+    const toRemove = {
+      removeId: this.id,
+      typeOfComponent: this.decompositionDisplayComponent
+    };
+    this.removeId.emit(toRemove);
   }
 
   generateTrendChart() {
