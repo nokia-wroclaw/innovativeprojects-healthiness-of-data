@@ -87,6 +87,21 @@ export class AggregatesHistogramComponent implements OnInit {
     this.minEndDate = event.value;
   }
 
+  clearForm() {
+    try {
+      this.histogramParams.setValue({
+        startDate: '',
+        endDate: '',
+        cordID: '',
+        acronym: '',
+        kpiBaseName: '',
+        histBins: 10
+      });
+    } catch (error) {
+      console.log('error');
+    }
+  }
+
   inputFocus() {
     if (this.acronymFormControl.value === '') {
       this.histogramParams.patchValue({acronym: ''});
