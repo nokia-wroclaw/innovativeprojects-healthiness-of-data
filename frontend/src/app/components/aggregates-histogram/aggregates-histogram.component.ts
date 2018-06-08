@@ -1,6 +1,5 @@
-import {Component, ComponentFactoryResolver, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, OnInit, Type} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {RestService} from '../../shared/services/rest.service';
 import {Observable} from 'rxjs/Observable';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
@@ -8,10 +7,8 @@ import {SharedFunctionsService} from '../../shared/services/shared.functions.ser
 import {MatDatepickerInputEvent} from '@angular/material';
 import {ExamplesService} from '../../shared/services/examples.service';
 import {CacheDataService} from '../../shared/services/cache.data.service';
-import {OutliersDisplayComponent} from '../outliers/outliers-display/outliers-display.component';
 import {AggregatesHistogramDisplayComponent} from './aggregates-histogram-display/aggregates-histogram-display.component';
 import {RouterCommunicationService} from '../../shared/services/router-communication/router-communication.service';
-
 
 @Component({
   selector: 'app-aggregates-histogram',
