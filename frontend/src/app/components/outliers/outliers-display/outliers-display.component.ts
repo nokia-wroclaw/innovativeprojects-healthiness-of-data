@@ -150,7 +150,6 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
         }]
       },
       options: {
-        responsive: false,
         spanGaps: false,
         elements: {
           line: {

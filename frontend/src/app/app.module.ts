@@ -1,7 +1,7 @@
 import {Map2dComponent} from './components/map2d/map2d.component';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-
+import {GridsterItemComponent, GridsterModule} from 'angular-gridster2';
 
 import {AppComponent} from './app.component';
 import {RestService} from './shared/services/rest.service';
@@ -65,6 +65,7 @@ import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-mome
 import {NavbarComponent} from './shared/components/navbar/navbar.component';
 import {CommonwealthComponent} from './components/commonwealth/commonwealth.component';
 import {RouterCommunicationService} from './shared/services/router-communication/router-communication.service';
+import {DynamicModule} from 'ng-dynamic-component';
 
 
 @NgModule({
@@ -123,7 +124,14 @@ import {RouterCommunicationService} from './shared/services/router-communication
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    GridsterModule,
+    DynamicModule.withComponents([
+      AggregatesHistogramDisplayComponent,
+      CoverageDisplayComponent,
+      DecompositionDisplayComponent,
+      OutliersDisplayComponent,
+      Map2DDisplayComponent])
   ],
   exports: [
     RouterModule,
@@ -161,26 +169,38 @@ import {RouterCommunicationService} from './shared/services/router-communication
     MatSortModule,
     MatPaginatorModule,
     MatNativeDateModule,
+    GridsterModule,
+    GridsterItemComponent,
+    DynamicModule,
+    AggregatesHistogramDisplayComponent,
+    CoverageDisplayComponent,
+    DecompositionDisplayComponent,
+    OutliersDisplayComponent,
+    Map2DDisplayComponent
   ],
-  providers: [RestService, SharedFunctionsService, ExamplesService, CacheDataService, RouterCommunicationService, {
-    provide: MAT_DATE_LOCALE,
-    useValue: 'pl-PL'
-  }, {
-    provide: DateAdapter,
-    useClass: MomentDateAdapter,
-    deps: [MAT_DATE_LOCALE]
-  }, {
-    provide: MAT_DATE_FORMATS,
-    useValue: MAT_MOMENT_DATE_FORMATS
-  }],
+  providers: [RestService, SharedFunctionsService, ExamplesService, CacheDataService, RouterCommunicationService,
+    GridsterModule, {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'pl-PL'
+    }, {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE]
+    }, {
+      provide: MAT_DATE_FORMATS,
+      useValue: MAT_MOMENT_DATE_FORMATS
+    }],
   bootstrap: [AppComponent],
   entryComponents: [
     AggregatesHistogramDisplayComponent,
     CoverageDisplayComponent,
     DecompositionDisplayComponent,
     OutliersDisplayComponent,
-    Map2DDisplayComponent]
+    Map2DDisplayComponent,
+    GridsterItemComponent
+  ]
 })
+
 export class AppModule {
 }
 

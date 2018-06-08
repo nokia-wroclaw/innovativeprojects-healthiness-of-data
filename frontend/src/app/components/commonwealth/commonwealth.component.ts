@@ -1,7 +1,7 @@
 import {Component, ComponentFactoryResolver, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
-import {OutliersDisplayComponent} from '../outliers/outliers-display/outliers-display.component';
-import {AggregatesHistogramDisplayComponent} from '../aggregates-histogram/aggregates-histogram-display/aggregates-histogram-display.component';
 import {RouterCommunicationService} from '../../shared/services/router-communication/router-communication.service';
+
+import {CompactType, GridsterConfig, GridsterItem, GridsterItemComponent, GridsterPush, GridType} from 'angular-gridster2';
 
 @Component({
   selector: 'app-commonwealth',
@@ -13,6 +13,11 @@ export class CommonwealthComponent implements OnInit {
   id = 0;
   @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
   components = [];
+  component;
+
+  options: GridsterConfig;
+  dashboard: Array<GridsterItem>;
+  itemToPush: GridsterItemComponent;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
               private routerCommunicationService: RouterCommunicationService) {
@@ -21,8 +26,60 @@ export class CommonwealthComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
 
+  ngOnInit() {
+    this.options = {
+      gridType: GridType.Fit,
+      compactType: CompactType.None,
+      pushItems: true,
+      draggable: {
+        enabled: true
+      },
+      resizable: {
+        enabled: true
+      }
+    };
+
+    this.dashboard = [
+      {cols: 1, rows: 1, y: 0, x: 0, initCallback: this.initItem.bind(this)}
+    ];
+  }
+
+  changedOptions() {
+    if (this.options.api && this.options.api.optionsChanged) {
+      this.options.api.optionsChanged();
+    }
+  }
+
+  removeItem($event, item) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    this.dashboard.splice(this.dashboard.indexOf(item), 1);
+  }
+
+  addItem() {
+    this.dashboard.push({x: 0, y: 0, cols: 1, rows: 1});
+  }
+
+  initItem(item: GridsterItem, itemComponent: GridsterItemComponent) {
+    console.log(this)
+    this.itemToPush = itemComponent;
+  }
+
+  pushItem() {
+    const push = new GridsterPush(this.itemToPush); // init the service
+    this.itemToPush.$item.rows += 4; // move/resize your item
+    if (push.pushItems(push.fromNorth)) { // push items from a direction
+      push.checkPushBack(); // check for items can restore to original position
+      push.setPushedItems(); // save the items pushed
+      this.itemToPush.setSize();
+      this.itemToPush.checkItemChanges(this.itemToPush.$item, this.itemToPush.item);
+    } else {
+      this.itemToPush.$item.rows -= 4;
+      push.restoreItems(); // restore to initial state the pushed items
+    }
+    push.destroy(); // destroy push instance
+    // similar for GridsterPushResize and GridsterSwap
   }
 
   createComponent(params: any, componentClass: Type<any>) {
@@ -35,6 +92,7 @@ export class CommonwealthComponent implements OnInit {
     );
     component.instance.id = this.id;
     component.instance.params = params;
+    this.component = component;
     this.components.push(component);
     this.id++;
   }

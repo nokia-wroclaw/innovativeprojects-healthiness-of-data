@@ -26,6 +26,8 @@ export class DecompositionDisplayComponent implements OnInit, AfterViewInit {
   trendChart;
   seasonalChart;
   fetchedIn: number;
+  problem = false;
+  problemMessage: any;
 
   startDate: any;
   endDate: any;
@@ -99,13 +101,15 @@ export class DecompositionDisplayComponent implements OnInit, AfterViewInit {
         this.decompositionChartLoaded = true;
         this.decompositionChartLoading = false;
       } else {
-        this.sharedFunctions.openSnackBar('Error ' + response.status + ': ' + response.data.error, 'OK');
+        this.problem = true;
+        this.problemMessage = 'Error: ' + response.status + ' - ' + response.data.error;
       }
 
     }).catch((error) => {
       console.log('error');
       console.log(error);
-      this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
+      this.problem = true;
+      this.problemMessage = 'Error: ' + 'backend error';
     });
 
   }

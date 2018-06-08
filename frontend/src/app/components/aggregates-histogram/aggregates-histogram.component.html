@@ -1,92 +1,93 @@
-<mat-card>
-  <h3>Aggregates & histogram:</h3>
-  <form name="histogramsForm" (ngSubmit)="getHistogram(histogramParams, histogramDisplayComponent)"
-        [formGroup]="histogramParams">
 
-    <mat-form-field>
-      <input formControlName="startDate"
-             placeholder="Start date"
-             [matDatepicker]="startDate"
-             [min]="minStartDate"
-             [max]="maxStartDate"
-             matInput
-             required
-             (dateChange)="setMinEndDate($event)">
-      <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
-      <mat-datepicker #startDate></mat-datepicker>
-    </mat-form-field>
+  <mat-card>
+    <h3>Aggregates & histogram:</h3>
+    <form name="histogramsForm" (ngSubmit)="getHistogram(histogramParams, histogramDisplayComponent)"
+          [formGroup]="histogramParams">
 
-    <mat-form-field>
-      <input formControlName="endDate"
-             placeholder="End date"
-             [matDatepicker]="endDate"
-             [min]="minEndDate"
-             [max]="maxEndDate"
-             matInput
-             required>
-      <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
-      <mat-datepicker #endDate></mat-datepicker>
-    </mat-form-field>
+      <mat-form-field>
+        <input formControlName="startDate"
+               placeholder="Start date"
+               [matDatepicker]="startDate"
+               [min]="minStartDate"
+               [max]="maxStartDate"
+               matInput
+               required
+               (dateChange)="setMinEndDate($event)">
+        <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+        <mat-datepicker #startDate></mat-datepicker>
+      </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <input [formControlName]="'cordID'"
-             [formControl]="cordIDFormControl"
-             placeholder='Cord ID'
-             [matAutocomplete]="autoCord"
-             matInput
-             required>
-    </mat-form-field>
-    <mat-autocomplete #autoCord="matAutocomplete">
-      <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
-        {{option}}
-      </mat-option>
-    </mat-autocomplete>
+      <mat-form-field>
+        <input formControlName="endDate"
+               placeholder="End date"
+               [matDatepicker]="endDate"
+               [min]="minEndDate"
+               [max]="maxEndDate"
+               matInput
+               required>
+        <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+        <mat-datepicker #endDate></mat-datepicker>
+      </mat-form-field>
 
-    <mat-form-field class="full-width">
-      <input [formControlName]="'acronym'"
-             [formControl]="acronymFormControl"
-             placeholder='Acronym'
-             [matAutocomplete]="autoAcro"
-             matInput
-             required
-             (focus)="inputFocus()">
-    </mat-form-field>
-    <mat-autocomplete #autoAcro="matAutocomplete">
-      <mat-option *ngFor="let option of filteredAcronyms | async" [value]="option">
-        {{ option }}
-      </mat-option>
-    </mat-autocomplete>
-
-    <mat-form-field class="full-width">
-      <input [formControlName]="'kpiBaseName'"
-             [formControl]="kpiBasenameFormControl"
-             placeholder='Kpi basename'
-             [matAutocomplete]="autoKpi"
-             matInput
-             required>
-    </mat-form-field>
-    <mat-autocomplete #autoKpi="matAutocomplete">
-      <mat-option *ngFor="let optionKpi of filteredKpiBasenames | async" [value]="optionKpi">
-        {{optionKpi}}
-      </mat-option>
-    </mat-autocomplete>
-    <mat-form-field class="full-width">
-      <input formControlName="histBins"
-             placeholder='Histogram bins'
-             matInput>
-    </mat-form-field>
-
-    <button mat-raised-button color="primary" [type]="submit" [disabled]="!histogramParams.valid">Fetch data
-    </button>
-
-    <br><br>
-    <mat-form-field>
-      <mat-select placeholder="Select example">
-        <mat-option *ngFor="let example of examplesService.EXAMPLES; let i = index "
-                    (click)="examplesService.testCase(histogramParams, example)" [value]="example">
-          Test {{i+1}}
+      <mat-form-field class="full-width">
+        <input [formControlName]="'cordID'"
+               [formControl]="cordIDFormControl"
+               placeholder='Cord ID'
+               [matAutocomplete]="autoCord"
+               matInput
+               required>
+      </mat-form-field>
+      <mat-autocomplete #autoCord="matAutocomplete">
+        <mat-option *ngFor="let option of filteredCordIDs | async" [value]="option">
+          {{option}}
         </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </form>
-</mat-card>
+      </mat-autocomplete>
+
+      <mat-form-field class="full-width">
+        <input [formControlName]="'acronym'"
+               [formControl]="acronymFormControl"
+               placeholder='Acronym'
+               [matAutocomplete]="autoAcro"
+               matInput
+               required
+               (focus)="inputFocus()">
+      </mat-form-field>
+      <mat-autocomplete #autoAcro="matAutocomplete">
+        <mat-option *ngFor="let option of filteredAcronyms | async" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-autocomplete>
+
+      <mat-form-field class="full-width">
+        <input [formControlName]="'kpiBaseName'"
+               [formControl]="kpiBasenameFormControl"
+               placeholder='Kpi basename'
+               [matAutocomplete]="autoKpi"
+               matInput
+               required>
+      </mat-form-field>
+      <mat-autocomplete #autoKpi="matAutocomplete">
+        <mat-option *ngFor="let optionKpi of filteredKpiBasenames | async" [value]="optionKpi">
+          {{optionKpi}}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-form-field class="full-width">
+        <input formControlName="histBins"
+               placeholder='Histogram bins'
+               matInput>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" [type]="submit" [disabled]="!histogramParams.valid">Fetch data
+      </button>
+
+      <br><br>
+      <mat-form-field>
+        <mat-select placeholder="Select example">
+          <mat-option *ngFor="let example of examplesService.EXAMPLES; let i = index "
+                      (click)="examplesService.testCase(histogramParams, example)" [value]="example">
+            Test {{i+1}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-card>

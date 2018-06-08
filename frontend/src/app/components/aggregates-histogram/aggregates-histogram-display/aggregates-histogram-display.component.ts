@@ -2,6 +2,7 @@ import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChan
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {RestService} from '../../../shared/services/rest.service';
 import {SharedFunctionsService} from '../../../shared/services/shared.functions.service';
+import {GridsterConfig, GridsterItem} from 'angular-gridster2';
 
 declare var Chart: any;
 
@@ -22,6 +23,8 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
   histogramChartElement;
   histogramChart;
   fetchedIn: any;
+  problem = false;
+  problemMessage: any;
 
   startDate: any;
   endDate: any;
@@ -86,13 +89,15 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
         this.generateChart();
         this.histogramChartLoaded = true;
       } else {
-        this.sharedFunctions.openSnackBar('Error: ' + response.status + ' - ' + response.data.error, 'OK');
+        this.problem = true;
+        this.problemMessage = 'Error: ' + response.status + ' - ' + response.data.error;
       }
       this.histogramChartLoading = false;
     }).catch((error) => {
       console.log('error');
       console.log(error);
-      this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
+      this.problem = true;
+      this.problemMessage = 'Error: ' + 'backend error';
     });
   }
 

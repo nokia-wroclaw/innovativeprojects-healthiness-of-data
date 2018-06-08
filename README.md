@@ -43,7 +43,7 @@ And in the future we would like to add more:
   * Flask
   * Flasgger (Swagger)
 * Frontend
-  * Angular 2+ https://angular.io/
+  * Angular 5 https://angular.io/
   * Angular Material https://material.angular.io/
   * Charts.js https://www.chartjs.org/
 * Cassandra

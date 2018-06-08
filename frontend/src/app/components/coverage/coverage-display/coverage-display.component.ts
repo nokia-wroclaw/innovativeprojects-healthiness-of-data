@@ -3,6 +3,8 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {SharedFunctionsService} from '../../../shared/services/shared.functions.service';
 import {RestService} from '../../../shared/services/rest.service';
 
+declare var Chart: any;
+
 @Component({
   selector: 'app-coverage-display',
   templateUrl: './coverage-display.component.html',
@@ -16,7 +18,12 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
 
   coverageParams: FormGroup;
 
+  coverageChartId = 'coverageChart';
+  coverageChartElement;
+  coverageChart;
   fetchedIn: any;
+  problem = false;
+  problemMessage: any;
 
   startDate: string;
   endDate: string;
@@ -26,6 +33,12 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
   coverageData: any = [];
   coverageTableLoaded = false;
   coverageTableLoading = false;
+
+  labels: any = [];
+  datasetTitles: any = [];
+  datasetDatesFormatted: any = [];
+  datasets: any = [];
+
 
   coverageDisplayComponent = CoverageDisplayComponent;
 
@@ -39,9 +52,13 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
     this.coverageParams = this.params.coverageParams;
     this.acronyms = this.params.acronyms;
     this.kpiBaseNames = this.params.kpiBaseNames;
+    this.coverageChartId = 'coverageChart' + this.id.toString();
   }
 
   ngAfterViewInit(): void {
+    this.coverageChartElement = document.getElementById(this.coverageChartId);
+    this.sharedFunctions.hideElement(this.coverageChartElement);
+
     this.coverageTableLoading = true;
     this.cdRef.detectChanges();
 
@@ -63,6 +80,28 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
       if (response.status === 200) {
         this.fetchedIn = new Date().getTime() - start;
         this.coverageData = response.data;
+
+        this.labels = this.generateLabels(this.startDate, this.endDate);
+        for (let i = 0; i < this.coverageData.length; i++) {
+          this.datasetTitles.push(this.coverageData[i].acronym + ' ' + this.coverageData[i].kpi_basename);
+          this.datasetDatesFormatted.push(this.formatDates(this.coverageData[i].dates));
+          this.datasets.push({
+            label: this.datasetTitles[i],
+            data: this.fillGaps(this.datasetDatesFormatted[i], i),
+            backgroundColor: 'rgba(0, 0, 160, 1)',
+            borderColor: 'rgba(0, 0, 160, 1)',
+            borderWidth: 1,
+            fill: false,
+            pointRadius: 5,
+            pointBorderWidth: 1
+          });
+        }
+        console.log('titles');
+        console.log(this.datasetTitles);
+        console.log(this.datasetDatesFormatted);
+        console.log(this.datasets);
+
+        this.generateCoverageChart();
         this.coverageTableLoaded = true;
       } else {
         this.sharedFunctions.openSnackBar('Error ' + response.status + ': ' + response.data.error, 'OK');
@@ -73,6 +112,70 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
       console.log(error);
       this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
     });
+  }
+
+
+  generateLabels(startDate: string, endDate: string) {
+    const moment = require('moment');
+    require('twix');
+    const labels = [];
+    const itr = moment.twix(new Date(startDate), new Date(endDate)).iterate('days');
+    while (itr.hasNext()) {
+      labels.push(this.sharedFunctions.parseDate(itr.next().toDate()));
+    }
+    return labels;
+  }
+
+  formatDates(dates: any) {
+    const datesFormatted = [];
+    for (let i = 0; i < dates.length; i++) {
+      datesFormatted.push(this.sharedFunctions.parseDate(new Date(dates[i])));
+    }
+    return datesFormatted;
+  }
+
+  fillGaps(datesFormatted: any, index: number) {
+    const dataset = [];
+    for (let i = 0, j = 0; i < this.labels.length; i++) {
+      if (this.labels[i] === datesFormatted[j]) {
+        dataset.push(index);
+        j++;
+      } else {
+        dataset.push(null);
+      }
+    }
+    return dataset;
+  }
+
+  generateCoverageChart() {
+    this.coverageChart = new Chart(this.coverageChartElement, {
+      type: 'line',
+      data: {
+        labels: this.labels,
+        datasets: this.datasets
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Coverage chart'
+        },
+        spanGaps: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: false,
+              stepSize: 1
+            }
+          }]
+        }, elements: {
+          line: {
+            skipNull: true,
+            drawNull: false,
+          }
+        }
+      }
+    });
+    this.sharedFunctions.showElement(this.coverageChartElement);
   }
 
   removeComponent() {
