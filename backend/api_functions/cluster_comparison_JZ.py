@@ -59,11 +59,13 @@ def wzorek_wojtka(ready_data):
         for i in range(min(len(dataset1['values']), len(dataset2['values']))):
             if dataset1['dates'][i] == dataset2['dates'][i]:
                 temp_sum = temp_sum + (dataset1['values'][i] - dataset2['values'][i]) ** 2
-        # clusters_correlation[key] = math.sqrt(temp_sum)
+        keys = key.split('$')
         clusters_correlation.append({
-            "acronym": key,
+            "acronym1": keys[0],
+            "acronym2": keys[1],
             "value": math.sqrt(temp_sum)
         })
+
     return clusters_correlation
 
 

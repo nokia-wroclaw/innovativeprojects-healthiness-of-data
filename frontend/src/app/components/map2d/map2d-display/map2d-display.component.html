@@ -6,7 +6,7 @@
     </mat-card-subtitle>
     <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
   </mat-card-title-group>
-  <div *ngFor="let cor of mapData">Acronym: {{cor.acronym}}, value: {{cor.value}}</div>
+  <div *ngFor="let cor of mapData">Acr1: {{cor.acronym1}}, acr2: {{cor.acronym2}}, value: {{cor.value}}</div>
   <div *ngIf="problem">{{problemMessage}}</div>
 </mat-card>
 <mat-card *ngIf="map2DLoading">
