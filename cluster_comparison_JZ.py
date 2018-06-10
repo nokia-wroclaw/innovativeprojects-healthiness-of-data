@@ -44,25 +44,26 @@ def fetch_data(start_date, end_date, cord_id, kpi_basename):
     return data, acronym_set
 
 
-start = datetime.datetime(2017, 9, 1)
-end = datetime.datetime(2017, 12, 1)
+start = datetime.datetime(2017, 6, 1)
+end = datetime.datetime(2017, 9, 1)
 all_date_days = (end - start).days
 data, acronym_set = fetch_data(start, end, 'Skuntank', 'RNC_31')
-data2, acronym_set2 = fetch_data(start, end, 'Magby', 'RNC_31')
+data2, acronym_set2 = fetch_data(start, end, 'Mr. Mime', 'RNC_31')
+# data2, acronym_set2 = fetch_data(start, end, 'Magby', 'RNC_31')
 
 print(data)
 print(acronym_set)
 print(data2)
 print(acronym_set2)
 
-coverage_cutoff = 0.8
+coverage_cutoff = 0.2
 ready_data = {}
 for acronym in acronym_set:
     for acronym2 in acronym_set2:
         cov = len(data[acronym]['dates']) / all_date_days
         cov2 = len(data2[acronym2]['dates']) / all_date_days
         print(len(data[acronym]['dates']))
-        print(len(data[acronym]['dates']))
+        print(len(data2[acronym2]['dates']))
         print(cov)
         print(cov2)
         if cov > coverage_cutoff and cov2 > coverage_cutoff:
@@ -71,18 +72,7 @@ for acronym in acronym_set:
                 "dataset2": data2[acronym2],
             }
 
-    clusters_correlation = wzorek_wojtka(ready_data)
+clusters_correlation = wzorek_wojtka(ready_data)
 
-    print('cluster correlation')
-    print(clusters_correlation)
-    # kpi_list = list(ready_data.keys())
-    #
-    # fig = pyplot.figure()
-    # for i in range(1, 10):
-    #     ax = fig.add_subplot(3, 3, i)
-    #     ax.plot(ready_data[kpi_list[i]]['dataset1']['dates'], ready_data[kpi_list[i]]['dataset1']['values'])
-    #     ax.plot(ready_data[kpi_list[i]]['dataset2']['dates'], ready_data[kpi_list[i]]['dataset2']['values'])
-    #
-    #     fig.suptitle('Window size:')
-    #
-    # pyplot.show()
+print('cluster correlation')
+

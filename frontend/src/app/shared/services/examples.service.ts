@@ -35,11 +35,11 @@ export class ExamplesService {
   ];
 
   public EXAMPLES_2DMAP = [{
-    startDate: new Date('2016-06-01T00:00:00.000Z'),
-    endDate: new Date('2018-01-01T00:00:00.000Z'),
+    startDate: new Date('2017-06-01T00:00:00.000Z'),
+    endDate: new Date('2017-09-01T00:00:00.000Z'),
     cordID1: 'Mr. Mime',
     cordID2: 'Skuntank',
-    kpiBaseName: 'TRF_215'
+    kpiBaseName: 'RNC_31'
   }];
 
   constructor() {

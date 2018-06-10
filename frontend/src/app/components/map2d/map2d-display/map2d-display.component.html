@@ -1,15 +1,14 @@
-<mat-card>
-  <mat-spinner *ngIf="map2DLoading"></mat-spinner>
-  <mat-card-title-group *ngIf="map2DLoaded && !map2DLoading">
-    <mat-card-title>{{cordID}}</mat-card-title>
-    <mat-card-subtitle>Data fetched in: {{fetchedIn/1000}} s</mat-card-subtitle>
+<mat-card *ngIf="!map2DLoading">
+  <mat-card-title-group>
+    <mat-card-title>{{cordID1}}, {{cordID2}}, {{kpiBaseName}}
+    </mat-card-title>
+    <mat-card-subtitle>Data fetched in: {{fetchedIn/1000}} s
+    </mat-card-subtitle>
     <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
   </mat-card-title-group>
-
-
-  <div>results</div>
-  <canvas></canvas>
-
-
-
+  <div *ngFor="let cor of mapData">Acronym: {{cor.acronym}}, value: {{cor.value}}</div>
+  <div *ngIf="problem">{{problemMessage}}</div>
+</mat-card>
+<mat-card *ngIf="map2DLoading">
+  <mat-spinner></mat-spinner>
 </mat-card>

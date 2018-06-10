@@ -59,7 +59,7 @@ export class Map2dComponent implements OnInit {
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       cordID1: this.cordID1FormControl,
-      cordID2: this.cordID1FormControl,
+      cordID2: this.cordID2FormControl,
       kpiBaseName: this.kpiBasenameFormControl,
     });
   }

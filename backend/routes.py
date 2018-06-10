@@ -7,10 +7,21 @@ from backend.api_functions.aggregates import calculate_operator_aggregates, calc
 from backend.api_functions.coverage import calculate_cluster_coverage
 from backend.api_functions.outliers import find_outliers
 from backend.api_functions.decomposition import calculate_cluster_decomposition
+from backend.api_functions.cluster_comparison_JZ import *
 
 app = Flask(__name__)
 CORS(app)
 Swagger(app)
+
+
+# @swag_from('api_docs/clusters/map2D.yml', validation=True)
+@app.route('/api/clusters/map2D/<string:cord_id1>/<string:cord_id2>/<string:kpi_basename>', methods=['GET'])
+def get_map2D(cord_id1, cord_id2, kpi_basename):
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+
+    data, status_code = cluster_comparasion(date_start, date_end, cord_id1, cord_id2, kpi_basename)
+    return jsonify(data), status_code
 
 
 @swag_from('api_docs/aggregates_operators.yml', validation=True)
@@ -33,7 +44,8 @@ def get_cluster_aggregates(cord_id, acronym):
     kpi_basename = request.args.get('kpi_basename')
     histogram_bins = request.args.get('bins')
 
-    data, status_code = calculate_cluster_aggregates(date_start, date_end, kpi_basename, cord_id, acronym, hist_bins=histogram_bins)
+    data, status_code = calculate_cluster_aggregates(date_start, date_end, kpi_basename, cord_id, acronym,
+                                                     hist_bins=histogram_bins)
     return jsonify(data), status_code
 
 
@@ -59,7 +71,8 @@ def get_operator_outliers(cord_id, acronym):
     threshold = request.args.get('threshold')
     window_size = request.args.get('window_size')
 
-    data, status_code = find_outliers(date_start, date_end, kpi_basename, cord_id, acronym, threshold=threshold, window_size=window_size)
+    data, status_code = find_outliers(date_start, date_end, kpi_basename, cord_id, acronym, threshold=threshold,
+                                      window_size=window_size)
     return jsonify(data), status_code
 
 

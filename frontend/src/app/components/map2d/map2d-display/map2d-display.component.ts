@@ -16,15 +16,23 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
 
   map2DParams: FormGroup;
 
-  fetchedIn: number;
-
   startDate: any;
   endDate: any;
-  cordID: string;
+  cordID1: string;
+  cordID2: string;
+  kpiBaseName: string;
+  fetchedIn: number;
+
+  problem = false;
+  problemMessage: any;
+
+  mapData: any;
+
   map2DLoading = false;
   map2DLoaded = false;
 
   map2DDisplayComponent = Map2DDisplayComponent;
+
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
@@ -43,26 +51,31 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
 
     this.startDate = this.sharedFunctions.parseDate(this.map2DParams.value.startDate);
     this.endDate = this.sharedFunctions.parseDate(this.map2DParams.value.endDate);
-    this.cordID = this.map2DParams.value.cordID;
+    this.cordID1 = this.map2DParams.value.cordID1;
+    this.cordID2 = this.map2DParams.value.cordID2;
+    this.kpiBaseName = this.map2DParams.value.kpiBaseName;
 
 
-    const url = ''; // this.sharedFunctions.generateURL(this.map2DParams, 'map2D');
+    const url = 'api/clusters/map2D/' + this.cordID1 + '/' + this.cordID2 + '/' + this.kpiBaseName + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
     const start = new Date().getTime();
     this.restService.getAll(url).then((response) => {
       if (response.status === 200) {
         this.fetchedIn = new Date().getTime() - start;
-
+        console.log(response.data);
+        this.mapData = response.data;
 
         this.map2DLoaded = true;
       } else {
-        this.sharedFunctions.openSnackBar('Error ' + response.status + ': ' + response.data.error, 'OK');
+        this.problem = true;
+        this.problemMessage = 'Error: ' + response.status + ' - ' + response.data.error;
       }
       this.map2DLoading = false;
     }).catch((error) => {
       console.log('error');
       console.log(error);
-      this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
+      this.problem = true;
+      this.problemMessage = 'Error: ' + 'backend error';
     });
   }
 
