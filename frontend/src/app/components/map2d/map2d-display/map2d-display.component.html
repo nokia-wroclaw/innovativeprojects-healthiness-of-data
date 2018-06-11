@@ -6,7 +6,27 @@
     </mat-card-subtitle>
     <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
   </mat-card-title-group>
-  <div *ngFor="let cor of mapData">Acr1: {{cor.acronym1}}, acr2: {{cor.acronym2}}, value: {{cor.value}}</div>
+  <div><b>Total: {{total}}</b></div>
+  <div>
+    <table border="1" style="border-collapse: collapse;">
+      <tr>
+        <th>c1 \ c2</th>
+        <th *ngFor="let acr2 of acrs2">{{acr2}}</th>
+      </tr>
+      <tr *ngFor="let acr1 of acrs1; let i = index;">
+        <td>{{acr1}}</td>
+        <td *ngFor="let acr of acrs2; let j = index;">
+          {{matrix[i][j]}}
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div *ngFor="let cor of correlationList">
+    <div>Acr1: {{cor.acronym1}}</div>
+    <div>Acr2: {{cor.acronym2}}</div>
+    <div>Value: {{cor.value}}</div>
+  </div>
+
   <div *ngIf="problem">{{problemMessage}}</div>
 </mat-card>
 <mat-card *ngIf="map2DLoading">

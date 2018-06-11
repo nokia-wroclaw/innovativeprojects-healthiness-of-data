@@ -2,6 +2,7 @@ import datetime
 import math
 from collections import defaultdict
 
+from munkres import Munkres, print_matrix
 import yaml
 from cassandra.cqlengine import connection
 
@@ -32,6 +33,12 @@ def cluster_comparasion(start_date, end_date, cord_id1, cord_id2, kpi_basename):
 
     print(acronym_set)
     print(acronym_set2)
+    rows = len(acronym_set)
+    cols = len(acronym_set2)
+    print(rows)
+    print(cols)
+    mati = [[0 for x in range(cols)] for y in range(rows)]
+    print(mati)
 
     coverage_cutoff = 0.0
     ready_data = {}
@@ -44,13 +51,22 @@ def cluster_comparasion(start_date, end_date, cord_id1, cord_id2, kpi_basename):
                     "dataset1": data[acronym],
                     "dataset2": data2[acronym2],
                 }
-    clusters_correlation = wzorek_wojtka(ready_data)
+    clusters_correlation = wzorek_wojtka(ready_data, mati)
     print('cluster correlation')
     print(clusters_correlation)
-    return clusters_correlation, 200
+    total = hungarian(clusters_correlation['matrix'])
+    print(total)
+    full_data = {
+        'correlation_list': clusters_correlation['correlation_list'],
+        'matrix': clusters_correlation['matrix'],
+        'total': total,
+        'acrs1': list(acronym_set),
+        'acrs2': list(acronym_set2)
+    }
+    return full_data, 200
 
 
-def wzorek_wojtka(ready_data):
+def wzorek_wojtka(ready_data, matrix):
     clusters_correlation = []
     for key in ready_data:
         dataset1 = ready_data[key]['dataset1']
@@ -65,8 +81,17 @@ def wzorek_wojtka(ready_data):
             "acronym2": keys[1],
             "value": math.sqrt(temp_sum)
         })
-
-    return clusters_correlation
+    pos = 0
+    for a in range(len(matrix)):
+        for b in range(len(matrix[0])):
+            matrix[a][b] = clusters_correlation[pos]['value']
+            pos += 1
+    print(matrix)
+    data_with_matrix = {
+        'correlation_list': clusters_correlation,
+        'matrix': matrix
+    }
+    return data_with_matrix
 
 
 def fetch_data(start_date, end_date, cord_id, kpi_basename):
@@ -89,3 +114,19 @@ def fetch_data(start_date, end_date, cord_id, kpi_basename):
             acronym_set.add(row.acronym)
 
     return data, acronym_set
+
+
+def hungarian(matrix):
+    m = Munkres()
+    indexes = m.compute(matrix)
+    print_matrix(matrix, msg='Lowest cost')
+    total = 0
+    for row, column in indexes:
+        value = matrix[row][column]
+        total += value
+        # print('(%d, %d) -> %d' % (row, column, value))
+        # print('total cost: %d' % total)
+    return total
+
+
+

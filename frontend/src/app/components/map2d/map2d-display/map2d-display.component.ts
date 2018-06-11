@@ -32,6 +32,11 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
   map2DLoaded = false;
 
   map2DDisplayComponent = Map2DDisplayComponent;
+  total: any;
+  correlationList = [];
+  acrs1 = [];
+  acrs2 = [];
+  matrix: any;
 
 
   constructor(private restService: RestService,
@@ -63,7 +68,11 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
       if (response.status === 200) {
         this.fetchedIn = new Date().getTime() - start;
         console.log(response.data);
-        this.mapData = response.data;
+        this.correlationList = response.data.correlation_list;
+        this.total = response.data.total;
+        this.acrs1 = response.data.acrs1;
+        this.acrs2 = response.data.acrs2;
+        this.matrix = response.data.matrix;
 
         this.map2DLoaded = true;
       } else {
@@ -76,6 +85,7 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
       console.log(error);
       this.problem = true;
       this.problemMessage = 'Error: ' + 'backend error';
+      this.map2DLoading = false;
     });
   }
 

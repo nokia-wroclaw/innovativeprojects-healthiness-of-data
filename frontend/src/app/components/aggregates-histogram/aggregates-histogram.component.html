@@ -58,10 +58,6 @@
         </mat-option>
       </mat-autocomplete>
 
-    <button mat-raised-button color="primary" [type]="submit" [disabled]="!histogramParams.valid">Fetch data
-    </button>
-    <button mat-raised-button color="warn" type="button" (click)="clearForm()">Clear</button>
-
       <mat-form-field class="full-width">
         <input [formControlName]="'kpiBaseName'"
                [formControl]="kpiBasenameFormControl"
