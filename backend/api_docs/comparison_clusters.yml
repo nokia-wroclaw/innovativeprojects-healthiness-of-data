@@ -1,0 +1,44 @@
+Comparison for cord_id1, cord_id2 and kpi
+Returns correlation list, matrix and 2 acronym sets for provided cord_id1, cord_id2 and kpi_basename.
+---
+tags:
+  - Comparison
+parameters:
+  - name: cord_id1
+    in: path
+    type: integer
+    required: true
+    description: Operator 1 identifier
+  - name: cord_id2
+    in: path
+    type: integer
+    required: true
+    description: Operator 2 identifier
+  - name: date_start
+    in: query
+    type: string
+    required: true
+    description: Start of data range for data
+  - name: date_end
+    in: query
+    type: string
+    required: true
+    description: End of data range for data
+  - name: kpi_basename
+    in: query
+    type: string
+    required: true
+    description: Fetch data for provided kpi basename
+responses:
+  200:
+    description: Comparison for all acronyms that have commin kpi. Returns correlation list and matrix, acronym lists for both cord IDs and result of hungarian algorithm.
+    schema:
+      id: operator_aggregates
+      properties:
+
+  400:
+    schema:
+      properties:
+        success:
+          type: boolean
+          default: false

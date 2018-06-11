@@ -1,26 +1,26 @@
-import yaml
 from flasgger import Swagger, swag_from
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from backend.api_functions.utils import get_cord_id_list, get_cord_acronym_set, get_acronym_list, get_kpi_list
+
 from backend.api_functions.aggregates import calculate_operator_aggregates, calculate_cluster_aggregates
+from backend.api_functions.cluster_comparison import *
 from backend.api_functions.coverage import calculate_cluster_coverage
-from backend.api_functions.outliers import find_outliers
 from backend.api_functions.decomposition import calculate_cluster_decomposition
-from backend.api_functions.cluster_comparison_JZ import *
+from backend.api_functions.outliers import find_outliers
+from backend.api_functions.utils import get_cord_id_list, get_cord_acronym_set, get_acronym_list, get_kpi_list
 
 app = Flask(__name__)
 CORS(app)
 Swagger(app)
 
 
-# @swag_from('api_docs/clusters/map2D.yml', validation=True)
+# @swag_from('api_docs/comparison_clusters.yml', validation=True)
 @app.route('/api/clusters/map2D/<string:cord_id1>/<string:cord_id2>/<string:kpi_basename>', methods=['GET'])
 def get_map2D(cord_id1, cord_id2, kpi_basename):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
 
-    data, status_code = cluster_comparasion(date_start, date_end, cord_id1, cord_id2, kpi_basename)
+    data, status_code = cluster_comparison(date_start, date_end, cord_id1, cord_id2, kpi_basename)
     return jsonify(data), status_code
 
 
@@ -32,7 +32,8 @@ def get_operator_aggregates(cord_id):
     kpi_basename = request.args.get('kpi_basename')
     histogram_bins = request.args.get('bins')  # DEFAULT 10
 
-    data, status_code = calculate_operator_aggregates(date_start, date_end, kpi_basename, cord_id, hist_bins=histogram_bins)
+    data, status_code = calculate_operator_aggregates(date_start, date_end, kpi_basename, cord_id,
+                                                      hist_bins=histogram_bins)
     return jsonify(data), status_code
 
 

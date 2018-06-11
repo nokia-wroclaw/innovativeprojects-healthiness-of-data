@@ -70,8 +70,8 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
         console.log(response.data);
         this.correlationList = response.data.correlation_list;
         this.total = response.data.total;
-        this.acrs1 = response.data.acrs1;
-        this.acrs2 = response.data.acrs2;
+        this.acrs1 = response.data.acronym_set1;
+        this.acrs2 = response.data.acronym_set2;
         this.matrix = response.data.matrix;
 
         this.map2DLoaded = true;

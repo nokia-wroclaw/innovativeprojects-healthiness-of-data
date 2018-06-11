@@ -44,7 +44,7 @@ export class ExamplesService {
     startDate: new Date('2017-06-01T00:00:00.000Z'),
     endDate: new Date('2017-09-01T00:00:00.000Z'),
     cordID1: 'Mr. Mime',
-    cordID2: 'Skuntank',
+    cordID2: 'Dragalge',
     kpiBaseName: 'RNC_31'
   }];
 
