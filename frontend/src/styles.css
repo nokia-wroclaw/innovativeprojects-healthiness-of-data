@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+/*@import "~@angular/material/prebuilt-themes/indigo-pink.css";*/
 
 body {
   font-family: 'Lato', sans-serif;
@@ -35,4 +35,9 @@ body {
 .main-content {
   min-height: 800px;
   height: calc(100vh - 64px);
+}
+
+.success{
+  background-color: #4caf50;
+  color: #ffffff;
 }

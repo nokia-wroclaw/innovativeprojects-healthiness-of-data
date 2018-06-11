@@ -1,0 +1,47 @@
+@import "~@angular/material/theming";
+
+// generator of palettes
+// http://mcg.mbitson.com/#!?mcgpalette0=%233f51b5
+
+@include mat-core();
+
+$nokia-main-color: (
+  50 : #e3e8f2,
+  100 : #b8c6de,
+  200 : #89a0c8,
+  300 : #597ab2,
+  400 : #365ea2,
+  500 : #124191,
+  600 : #103b89,
+  700 : #0d327e,
+  800 : #0a2a74,
+  900 : #051c62,
+  A100 : #93a7ff,
+  A200 : #607dff,
+  A400 : #2d54ff,
+  A700 : #143fff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #ffffff,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #ffffff,
+    A700 : #ffffff,
+  )
+);
+
+$my-theme-primary: mat-palette($nokia-main-color);
+$my-theme-accent: mat-palette($mat-pink);
+$my-theme-warn: mat-palette($mat-red);
+
+$my-theme: mat-light-theme($my-theme-primary, $my-theme-accent, $my-theme-warn);
+
+@include angular-material-theme($my-theme);
