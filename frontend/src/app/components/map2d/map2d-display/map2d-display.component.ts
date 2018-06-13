@@ -38,11 +38,21 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
   acrs2 = [];
   matrix: any;
 
+  cord_list = ['Mr. Mime', 'Lapras', 'Dragalge', 'Naganadel', 'Pelipper', 'Piplup', 'Rotom', 'Vigoroth', 'Timburr', 'Raticate'];
+  arr = [];
 
   constructor(private restService: RestService,
               private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cdRef: ChangeDetectorRef) {
+    for (let i = 0; i < this.cord_list.length; i++) {
+      this.arr[i] = [];
+      for (let j = 0; j < this.cord_list.length; j++) {
+        if (i === j) {
+          this.arr[i][j] = 'x';
+        }
+      }
+    }
   }
 
   ngOnInit() {
@@ -61,18 +71,33 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
     this.kpiBaseName = this.map2DParams.value.kpiBaseName;
 
 
-    const url = 'api/clusters/map2D/' + this.cordID1 + '/' + this.cordID2 + '/' + this.kpiBaseName + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
+    // const url = 'api/clusters/map2D/' + this.cordID1 + '/' + this.cordID2 + '/' + this.kpiBaseName + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
 
+    const url = 'api/clusters/map2D_v2/RNC_31' + '?date_start=' + this.startDate + '&date_end=' + this.endDate;
     const start = new Date().getTime();
     this.restService.getAll(url).then((response) => {
       if (response.status === 200) {
         this.fetchedIn = new Date().getTime() - start;
         console.log(response.data);
-        this.correlationList = response.data.correlation_list;
-        this.total = response.data.total;
-        this.acrs1 = response.data.acronym_set1;
-        this.acrs2 = response.data.acronym_set2;
-        this.matrix = response.data.matrix;
+        const list = response.data;
+        for (let i = 0; i < list.length; i++) {
+          console.log(list[i].total);
+        }
+
+
+        let pos = 0;
+        for (let i = 0; i < this.cord_list.length; i++) {
+          this.arr[i] = [];
+          for (let j = 0; j < this.cord_list.length; j++) {
+            if (i === j) {
+              this.arr[i][j] = 'x';
+            } else if (i < j) {
+              this.arr[i][j] = (list[pos].total).toFixed(3);
+              pos++;
+            }
+          }
+        }
+        console.log(this.arr);
 
         this.map2DLoaded = true;
       } else {

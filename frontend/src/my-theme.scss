@@ -38,9 +38,45 @@ $nokia-main-color: (
   )
 );
 
+$nokia-warn-color: (
+    50 : #f3e3e9,
+    100 : #e1b8c8,
+    200 : #cd89a4,
+    300 : #b95980,
+    400 : #aa3664,
+    500 : #9b1249,
+    600 : #931042,
+    700 : #890d39,
+    800 : #7f0a31,
+    900 : #6d0521,
+    A100 : #ff9db1,
+    A200 : #ff6a89,
+    A400 : #ff3760,
+    A700 : #ff1e4c,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+
+
+
 $my-theme-primary: mat-palette($nokia-main-color);
 $my-theme-accent: mat-palette($mat-pink);
-$my-theme-warn: mat-palette($mat-red);
+$my-theme-warn: mat-palette($nokia-warn-color);
 
 $my-theme: mat-light-theme($my-theme-primary, $my-theme-accent, $my-theme-warn);
 

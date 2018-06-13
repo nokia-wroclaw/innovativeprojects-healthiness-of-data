@@ -6,17 +6,16 @@
     </mat-card-subtitle>
     <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
   </mat-card-title-group>
-  <div><b>Total: {{total}}</b></div>
   <div>
     <table border="1" style="border-collapse: collapse;">
       <tr>
-        <th>{{cordID2}} \ {{cordID1}}</th>
-        <th *ngFor="let acr1 of acrs1">{{acr1}}</th>
+        <th>x\y</th>
+        <th *ngFor="let cord of cord_list">{{cord}}</th>
       </tr>
-      <tr *ngFor="let acr2 of acrs2; let i = index;">
-        <td>{{acr2}}</td>
-        <td *ngFor="let acr of acrs1; let j = index;">
-          {{matrix[i][j]}}
+      <tr *ngFor="let cord of cord_list; let i = index;">
+        <td>{{cord}}</td>
+        <td *ngFor="let cord of cord_list; let j = index;">
+          {{arr[i][j]}}
         </td>
       </tr>
     </table>
@@ -26,3 +25,20 @@
 <mat-card *ngIf="map2DLoading">
   <mat-spinner></mat-spinner>
 </mat-card>
+
+
+<!--<div><b>Total: {{total}}</b></div>-->
+<!--<div>-->
+<!--<table border="1" style="border-collapse: collapse;">-->
+<!--<tr>-->
+<!--<th>{{cordID2}} \ {{cordID1}}</th>-->
+<!--<th *ngFor="let acr1 of acrs1">{{acr1}}</th>-->
+<!--</tr>-->
+<!--<tr *ngFor="let acr2 of acrs2; let i = index;">-->
+<!--<td>{{acr2}}</td>-->
+<!--<td *ngFor="let acr of acrs1; let j = index;">-->
+<!--{{matrix[i][j]}}-->
+<!--</td>-->
+<!--</tr>-->
+<!--</table>-->
+<!--</div>-->

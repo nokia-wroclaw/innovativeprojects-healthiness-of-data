@@ -6,12 +6,25 @@ from backend.api_functions.aggregates import calculate_operator_aggregates, calc
 from backend.api_functions.cluster_comparison import *
 from backend.api_functions.coverage import calculate_cluster_coverage
 from backend.api_functions.decomposition import calculate_cluster_decomposition
+from backend.api_functions.map2d_multi_cord import *
 from backend.api_functions.outliers import find_outliers
 from backend.api_functions.utils import get_cord_id_list, get_cord_acronym_set, get_acronym_list, get_kpi_list
 
 app = Flask(__name__)
 CORS(app)
 Swagger(app)
+
+
+# @swag_from('api_docs/comparison_clusters.yml', validation=True)
+@app.route('/api/clusters/map2D_v2/<string:kpi_basename>', methods=['GET'])
+def get_map2D_v2(kpi_basename):
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+
+    cord_list = ['Mr. Mime', 'Lapras', 'Dragalge', 'Naganadel', 'Pelipper', 'Piplup', 'Rotom',  'Vigoroth', 'Timburr', 'Raticate']
+
+    data, status_code = get_map(date_start, date_end, kpi_basename, cord_list)
+    return jsonify(data), status_code
 
 
 # @swag_from('api_docs/comparison_clusters.yml', validation=True)

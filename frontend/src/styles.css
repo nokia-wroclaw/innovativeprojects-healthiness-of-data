@@ -36,8 +36,3 @@ body {
   min-height: 800px;
   height: calc(100vh - 64px);
 }
-
-.success{
-  background-color: #4caf50;
-  color: #ffffff;
-}
