@@ -75,9 +75,11 @@ def get_correlation(data1, data2, all_date_days):
                 ready_data[acronym + '$' + acronym2] = {
                     "dataset1": data1['data'][acronym],
                     "dataset2": data2['data'][acronym2],
+                    'coverage1': cov, # NOWE
+                    'coverage2': cov2 # NOWE
                 }
     clusters_correlation = norma_L(ready_data, empty_matrix)
-    total = hungarian(clusters_correlation['matrix'])
+    total = hungarian(clusters_correlation) # NOWE TU TRZEBA MU PRZEKAZAĆ JAKO ARGUMENT COVERAGE KAŻDEGO AKRONIMU (ALBO SUME
     full_data = {
         'cord_key': data1['cord_id'] + '$' + data2['cord_id'],
         'correlation_list': clusters_correlation['correlation_list'],
@@ -95,14 +97,18 @@ def norma_L(ready_data, matrix):
         dataset1 = ready_data[key]['dataset1']
         dataset2 = ready_data[key]['dataset2']
         temp_sum = 0
+        number_of_points = 0
         for i in range(min(len(dataset1['values']), len(dataset2['values']))):
             if dataset1['dates'][i] == dataset2['dates'][i]:
                 temp_sum = temp_sum + (dataset1['values'][i] - dataset2['values'][i]) ** 2
+                number_of_points += 1 # NOWE
         keys = key.split('$')
         clusters_correlation.append({
             "acronym1": keys[0],
             "acronym2": keys[1],
-            "value": math.sqrt(temp_sum)
+            "value": math.sqrt(temp_sum)/number_of_points, # NOWE
+            'coverage1': ready_data[key]['coverage1'], # NOWE
+            'coverage2': ready_data[key]['coverage2'] # NOWE
         })
     pos = 0
     for a in range(len(matrix)):
@@ -140,9 +146,9 @@ def fetch_data(start_date, end_date, cord_id, kpi_basename):
 
 def hungarian(matrix):
     m = Munkres()
-    indexes = m.compute(matrix)
+    indexes = m.compute(matrix['matrix']) # NOWE
     total = 0
     for row, column in indexes:
         value = matrix[row][column]
-        total += value
-    return total
+        total += (value * ((matrix['correlation_list'][TU MUSI BYĆ JAKIŚ INDEX]['coverage1'] + matrix['correlation_list'][TU MUSI BYĆ JAKIŚ INDEX]['coverage1'])/2))
+    return total/len(row) # NOWE, TU JESZCZE TRZEBA PODZIELIC PRZEZ SUME COVERAGY
