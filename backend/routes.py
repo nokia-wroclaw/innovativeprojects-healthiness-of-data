@@ -21,8 +21,9 @@ def get_map2D(kpi_basename):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
     cords = request.args.getlist('cord_id')
+    date_other = request.args.get('date_other')
 
-    data, status_code = get_map(date_start, date_end, kpi_basename, cords)
+    data, status_code = get_map(date_start, date_end, kpi_basename, cords, date_other)
     return jsonify(data), status_code
 
 

@@ -24,6 +24,23 @@
 <mat-card>
   <canvas [id]="map2DChartId" width="1000" height="500"></canvas>
 </mat-card>
+<mat-card *ngIf="!map2DLoading">
+  <div>
+    <table border="1" style="border-collapse: collapse;">
+      <tr>
+        <th>heatmap</th>
+        <th *ngFor="let cord of cordIds">{{cord}}</th>
+      </tr>
+      <tr *ngFor="let cord of cordIds; let i = index;">
+        <td>{{cord}}</td>
+        <td *ngFor="let cord of cordIds; let j = index;">
+          {{heatmap[i][j]}}
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div *ngIf="problem">{{problemMessage}}</div>
+</mat-card>
 <mat-card *ngIf="map2DLoading">
   <mat-spinner></mat-spinner>
 </mat-card>

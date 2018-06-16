@@ -22,7 +22,7 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
   map2DChartElement;
   map2DChart;
 
-  preStartDate: any;
+  otherDate: any;
   startDate: any;
   endDate: any;
 
@@ -39,6 +39,7 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
 
   map2DDisplayComponent = Map2DDisplayComponent;
   matrixTotals: any = [];
+  heatmap: any = [];
 
   cordIds: any = [];
 
@@ -51,10 +52,10 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.map2DChartId = 'map2DChart' + this.id.toString();
-    console.log(this.params);
     this.map2DParams = this.params.map2DParams;
     this.cordIds = this.params.cordIDs;
     for (let i = 0; i < this.cordIds.length; i++) {
+      this.heatmap[i] = [];
       this.matrixTotals[i] = [];
     }
   }
@@ -63,21 +64,20 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
     this.map2DChartElement = document.getElementById(this.map2DChartId);
     this.sharedFunctions.hideElement(this.map2DChartElement);
 
-
     this.map2DLoading = true;
     this.cdRef.detectChanges();
 
     this.startDate = this.sharedFunctions.parseDate(this.map2DParams.value.startDate);
     this.endDate = this.sharedFunctions.parseDate(this.map2DParams.value.endDate);
-    this.preStartDate = this.sharedFunctions.parseDate(this.map2DParams.value.preStartDate);
     this.kpiBaseName = this.map2DParams.value.kpiBaseName;
 
     const cordIDsURL = this.sharedFunctions.processArguments(this.cordIds, 'cord_id');
 
     let url = 'api/clusters/map2D/RNC_31' + '?date_start=' + this.startDate + '&date_end=' + this.endDate + cordIDsURL;
 
-    if (this.preStartDate !== undefined) {
-      url += '&pre_start_date' + this.preStartDate;
+    if (this.map2DParams.value.otherDate !== '') {
+      this.otherDate = this.sharedFunctions.parseDate(this.map2DParams.value.otherDate);
+      url += '&date_other=' + this.otherDate;
     }
 
     const start = new Date().getTime();
@@ -91,6 +91,9 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
         for (let i = 0; i < this.cordIds.length; i++) {
           for (let j = 0; j < this.cordIds.length; j++) {
             this.matrixTotals[i][j] = totals[i][j].toFixed(3);
+            if (response.data.heatmap !== undefined) {
+              this.heatmap[i][j] = (response.data.heatmap[i][j] * 100).toFixed(3);
+            }
           }
         }
         this.generateChart(positions);

@@ -1,12 +1,15 @@
 from __future__ import division
+
 import datetime
 import math
 from collections import defaultdict
-from munkres import Munkres, print_matrix
+
+import numpy as np
 import yaml
 from cassandra.cqlengine import connection
-import numpy as np
+from munkres import Munkres
 from sklearn import manifold
+
 from backend.api_functions.utils import parse_check_date
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 
@@ -25,24 +28,28 @@ def generate_keys(cords):
     return cord_keys
 
 
-def get_map(start_date, end_date, kpi_basename, cord_list):
+def get_map(start_date, end_date, kpi_basename, cord_list, date_other):
     """
     Function for finding outliers.
     :param start_date: Starting date.
     :param end_date: Ending date.
     :param kpi_basename: One kpi basename.
     :param cord_list: List of cord IDs.
+    :param date_other: 3rd date to check past or future
 
     :return: correlation list, matrix, 2 acronym sets and result of hungarian algorithm
     """
 
     start_date = parse_check_date(start_date)
     end_date = parse_check_date(end_date)
+    other_date = parse_check_date(date_other)
+
     all_date_days = (end_date - start_date).days
     if not start_date and not end_date:
         return {"error": "Incorrect dates."}, 400
 
     datasets = defaultdict(lambda: {"cord_id": '', "data": [], "acronym_set": []})
+    datasets2 = defaultdict(lambda: {"cord_id": '', "data": [], "acronym_set": []})
 
     for cord in cord_list:
         data, acronym_set = fetch_data(start_date, end_date, cord, kpi_basename)
@@ -50,6 +57,38 @@ def get_map(start_date, end_date, kpi_basename, cord_list):
         datasets[cord]["data"] = data
         datasets[cord]["acronym_set"] = acronym_set
 
+        if other_date:
+            if (start_date - other_date).days > 0:  # if it's before start
+                data2, acronym_set2 = fetch_data(other_date, start_date, cord, kpi_basename)
+                all_date_days2 = (start_date - other_date).days
+            elif (other_date - end_date).days > 0:  # if it's after end
+                data2, acronym_set2 = fetch_data(end_date, other_date, cord, kpi_basename)
+                all_date_days2 = (other_date - end_date).days
+            datasets2[cord]["cord_id"] = cord
+            datasets2[cord]["data"] = data2
+            datasets2[cord]["acronym_set"] = acronym_set2
+
+    fin1 = get_all_but_mds(cord_list, datasets, all_date_days)
+    fin = {}
+    if not other_date:
+        fin = {
+            'matrix_full': fin1['matrix_full'],
+            'matrix_totals': fin1['matrix_totals'],
+            'positions': get_mds(fin1['matrix_totals'])
+        }
+    else:
+        fin2 = get_all_but_mds(cord_list, datasets2, all_date_days2)
+        fin = {
+            'matrix_full': fin1['matrix_full'],
+            'matrix_totals': fin1['matrix_totals'],
+            'positions': get_mds(fin1['matrix_totals']),
+            'heatmap': get_heatmap(fin2['matrix_totals'], fin1['matrix_totals'])
+        }
+
+    return fin, 200
+
+
+def get_all_but_mds(cord_list, datasets, all_date_days):
     fin_list = []
     a = len(cord_list) - 1
     b = 0
@@ -74,14 +113,12 @@ def get_map(start_date, end_date, kpi_basename, cord_list):
                 matrix_full[b][a] = fin_list[pos]
                 pos += 1
 
-    get_mds(matrix_totals)
     fin = {
         'matrix_full': matrix_full,
-        'matrix_totals': matrix_totals,
-        'positions': get_mds(matrix_totals)
+        'matrix_totals': matrix_totals
     }
 
-    return fin, 200
+    return fin
 
 
 def get_correlation(data1, data2, all_date_days):
@@ -102,12 +139,12 @@ def get_correlation(data1, data2, all_date_days):
                     'coverage1': cov,  # NOWE
                     'coverage2': cov2  # NOWE
                 }
+    print(data1['cord_id'] + '$' + data2['cord_id'])
     clusters_correlation = norma_L(ready_data, empty_matrix, empty_matrix_val)
-    total = hungarian(
-        clusters_correlation)  # NOWE TU TRZEBA MU PRZEKAZAĆ JAKO ARGUMENT COVERAGE KAŻDEGO AKRONIMU (ALBO SUME
+    total = hungarian(clusters_correlation['matrix'], clusters_correlation['matrix_val']
+                      )  # NOWE TU TRZEBA MU PRZEKAZAĆ JAKO ARGUMENT COVERAGE KAŻDEGO AKRONIMU (ALBO SUME
     full_data = {
         'cord_key': data1['cord_id'] + '$' + data2['cord_id'],
-        'correlation_list': clusters_correlation['correlation_list'],
         'matrix': clusters_correlation['matrix'],
         'acronym_set1': list(acronym_set),
         'acronym_set2': list(acronym_set2),
@@ -127,6 +164,13 @@ def norma_L(ready_data, matrix, matrix_val):
             if dataset1['dates'][i] == dataset2['dates'][i]:
                 temp_sum = temp_sum + (dataset1['values'][i] - dataset2['values'][i]) ** 2
                 number_of_points += 1  # NOWE
+        if number_of_points == 0:
+            print(key)
+            print(len(dataset1['values']))
+            print(dataset1['values'])
+            print(len(dataset2['values']))
+            print(dataset2['values'])
+            # number_of_points = 0.000000000001
         keys = key.split('$')
         clusters_correlation.append({
             "acronym1": keys[0],
@@ -141,19 +185,16 @@ def norma_L(ready_data, matrix, matrix_val):
             matrix[a][b] = clusters_correlation[pos]
             matrix_val[a][b] = clusters_correlation[pos]['value']
             pos += 1
-    data_with_matrix = {
-        'correlation_list': clusters_correlation,
+    matrixes = {
         'matrix': matrix,
         'matrix_val': matrix_val
     }
-    return data_with_matrix
+    return matrixes
 
 
-def hungarian(data):
-    matrix = data['matrix']
-    matrix_val = data['matrix_val']
+def hungarian(matrix, matrix_val):
     m = Munkres()
-    indexes = m.compute(matrix_val)  # NOWE
+    indexes = m.compute(matrix_val)
     total = 0
     coverage_sum = 0
     for row, column in indexes:
@@ -164,13 +205,11 @@ def hungarian(data):
 
 
 def get_mds(sym_matrix):
-    arr = np.array(sym_matrix)  # TA MACIERZ MUSI BYĆ SYMETRYCZNA!
-
+    arr = np.array(sym_matrix)
     mds = manifold.MDS(n_components=2, max_iter=3000, eps=1e-9,
                        dissimilarity="precomputed", n_jobs=1)
 
     wrong_format_array = mds.fit(arr).embedding_
-    print(wrong_format_array)
     positions = []
     # nmds = manifold.MDS(n_components=2, metric=False, max_iter=3000, eps=1e-12,
     #                     dissimilarity="precomputed", n_jobs=1,
@@ -178,11 +217,21 @@ def get_mds(sym_matrix):
     # npos = nmds.fit_transform(arr, init=wrong_format_array)
     for m in range(0, len(wrong_format_array)):
         positions.append({
-            'x': wrong_format_array[m, 0],
-            'y': wrong_format_array[m, 1]
+            'x': wrong_format_array[m, 0], 'y': wrong_format_array[m, 1]
         })
-    print(positions)
     return positions
+
+
+def get_heatmap(older_matrix, newer_matrix):
+    heatmap = [[0 for x in range(len(older_matrix))] for y in range(len(older_matrix))]
+    for i in range(0, len(older_matrix)):
+        for j in range(0, len(older_matrix)):
+            if i < j and older_matrix[i][j] != 0.0:
+                val = (newer_matrix[i][j] - older_matrix[i][j]) / older_matrix[i][j]
+                heatmap[i][j] = val
+                heatmap[j][i] = val
+
+    return heatmap
 
 
 def fetch_data(start_date, end_date, cord_id, kpi_basename):

@@ -27,6 +27,7 @@
     "angular": "^1.6.9",
     "angular-gridster2": "^6.0.4",
     "bootstrap": "^4.0.0",
+    "chart.heatmap.js": "0.0.1-alpha",
     "chart.js": "^2.7.2",
     "chartjs-plugin-zoom": "^0.6.3",
     "core-js": "^2.4.1",

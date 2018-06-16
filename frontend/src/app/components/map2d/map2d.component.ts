@@ -63,7 +63,7 @@ export class Map2dComponent implements OnInit {
       endDate: ['', Validators.required],
       cordIDs: '',
       kpiBaseName: this.kpiBasenameFormControl,
-      preStartDate: ''
+      otherDate: ''
     });
   }
 
@@ -108,7 +108,6 @@ export class Map2dComponent implements OnInit {
   }
 
   exampleCase(example: any) {
-    console.log(example);
     this.map2DParams.patchValue(example);
     this.selectedCordIDs = example.chips;
   }

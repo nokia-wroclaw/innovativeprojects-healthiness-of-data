@@ -4,15 +4,6 @@
         [formGroup]="map2DParams">
 
     <mat-form-field>
-      <input formControlName="preStartDate"
-             placeholder="Pre-start date"
-             [matDatepicker]="preStartDate"
-             matInput>
-      <mat-datepicker-toggle matSuffix [for]="preStartDate"></mat-datepicker-toggle>
-      <mat-datepicker #preStartDate></mat-datepicker>
-    </mat-form-field>
-
-    <mat-form-field>
       <input formControlName="startDate"
              placeholder="Start date"
              [matDatepicker]="startDate"
@@ -35,6 +26,15 @@
              required>
       <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
       <mat-datepicker #endDate></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input formControlName="otherDate"
+             placeholder="Other date"
+             [matDatepicker]="otherDate"
+             matInput>
+      <mat-datepicker-toggle matSuffix [for]="otherDate"></mat-datepicker-toggle>
+      <mat-datepicker #otherDate></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field class="full-width">
@@ -78,7 +78,6 @@
         {{optionKpi}}
       </mat-option>
     </mat-autocomplete>
-
 
     <button mat-raised-button color="primary" [type]="submit" [disabled]="!map2DParams.valid">Fetch data</button>
 
