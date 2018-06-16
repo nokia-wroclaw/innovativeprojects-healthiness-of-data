@@ -16,24 +16,13 @@ Swagger(app)
 
 
 # @swag_from('api_docs/comparison_clusters.yml', validation=True)
-@app.route('/api/clusters/map2D_v2/<string:kpi_basename>', methods=['GET'])
-def get_map2D_v2(kpi_basename):
+@app.route('/api/clusters/map2D/<string:kpi_basename>', methods=['GET'])
+def get_map2D(kpi_basename):
     date_start = request.args.get('date_start')
     date_end = request.args.get('date_end')
+    cords = request.args.getlist('cord_id')
 
-    cord_list = ['Mr. Mime', 'Lapras', 'Dragalge', 'Naganadel', 'Pelipper', 'Piplup', 'Rotom',  'Vigoroth', 'Timburr', 'Raticate']
-
-    data, status_code = get_map(date_start, date_end, kpi_basename, cord_list)
-    return jsonify(data), status_code
-
-
-# @swag_from('api_docs/comparison_clusters.yml', validation=True)
-@app.route('/api/clusters/map2D/<string:cord_id1>/<string:cord_id2>/<string:kpi_basename>', methods=['GET'])
-def get_map2D(cord_id1, cord_id2, kpi_basename):
-    date_start = request.args.get('date_start')
-    date_end = request.args.get('date_end')
-
-    data, status_code = cluster_comparison(date_start, date_end, cord_id1, cord_id2, kpi_basename)
+    data, status_code = get_map(date_start, date_end, kpi_basename, cords)
     return jsonify(data), status_code
 
 

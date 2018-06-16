@@ -172,14 +172,14 @@ def get_mds(sym_matrix):
     wrong_format_array = mds.fit(arr).embedding_
     print(wrong_format_array)
     positions = []
-    nmds = manifold.MDS(n_components=2, metric=False, max_iter=3000, eps=1e-12,
-                        dissimilarity="precomputed", n_jobs=1,
-                        n_init=1)
-    npos = nmds.fit_transform(arr, init=wrong_format_array)
-    for m in range(0, len(npos)):
+    # nmds = manifold.MDS(n_components=2, metric=False, max_iter=3000, eps=1e-12,
+    #                     dissimilarity="precomputed", n_jobs=1,
+    #                     n_init=1)
+    # npos = nmds.fit_transform(arr, init=wrong_format_array)
+    for m in range(0, len(wrong_format_array)):
         positions.append({
-            'x': npos[m, 0],
-            'y': npos[m, 1]
+            'x': wrong_format_array[m, 0],
+            'y': wrong_format_array[m, 1]
         })
     print(positions)
     return positions

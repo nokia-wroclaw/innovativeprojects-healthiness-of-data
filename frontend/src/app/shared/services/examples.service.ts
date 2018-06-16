@@ -37,15 +37,14 @@ export class ExamplesService {
   public EXAMPLES_2DMAP = [{
     startDate: new Date('2017-06-01T00:00:00.000Z'),
     endDate: new Date('2017-09-01T00:00:00.000Z'),
-    cordID1: 'Mr. Mime',
-    cordID2: 'Lapras',
-    kpiBaseName: 'RNC_31'
-  },{
+    kpiBaseName: 'RNC_31',
+    chips: ['Mr. Mime', 'Lapras', 'Dragalge', 'Naganadel', 'Pelipper', 'Piplup', 'Rotom', 'Vigoroth', 'Timburr', 'Raticate']
+  }, {
     startDate: new Date('2017-06-01T00:00:00.000Z'),
     endDate: new Date('2017-09-01T00:00:00.000Z'),
-    cordID1: 'Mr. Mime',
-    cordID2: 'Dragalge',
-    kpiBaseName: 'RNC_31'
+    kpiBaseName: 'RNC_31',
+    preStartDate: new Date('2017-03-01T00:00:00.000Z'),
+    chips: ['Mr. Mime', 'Lapras', 'Dragalge', 'Naganadel', 'Pelipper', 'Piplup', 'Rotom']
   }];
 
   constructor() {

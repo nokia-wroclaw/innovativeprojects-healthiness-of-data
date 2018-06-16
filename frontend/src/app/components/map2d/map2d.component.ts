@@ -1,16 +1,13 @@
-import {Component, ComponentFactoryResolver, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
-import {RestService} from '../../shared/services/rest.service';
+import {Component, OnInit, Type} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {CacheDataService} from '../../shared/services/cache.data.service';
 import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
 import {ExamplesService} from '../../shared/services/examples.service';
 import {Observable} from 'rxjs/Observable';
-import {OutliersDisplayComponent} from '../outliers/outliers-display/outliers-display.component';
 import {Map2DDisplayComponent} from './map2d-display/map2d-display.component';
-import {MatDatepickerInputEvent} from '@angular/material';
-import {startWith} from 'rxjs/operators/startWith';
-import {map} from 'rxjs/operators/map';
+import {MatAutocompleteSelectedEvent, MatDatepickerInputEvent} from '@angular/material';
 import {RouterCommunicationService} from '../../shared/services/router-communication/router-communication.service';
+import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-map2d',
@@ -22,18 +19,22 @@ export class Map2dComponent implements OnInit {
   fullKpiBasenamesList: any = [];
   fullCordIDsList: any = [];
   filteredKpiBasenames: Observable<string[]>;
-  filteredCordID1s: Observable<string[]>;
-  filteredCordID2s: Observable<string[]>;
+  filteredCordIDs: Observable<string[]>;
+  selectedCordIDs: any = [];
 
   map2DParams: FormGroup;
-  cordID1FormControl = new FormControl('', [Validators.required]);
-  cordID2FormControl = new FormControl('', [Validators.required]);
+  cordIDsFormControl = new FormControl('', [Validators.required]);
   kpiBasenameFormControl = new FormControl('', [Validators.required]);
 
   minStartDate = new Date(2014, 0);
   maxStartDate = new Date();
   minEndDate = new Date(2014, 0);
   maxEndDate = new Date();
+
+  separatorKeysCodes = [ENTER, COMMA, TAB];
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
 
   map2DDisplayComponent = Map2DDisplayComponent;
 
@@ -49,8 +50,10 @@ export class Map2dComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.filteredKpiBasenames = this.sharedFunctions.setOnChange(this.fullKpiBasenamesList, this.kpiBasenameFormControl);
-    this.filteredCordID1s = this.sharedFunctions.setOnChange(this.fullCordIDsList, this.cordID1FormControl);
-    this.filteredCordID2s = this.sharedFunctions.setOnChange(this.fullCordIDsList, this.cordID2FormControl);
+    this.filteredCordIDs = this.fullCordIDsList;
+    this.cordIDsFormControl.valueChanges.subscribe(val => {
+      this.filterOptionsCordIDs(val);
+    });
 
   }
 
@@ -58,15 +61,19 @@ export class Map2dComponent implements OnInit {
     this.map2DParams = this.formBuilder.group({
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      cordID1: this.cordID1FormControl,
-      cordID2: this.cordID2FormControl,
+      cordIDs: '',
       kpiBaseName: this.kpiBasenameFormControl,
+      preStartDate: ''
     });
   }
 
   get2DMap(map2DParams: FormGroup, componentClass: Type<any>) {
+    const map2DPackage = {
+      map2DParams: map2DParams,
+      cordIDs: this.selectedCordIDs
+    };
     const paramsAndComponentclass = {
-      params: map2DParams,
+      params: map2DPackage,
       componentClass: componentClass
     };
     this.routerCommunicationService.emitChange(paramsAndComponentclass);
@@ -76,5 +83,34 @@ export class Map2dComponent implements OnInit {
     this.minEndDate = event.value;
   }
 
+  // cord IDs
+  addChipCordID(event: MatAutocompleteSelectedEvent, input: any): void {
+    const selection = event.option.value;
+    this.selectedCordIDs.push(selection);
+    this.fullCordIDsList = this.fullCordIDsList.filter(obj => obj !== selection);
+    this.filteredCordIDs = this.fullCordIDsList.slice(0, 50);
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  removeChipCordId(chip: any): void {
+    const index = this.selectedCordIDs.indexOf(chip);
+    if (index >= 0) {
+      this.selectedCordIDs.splice(index, 1);
+      this.fullCordIDsList.push(chip);
+    }
+  }
+
+  filterOptionsCordIDs(opt: string) {
+    this.filteredCordIDs = this.fullCordIDsList
+      .filter(obj => obj.toLowerCase().indexOf(opt.toString().toLowerCase()) === 0).slice(0, 50);
+  }
+
+  exampleCase(example: any) {
+    console.log(example);
+    this.map2DParams.patchValue(example);
+    this.selectedCordIDs = example.chips;
+  }
 
 }
