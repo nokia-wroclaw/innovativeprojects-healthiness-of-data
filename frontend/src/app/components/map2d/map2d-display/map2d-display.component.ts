@@ -87,12 +87,12 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
 
         let pos = 0;
         for (let i = 0; i < this.cord_list.length; i++) {
-          this.arr[i] = [];
           for (let j = 0; j < this.cord_list.length; j++) {
             if (i === j) {
               this.arr[i][j] = 'x';
             } else if (i < j) {
               this.arr[i][j] = (list[pos].total).toFixed(3);
+              this.arr[j][i] = (list[pos].total).toFixed(3);
               pos++;
             }
           }

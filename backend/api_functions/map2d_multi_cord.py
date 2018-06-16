@@ -34,13 +34,14 @@ def get_map(start_date, end_date, kpi_basename, cord_list):
 
     :return: correlation list, matrix, 2 acronym sets and result of hungarian algorithm
     """
+
     start_date = parse_check_date(start_date)
     end_date = parse_check_date(end_date)
     all_date_days = (end_date - start_date).days
     if not start_date and not end_date:
         return {"error": "Incorrect dates."}, 400
 
-    datasets = defaultdict(lambda: {"cord_id": '', "data": [], "acronym_set": [] })
+    datasets = defaultdict(lambda: {"cord_id": '', "data": [], "acronym_set": []})
 
     for cord in cord_list:
         data, acronym_set = fetch_data(start_date, end_date, cord, kpi_basename)
@@ -75,11 +76,11 @@ def get_correlation(data1, data2, all_date_days):
                 ready_data[acronym + '$' + acronym2] = {
                     "dataset1": data1['data'][acronym],
                     "dataset2": data2['data'][acronym2],
-                    'coverage1': cov, # NOWE
-                    'coverage2': cov2 # NOWE
+                    'coverage1': cov,  # NOWE
+                    'coverage2': cov2  # NOWE
                 }
-    clusters_correlation = norma_L(ready_data, empty_matrix)
-    total = hungarian(clusters_correlation) # NOWE TU TRZEBA MU PRZEKAZAĆ JAKO ARGUMENT COVERAGE KAŻDEGO AKRONIMU (ALBO SUME
+    clusters_correlation = norma_L(ready_data, empty_matrix, empty_matrix)
+    total = hungarian(clusters_correlation)  # NOWE TU TRZEBA MU PRZEKAZAĆ JAKO ARGUMENT COVERAGE KAŻDEGO AKRONIMU (ALBO SUME
     full_data = {
         'cord_key': data1['cord_id'] + '$' + data2['cord_id'],
         'correlation_list': clusters_correlation['correlation_list'],
@@ -91,7 +92,7 @@ def get_correlation(data1, data2, all_date_days):
     return full_data
 
 
-def norma_L(ready_data, matrix):
+def norma_L(ready_data, matrix, matrix_val):
     clusters_correlation = []
     for key in ready_data:
         dataset1 = ready_data[key]['dataset1']
@@ -101,25 +102,44 @@ def norma_L(ready_data, matrix):
         for i in range(min(len(dataset1['values']), len(dataset2['values']))):
             if dataset1['dates'][i] == dataset2['dates'][i]:
                 temp_sum = temp_sum + (dataset1['values'][i] - dataset2['values'][i]) ** 2
-                number_of_points += 1 # NOWE
+                number_of_points += 1  # NOWE
         keys = key.split('$')
         clusters_correlation.append({
             "acronym1": keys[0],
             "acronym2": keys[1],
-            "value": math.sqrt(temp_sum)/number_of_points, # NOWE
-            'coverage1': ready_data[key]['coverage1'], # NOWE
-            'coverage2': ready_data[key]['coverage2'] # NOWE
+            "value": math.sqrt(temp_sum) / number_of_points,  # NOWE
+            'coverage1': ready_data[key]['coverage1'],  # NOWE
+            'coverage2': ready_data[key]['coverage2']  # NOWE
         })
     pos = 0
     for a in range(len(matrix)):
         for b in range(len(matrix[0])):
-            matrix[a][b] = clusters_correlation[pos]['value']
+            matrix[a][b] = clusters_correlation[pos]
+            matrix_val[a][b] = clusters_correlation[pos]['value']
             pos += 1
     data_with_matrix = {
         'correlation_list': clusters_correlation,
-        'matrix': matrix
+        'matrix': matrix,
+        'matrix_val': matrix_val
     }
+    print(data_with_matrix)
+    print(data_with_matrix['matrix'])
     return data_with_matrix
+
+
+def hungarian(data):
+    matrix = data['matrix']
+    print(matrix)
+    matrix_val = data['matrix_val']
+    m = Munkres()
+    indexes = m.compute(matrix)  # NOWE
+    total = 0
+    coverage_sum = 0
+    for row, column in indexes:
+        value = matrix_val[row][column]
+        total += (value * ((matrix[row][column]['coverage1'] + matrix[row][column]['coverage1']) / 2))
+        coverage_sum += matrix[row][column]['coverage1'] + matrix[row][column]['coverage2']
+    return total / coverage_sum  # NOWE, TU JESZCZE TRZEBA PODZIELIC PRZEZ SUME COVERAGY
 
 
 def fetch_data(start_date, end_date, cord_id, kpi_basename):
@@ -142,13 +162,3 @@ def fetch_data(start_date, end_date, cord_id, kpi_basename):
             acronym_set.add(row.acronym)
 
     return data, acronym_set
-
-
-def hungarian(matrix):
-    m = Munkres()
-    indexes = m.compute(matrix['matrix']) # NOWE
-    total = 0
-    for row, column in indexes:
-        value = matrix[row][column]
-        total += (value * ((matrix['correlation_list'][TU MUSI BYĆ JAKIŚ INDEX]['coverage1'] + matrix['correlation_list'][TU MUSI BYĆ JAKIŚ INDEX]['coverage1'])/2))
-    return total/len(row) # NOWE, TU JESZCZE TRZEBA PODZIELIC PRZEZ SUME COVERAGY
