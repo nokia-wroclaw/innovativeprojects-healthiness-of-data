@@ -3,6 +3,8 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {RestService} from '../../../shared/services/rest.service';
 import {SharedFunctionsService} from '../../../shared/services/shared.functions.service';
 
+declare var Chart: any;
+
 @Component({
   selector: 'app-map2d-display',
   templateUrl: './map2d-display.component.html',
@@ -15,6 +17,10 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
   @Output() removeId = new EventEmitter<any>();
 
   map2DParams: FormGroup;
+
+  map2DChartId = 'outliersChart';
+  map2DChartElement;
+  map2DChart;
 
   startDate: any;
   endDate: any;
@@ -38,6 +44,7 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
   acrs2 = [];
   matrix: any;
 
+
   cord_list = ['Mr. Mime', 'Lapras', 'Dragalge', 'Naganadel', 'Pelipper', 'Piplup', 'Rotom', 'Vigoroth', 'Timburr', 'Raticate'];
   arr = [];
 
@@ -56,10 +63,14 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.map2DChartId = 'map2DChart' + this.id.toString();
     this.map2DParams = this.params;
   }
 
   ngAfterViewInit(): void {
+    this.map2DChartElement = document.getElementById(this.map2DChartId);
+    this.sharedFunctions.hideElement(this.map2DChartElement);
+
 
     this.map2DLoading = true;
     this.cdRef.detectChanges();
@@ -79,26 +90,20 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
       if (response.status === 200) {
         this.fetchedIn = new Date().getTime() - start;
         console.log(response.data);
-        const list = response.data;
-        for (let i = 0; i < list.length; i++) {
-          console.log(list[i].total);
-        }
+        const positions = response.data.positions;
+        const totals = response.data.matrix_totals;
 
-
-        let pos = 0;
         for (let i = 0; i < this.cord_list.length; i++) {
           for (let j = 0; j < this.cord_list.length; j++) {
             if (i === j) {
               this.arr[i][j] = 'x';
             } else if (i < j) {
-              this.arr[i][j] = (list[pos].total).toFixed(3);
-              this.arr[j][i] = (list[pos].total).toFixed(3);
-              pos++;
+              this.arr[i][j] = totals[i][j].toFixed(3);
+              this.arr[j][i] = totals[i][j].toFixed(3);
             }
           }
         }
-        console.log(this.arr);
-
+        this.generateChart(positions);
         this.map2DLoaded = true;
       } else {
         this.problem = true;
@@ -112,6 +117,37 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
       this.problemMessage = 'Error: ' + 'backend error';
       this.map2DLoading = false;
     });
+  }
+
+  generateChart(positions: any) {
+    this.map2DChart = new Chart(this.map2DChartElement, {
+      type: 'scatter',
+      data: {
+        labels: this.cord_list,
+        datasets: [{
+          label: 'cords 2D map',
+          data: positions,
+          backgroundColor: 'rgba(0, 0, 160, 1)',
+          borderColor: 'rgba(0, 0, 160, 1)'
+        }]
+      },
+      options: {
+        tooltips: {
+          callbacks: {
+            label: function (tooltipItem, data) {
+              const label = data.labels[tooltipItem.index];
+              return label + ': (' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')';
+            }
+          },
+          scales: {
+            xAxes: [{
+              type: 'linear',
+              position: 'bottom'
+            }]
+          }
+        }
+      });
+    this.sharedFunctions.showElement(this.map2DChartElement);
   }
 
   removeComponent() {

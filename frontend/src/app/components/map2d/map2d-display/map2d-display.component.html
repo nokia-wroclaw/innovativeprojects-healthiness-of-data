@@ -22,23 +22,9 @@
   </div>
   <div *ngIf="problem">{{problemMessage}}</div>
 </mat-card>
+<mat-card>
+  <canvas [id]="map2DChartId" width="1000" height="500"></canvas>
+</mat-card>
 <mat-card *ngIf="map2DLoading">
   <mat-spinner></mat-spinner>
 </mat-card>
-
-
-<!--<div><b>Total: {{total}}</b></div>-->
-<!--<div>-->
-<!--<table border="1" style="border-collapse: collapse;">-->
-<!--<tr>-->
-<!--<th>{{cordID2}} \ {{cordID1}}</th>-->
-<!--<th *ngFor="let acr1 of acrs1">{{acr1}}</th>-->
-<!--</tr>-->
-<!--<tr *ngFor="let acr2 of acrs2; let i = index;">-->
-<!--<td>{{acr2}}</td>-->
-<!--<td *ngFor="let acr of acrs1; let j = index;">-->
-<!--{{matrix[i][j]}}-->
-<!--</td>-->
-<!--</tr>-->
-<!--</table>-->
-<!--</div>-->

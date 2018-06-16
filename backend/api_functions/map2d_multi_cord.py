@@ -1,11 +1,12 @@
+from __future__ import division
 import datetime
 import math
 from collections import defaultdict
-
 from munkres import Munkres, print_matrix
 import yaml
 from cassandra.cqlengine import connection
-
+import numpy as np
+from sklearn import manifold
 from backend.api_functions.utils import parse_check_date
 from toolbox.cassandra_object_mapper_models import PlmnProcessedCord
 
@@ -58,8 +59,29 @@ def get_map(start_date, end_date, kpi_basename, cord_list):
             a -= 1
         b += 1
         a = len(cord_list) - 1
+    matrix_totals = [[0 for x in range(len(cord_list))] for y in range(len(cord_list))]
+    matrix_full = [[0 for x in range(len(cord_list))] for y in range(len(cord_list))]
+    pos = 0
+    for a in range(0, len(cord_list)):
+        for b in range(0, len(cord_list)):
+            if a == b:
+                matrix_totals[a][b] = 0.0
+                matrix_full[a][b] = 'x'
+            elif a < b:
+                matrix_totals[a][b] = fin_list[pos]['total']
+                matrix_totals[b][a] = fin_list[pos]['total']
+                matrix_full[a][b] = fin_list[pos]
+                matrix_full[b][a] = fin_list[pos]
+                pos += 1
 
-    return fin_list, 200
+    get_mds(matrix_totals)
+    fin = {
+        'matrix_full': matrix_full,
+        'matrix_totals': matrix_totals,
+        'positions': get_mds(matrix_totals)
+    }
+
+    return fin, 200
 
 
 def get_correlation(data1, data2, all_date_days):
@@ -68,6 +90,7 @@ def get_correlation(data1, data2, all_date_days):
     acronym_set = data1['acronym_set']
     acronym_set2 = data2['acronym_set']
     empty_matrix = [[0 for x in range(len(acronym_set))] for y in range(len(acronym_set2))]
+    empty_matrix_val = [[0 for x in range(len(acronym_set))] for y in range(len(acronym_set2))]
     for acronym in acronym_set:
         for acronym2 in acronym_set2:
             cov = len(data1['data'][acronym]['dates']) / all_date_days
@@ -79,8 +102,9 @@ def get_correlation(data1, data2, all_date_days):
                     'coverage1': cov,  # NOWE
                     'coverage2': cov2  # NOWE
                 }
-    clusters_correlation = norma_L(ready_data, empty_matrix, empty_matrix)
-    total = hungarian(clusters_correlation)  # NOWE TU TRZEBA MU PRZEKAZAĆ JAKO ARGUMENT COVERAGE KAŻDEGO AKRONIMU (ALBO SUME
+    clusters_correlation = norma_L(ready_data, empty_matrix, empty_matrix_val)
+    total = hungarian(
+        clusters_correlation)  # NOWE TU TRZEBA MU PRZEKAZAĆ JAKO ARGUMENT COVERAGE KAŻDEGO AKRONIMU (ALBO SUME
     full_data = {
         'cord_key': data1['cord_id'] + '$' + data2['cord_id'],
         'correlation_list': clusters_correlation['correlation_list'],
@@ -122,17 +146,14 @@ def norma_L(ready_data, matrix, matrix_val):
         'matrix': matrix,
         'matrix_val': matrix_val
     }
-    print(data_with_matrix)
-    print(data_with_matrix['matrix'])
     return data_with_matrix
 
 
 def hungarian(data):
     matrix = data['matrix']
-    print(matrix)
     matrix_val = data['matrix_val']
     m = Munkres()
-    indexes = m.compute(matrix)  # NOWE
+    indexes = m.compute(matrix_val)  # NOWE
     total = 0
     coverage_sum = 0
     for row, column in indexes:
@@ -140,6 +161,28 @@ def hungarian(data):
         total += (value * ((matrix[row][column]['coverage1'] + matrix[row][column]['coverage1']) / 2))
         coverage_sum += matrix[row][column]['coverage1'] + matrix[row][column]['coverage2']
     return total / coverage_sum  # NOWE, TU JESZCZE TRZEBA PODZIELIC PRZEZ SUME COVERAGY
+
+
+def get_mds(sym_matrix):
+    arr = np.array(sym_matrix)  # TA MACIERZ MUSI BYĆ SYMETRYCZNA!
+
+    mds = manifold.MDS(n_components=2, max_iter=3000, eps=1e-9,
+                       dissimilarity="precomputed", n_jobs=1)
+
+    wrong_format_array = mds.fit(arr).embedding_
+    print(wrong_format_array)
+    positions = []
+    nmds = manifold.MDS(n_components=2, metric=False, max_iter=3000, eps=1e-12,
+                        dissimilarity="precomputed", n_jobs=1,
+                        n_init=1)
+    npos = nmds.fit_transform(arr, init=wrong_format_array)
+    for m in range(0, len(npos)):
+        positions.append({
+            'x': npos[m, 0],
+            'y': npos[m, 1]
+        })
+    print(positions)
+    return positions
 
 
 def fetch_data(start_date, end_date, cord_id, kpi_basename):
