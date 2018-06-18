@@ -194,6 +194,10 @@ def norma_L(ready_data, matrix, matrix_val):
 
 
 def hungarian(matrix, matrix_val):
+    if len(matrix_val) == 0:
+        print(matrix_val)
+        print(len(matrix_val))
+        return -1
     m = Munkres()
     indexes = m.compute(matrix_val)
     total = 0
@@ -202,6 +206,8 @@ def hungarian(matrix, matrix_val):
         value = matrix_val[row][column]
         total += (value * ((matrix[row][column]['coverage1'] + matrix[row][column]['coverage1']) / 2))
         coverage_sum += matrix[row][column]['coverage1'] + matrix[row][column]['coverage2']
+    if coverage_sum == 0:
+        return -2
     return total / coverage_sum  # NOWE, TU JESZCZE TRZEBA PODZIELIC PRZEZ SUME COVERAGY
 
 
