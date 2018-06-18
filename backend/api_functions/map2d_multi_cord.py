@@ -170,7 +170,8 @@ def norma_L(ready_data, matrix, matrix_val):
             print(dataset1['values'])
             print(len(dataset2['values']))
             print(dataset2['values'])
-            # number_of_points = 0.000000000001
+            number_of_points = 0.000000001
+            temp_sum = 100000000.0
         keys = key.split('$')
         clusters_correlation.append({
             "acronym1": keys[0],

@@ -81,7 +81,7 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
 
     let url = 'api/clusters/map2D/RNC_31' + '?date_start=' + this.startDate + '&date_end=' + this.endDate + cordIDsURL;
 
-    if (this.map2DParams.value.otherDate !== '') {
+    if (!!this.map2DParams.value.otherDate) {
       this.otherDate = this.sharedFunctions.parseDate(this.map2DParams.value.otherDate);
       url += '&date_other=' + this.otherDate;
     }
@@ -106,24 +106,18 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
             if (response.data.heatmap !== undefined) {
               this.heatmap[i][j] = (response.data.heatmap[i][j] * 100).toFixed(3);
               const hm = this.heatmap[i][j];
-              console.log('hm: ' + hm);
               if (parseFloat(hm) > this.maxHeat) {
                 this.maxHeat = hm;
-                console.log('new max: ' + this.maxHeat);
               }
               if (parseFloat(hm) < this.minHeat) {
                 this.minHeat = hm;
-                console.log('new min: ' + this.minHeat);
               }
               if (i === j) {
                 this.heatmap[i][j] = 'x';
-
               }
             }
           }
         }
-        console.log('min: ' + this.minHeat);
-        console.log('max: ' + this.maxHeat);
         if (response.data.heatmap !== undefined) {
           this.getGradient();
         }
