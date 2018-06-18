@@ -38,18 +38,19 @@ export class ExamplesService {
     startDate: new Date('2017-06-01T00:00:00.000Z'),
     endDate: new Date('2017-09-01T00:00:00.000Z'),
     kpiBaseName: 'RNC_31',
+    otherDate: '',
     chips: ['Mr. Mime', 'Lapras', 'Dragalge', 'Naganadel', 'Pelipper', 'Piplup', 'Rotom', 'Vigoroth', 'Timburr', 'Raticate']
   }, {
     startDate: new Date('2017-06-01T00:00:00.000Z'),
     endDate: new Date('2017-09-01T00:00:00.000Z'),
     kpiBaseName: 'RNC_31',
-    otherDate: new Date('2017-03-01T00:00:00.000Z'),
+    otherDate: '',
     chips: ['Mr. Mime', 'Lapras', 'Dragalge', 'Naganadel', 'Pelipper', 'Piplup']
   }, {
     startDate: new Date('2017-06-01T00:00:00.000Z'),
     endDate: new Date('2017-09-01T00:00:00.000Z'),
     kpiBaseName: 'RNC_31',
-    otherDate: new Date('2017-03-01T00:00:00.000Z'),
+    otherDate: '',
     chips: ['Mr. Mime', 'Lapras', 'Dragalge', 'Naganadel']
   }, {
     startDate: new Date('2017-06-01T00:00:00.000Z'),

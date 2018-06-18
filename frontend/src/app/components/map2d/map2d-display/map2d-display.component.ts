@@ -36,10 +36,14 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
 
   map2DLoading = false;
   map2DLoaded = false;
+  showHeatmap = false;
 
   map2DDisplayComponent = Map2DDisplayComponent;
   matrixTotals: any = [];
   heatmap: any = [];
+  gradientMatrix: any = [];
+  maxHeat = -999999999.0;
+  minHeat = 999999999.0;
 
   cordIds: any = [];
 
@@ -53,9 +57,11 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.map2DChartId = 'map2DChart' + this.id.toString();
     this.map2DParams = this.params.map2DParams;
-    this.cordIds = this.params.cordIDs;
+    this.cordIds = JSON.parse(JSON.stringify(this.params.cordIDs));
+
     for (let i = 0; i < this.cordIds.length; i++) {
       this.heatmap[i] = [];
+      this.gradientMatrix[i] = [];
       this.matrixTotals[i] = [];
     }
   }
@@ -87,14 +93,39 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
         console.log(response.data);
         const positions = response.data.positions;
         const totals = response.data.matrix_totals;
+        if (response.data.heatmap !== undefined) {
+          this.showHeatmap = true;
+        }
 
         for (let i = 0; i < this.cordIds.length; i++) {
           for (let j = 0; j < this.cordIds.length; j++) {
             this.matrixTotals[i][j] = totals[i][j].toFixed(3);
+            if (i === j) {
+              this.matrixTotals[i][j] = 'x';
+            }
             if (response.data.heatmap !== undefined) {
               this.heatmap[i][j] = (response.data.heatmap[i][j] * 100).toFixed(3);
+              const hm = this.heatmap[i][j];
+              console.log('hm: ' + hm);
+              if (parseFloat(hm) > this.maxHeat) {
+                this.maxHeat = hm;
+                console.log('new max: ' + this.maxHeat);
+              }
+              if (parseFloat(hm) < this.minHeat) {
+                this.minHeat = hm;
+                console.log('new min: ' + this.minHeat);
+              }
+              if (i === j) {
+                this.heatmap[i][j] = 'x';
+
+              }
             }
           }
+        }
+        console.log('min: ' + this.minHeat);
+        console.log('max: ' + this.maxHeat);
+        if (response.data.heatmap !== undefined) {
+          this.getGradient();
         }
         this.generateChart(positions);
         this.map2DLoaded = true;
@@ -124,16 +155,21 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
         tooltips: {
           callbacks: {
             label: function (tooltipItem, data) {
-              return data.labels[tooltipItem.index];
-              // return label + ': (' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')';
+              return data.labels[tooltipItem.datasetIndex];
             }
           }
         },
         scales: {
           xAxes: [{
-            type: 'linear',
-            position: 'bottom'
-          }]
+            ticks: {
+              display: false
+            }
+          }],
+          yAxes: [{
+            ticks: {
+              display: false
+            }
+          }],
         }
       }
     });
@@ -150,23 +186,53 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
   }
 
   generateDatasets(data: any[]) {
-    console.log(data)
     const datasets = [];
-    const points = data;
     for (let i = 0; i < this.cordIds.length; i++) {
-      console.log(points[i].x)
-      console.log(points[i].y)
+      const rgb1 = 'rgba(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',1)';
+      const rgb2 = 'rgba(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',1)';
       datasets[i] = {
         label: this.cordIds[i],
         data: [{
-          x: points[i].x,
-          y: points[i].y
+          x: data[i].x,
+          y: data[i].y
         }],
-        backgroundColor: 'rgba(0, 0, 160, 1)',
-        borderColor: 'rgba(0, 0, 160, 1)'
+        backgroundColor: rgb1,
+        borderColor: rgb2,
+        borderWidth: 3,
+        radius: 10,
       };
     }
-    console.log(datasets);
     return datasets;
+  }
+
+  getGradient() {
+    for (let i = 0; i < this.cordIds.length; i++) {
+      for (let j = 0; j < this.cordIds.length; j++) {
+        const val = this.heatmap[i][j];
+        if (val > 0) {
+          // if (val / this.maxHeat <= 0.1) {
+          //   this.gradientMatrix[i][j] = 'rgba(255, 255, 0,' + (val / this.minHeat).toFixed(2) + ')';
+          // } else {
+          //   this.gradientMatrix[i][j] = 'rgba(0, 255, 0,' + (val / this.maxHeat).toFixed(2) + ')';
+          // }
+          this.gradientMatrix[i][j] = 'rgba(0, 255, 0,' + (val / this.maxHeat).toFixed(2) + ')';
+        } else if (val < 0) {
+          // if (val / this.minHeat <= 0.1) {
+          //   this.gradientMatrix[i][j] = 'rgba(255, 255, 0,' + (val / this.minHeat).toFixed(2) + ')';
+          // } else {
+          //   this.gradientMatrix[i][j] = 'rgba(255, 0, 0,' + (val / this.minHeat).toFixed(2) + ')';
+          // }
+          this.gradientMatrix[i][j] = 'rgba(255, 0, 0,' + (val / this.minHeat).toFixed(2) + ')';
+        }
+      }
+    }
+  }
+
+  parseToPercent(value: string) {
+    if (value === 'x') {
+      return value;
+    } else {
+      return Math.round(parseFloat(value)) + '%';
+    }
   }
 }
