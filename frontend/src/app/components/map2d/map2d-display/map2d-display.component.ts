@@ -113,16 +113,12 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
   }
 
   generateChart(positions: any) {
+    const datasets = this.generateDatasets(positions);
     this.map2DChart = new Chart(this.map2DChartElement, {
       type: 'scatter',
       data: {
         labels: this.cordIds,
-        datasets: [{
-          label: 'cords 2D map',
-          data: positions,
-          backgroundColor: 'rgba(0, 0, 160, 1)',
-          borderColor: 'rgba(0, 0, 160, 1)'
-        }]
+        datasets: datasets
       },
       options: {
         tooltips: {
@@ -151,5 +147,26 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
       typeOfComponent: this.map2DDisplayComponent
     };
     this.removeId.emit(toRemove);
+  }
+
+  generateDatasets(data: any[]) {
+    console.log(data)
+    const datasets = [];
+    const points = data;
+    for (let i = 0; i < this.cordIds.length; i++) {
+      console.log(points[i].x)
+      console.log(points[i].y)
+      datasets[i] = {
+        label: this.cordIds[i],
+        data: [{
+          x: points[i].x,
+          y: points[i].y
+        }],
+        backgroundColor: 'rgba(0, 0, 160, 1)',
+        borderColor: 'rgba(0, 0, 160, 1)'
+      };
+    }
+    console.log(datasets);
+    return datasets;
   }
 }
