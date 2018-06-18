@@ -40,7 +40,7 @@
     <mat-form-field class="full-width">
       <mat-chip-list #cordList>
         <mat-chip *ngFor="let chip of selectedCordIDs" [selectable]="selectable" [removable]="removable"
-                  (remove)="removeChipCordId(chip)">
+                  (removed)="removeChipCordId(chip)">
           {{chip}}
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>

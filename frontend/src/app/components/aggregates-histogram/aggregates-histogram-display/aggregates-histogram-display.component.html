@@ -1,22 +1,27 @@
-<mat-card *ngIf="!histogramChartLoading">
-  <mat-card-title-group>
-    <mat-card-title>{{cordID}}, {{acronym}}, {{kpiBaseName}}
-    </mat-card-title>
-    <mat-card-subtitle>Data fetched in: {{fetchedIn/1000}} s
-    </mat-card-subtitle>
-    <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
-  </mat-card-title-group>
-  <div *ngIf="histogramChartLoaded && !histogramChartLoading" class="column-container">
-    <div>MAX<br/> {{max}}</div>
-    <div>MIN<br/> {{min}}</div>
-    <div>COVERAGE<br/> {{coverage}}</div>
-    <div>DEVIATION<br/> {{deviation}}</div>
-    <div>MEAN<br/> {{mean}}</div>
-  </div>
-</mat-card>
-<mat-card>
-  <div *ngIf="problem">{{problemMessage}}</div>
-  <canvas [id]="histogramChartId" width="1000" height="300" style="width: 1000px; height: 300px;"></canvas>
-  <mat-spinner *ngIf="histogramChartLoading"></mat-spinner>
-</mat-card>
-
+<div mwlResizable
+    [validateResize]="validate"
+    [enableGhostResize]="true"
+    [resizeEdges]="{bottom: true, right: true}"
+    (resizeEnd)="onResizeEnd($event)">
+  <mat-card  *ngIf="!histogramChartLoading">
+    <mat-card-title-group>
+      <mat-card-title>{{cordID}}, {{acronym}}, {{kpiBaseName}}
+      </mat-card-title>
+      <mat-card-subtitle>Data fetched in: {{fetchedIn/1000}} s
+      </mat-card-subtitle>
+      <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
+    </mat-card-title-group>
+    <div *ngIf="histogramChartLoaded && !histogramChartLoading" class="column-container">
+      <div>MAX<br/> {{max}}</div>
+      <div>MIN<br/> {{min}}</div>
+      <div>COVERAGE<br/> {{coverage}}</div>
+      <div>DEVIATION<br/> {{deviation}}</div>
+      <div>MEAN<br/> {{mean}}</div>
+    </div>
+  </mat-card>
+  <mat-card>
+    <div *ngIf="problem">{{problemMessage}}</div>
+    <canvas [id]="histogramChartId" width="1000" height="300" style="width: 1000px; height: 300px;"></canvas>
+    <mat-spinner *ngIf="histogramChartLoading"></mat-spinner>
+  </mat-card>
+</div>

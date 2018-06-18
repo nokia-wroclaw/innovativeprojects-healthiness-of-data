@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {RestService} from '../../../shared/services/rest.service';
 import {SharedFunctionsService} from '../../../shared/services/shared.functions.service';
 import {GridsterConfig, GridsterItem} from 'angular-gridster2';
+import {ResizeEvent} from 'angular-resizable-element';
 
 declare var Chart: any;
 
@@ -46,6 +47,8 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
   coverage: string;
   mean: string;
   deviation: string;
+
+  public style: object = {};
 
   histogramDisplayComponent = AggregatesHistogramDisplayComponent;
 
@@ -150,5 +153,24 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
       }
     });
     this.sharedFunctions.showElement(this.histogramChartElement);
+  }
+
+  validate(event: ResizeEvent): boolean {
+    const MIN_DIMENSIONS_PX = 50;
+    return !(event.rectangle.width &&
+      event.rectangle.height &&
+      (event.rectangle.width < MIN_DIMENSIONS_PX ||
+        event.rectangle.height < MIN_DIMENSIONS_PX));
+
+  }
+
+  onResizeEnd(event: ResizeEvent): void {
+    this.style = {
+      position: 'fixed',
+      left: `${event.rectangle.left}px`,
+      top: `${event.rectangle.top}px`,
+      width: `${event.rectangle.width}px`,
+      height: `${event.rectangle.height}px`
+    };
   }
 }

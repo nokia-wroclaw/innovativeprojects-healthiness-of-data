@@ -46,7 +46,7 @@
     <mat-form-field>
       <mat-chip-list #acronymList>
         <mat-chip *ngFor="let chip of selectedAcronyms" [selectable]="selectable" [removable]="removable"
-                  (remove)="removeChipAcronym(chip)">
+                  (removed)="removeChipAcronym(chip)">
           {{chip}}
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
@@ -76,7 +76,7 @@
     <mat-form-field class="full-width">
       <mat-chip-list #kpiList>
         <mat-chip *ngFor="let chip of selectedKpiBasenames" [selectable]="selectable" [removable]="removable"
-                  (remove)="removeChipKpiBasename(chip)">
+                  (removed)="removeChipKpiBasename(chip)">
           {{chip}}
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>

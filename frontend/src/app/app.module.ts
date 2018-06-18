@@ -66,6 +66,7 @@ import {NavbarComponent} from './shared/components/navbar/navbar.component';
 import {CommonwealthComponent} from './components/commonwealth/commonwealth.component';
 import {RouterCommunicationService} from './shared/services/router-communication/router-communication.service';
 import {DynamicModule} from 'ng-dynamic-component';
+import {ResizableModule} from 'angular-resizable-element';
 
 
 @NgModule({
@@ -132,6 +133,7 @@ import {DynamicModule} from 'ng-dynamic-component';
       DecompositionDisplayComponent,
       OutliersDisplayComponent,
       Map2DDisplayComponent])
+    , ResizableModule
   ],
   exports: [
     RouterModule,

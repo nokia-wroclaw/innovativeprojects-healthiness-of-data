@@ -36,3 +36,27 @@ body {
   min-height: 800px;
   height: calc(100vh - 64px);
 }
+mwlResizable {
+  box-sizing: border-box;
+}
+
+.resize-handle {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  cursor: se-resize;
+}
+
+.rectangle {
+  position: relative;
+  top: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 150px;
+  background-color: #FD4140;
+  border: solid 1px #121621;
+  color: #121621;
+  margin: auto;
+}
