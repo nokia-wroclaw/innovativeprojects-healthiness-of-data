@@ -49,7 +49,7 @@ export class ExamplesService {
     endDate: new Date('2017-09-01T00:00:00.000Z'),
     kpiBaseName: 'RNC_31',
     otherDate: '',
-    chips: ['Mr. Mime', 'Lapras', 'Dragalge', 'Naganadel', 'Pelipper', 'Piplup', 'Rotom', 'Vigoroth', 'Timburr', 'Raticate']
+    chips: ['Mr. Mime', 'Lapras', 'Dragalge', 'Naganadel', 'Pelipper', 'Piplup', 'Rotom', 'Vigoroth', 'Timburr', 'Raticate', 'Gurdurr', 'Metagross', 'Baltoy']
   }, {
     startDate: new Date('2017-06-01T00:00:00.000Z'),
     endDate: new Date('2017-09-01T00:00:00.000Z'),

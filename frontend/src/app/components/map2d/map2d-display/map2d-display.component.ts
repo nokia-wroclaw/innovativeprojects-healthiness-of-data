@@ -194,6 +194,8 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
         borderColor: rgb2,
         borderWidth: 3,
         radius: 10,
+        hoverRadius: 15, // nie dziala
+        hitRadius: 20 // nie dziala
       };
     }
     return datasets;
@@ -206,13 +208,13 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
         if (val < 10 && val > -10) {
           this.gradientMatrix[i][j] = 'rgba(255, 235, 153, 1)';
         } else if (val > 0) {
-          if ( val > 100 ){
+          if (val > 100) {
             this.gradientMatrix[i][j] = 'rgba(0, 204, 0, 1)';
           } else {
-            this.gradientMatrix[i][j] = 'rgba(0, 204, 0,' + (val/100).toFixed(2) + ')';
+            this.gradientMatrix[i][j] = 'rgba(0, 204, 0,' + (val / 100).toFixed(2) + ')';
           }
         } else if (val < 0) {
-          if ( val < -100 ){
+          if (val < -100) {
             this.gradientMatrix[i][j] = 'rgba(204, 0, 0, 1)';
           } else {
             this.gradientMatrix[i][j] = 'rgba(204, 0, 0,' + (val / -100).toFixed(2) + ')';
