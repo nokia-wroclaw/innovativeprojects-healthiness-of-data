@@ -203,20 +203,20 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < this.cordIds.length; i++) {
       for (let j = 0; j < this.cordIds.length; j++) {
         const val = this.heatmap[i][j];
-        if (val > 0) {
-          // if (val / this.maxHeat <= 0.1) {
-          //   this.gradientMatrix[i][j] = 'rgba(255, 255, 0,' + (val / this.minHeat).toFixed(2) + ')';
-          // } else {
-          //   this.gradientMatrix[i][j] = 'rgba(0, 255, 0,' + (val / this.maxHeat).toFixed(2) + ')';
-          // }
-          this.gradientMatrix[i][j] = 'rgba(0, 255, 0,' + (val / this.maxHeat).toFixed(2) + ')';
+        if (val < 10 && val > -10) {
+          this.gradientMatrix[i][j] = 'rgba(255, 235, 153, 1)';
+        } else if (val > 0) {
+          if ( val > 100 ){
+            this.gradientMatrix[i][j] = 'rgba(0, 204, 0, 1)';
+          } else {
+            this.gradientMatrix[i][j] = 'rgba(0, 204, 0,' + (val/100).toFixed(2) + ')';
+          }
         } else if (val < 0) {
-          // if (val / this.minHeat <= 0.1) {
-          //   this.gradientMatrix[i][j] = 'rgba(255, 255, 0,' + (val / this.minHeat).toFixed(2) + ')';
-          // } else {
-          //   this.gradientMatrix[i][j] = 'rgba(255, 0, 0,' + (val / this.minHeat).toFixed(2) + ')';
-          // }
-          this.gradientMatrix[i][j] = 'rgba(255, 0, 0,' + (val / this.minHeat).toFixed(2) + ')';
+          if ( val < -100 ){
+            this.gradientMatrix[i][j] = 'rgba(204, 0, 0, 1)';
+          } else {
+            this.gradientMatrix[i][j] = 'rgba(204, 0, 0,' + (val / -100).toFixed(2) + ')';
+          }
         }
       }
     }

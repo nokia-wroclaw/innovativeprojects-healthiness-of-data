@@ -8,15 +8,10 @@
     <a mat-menu-item routerLink="/components/coverage" routerLinkActive="active">Coverage</a>
     <a mat-menu-item routerLink="/components/decomposition" routerLinkActive="active">Decomposition</a>
     <a mat-menu-item routerLink="/components/outliers" routerLinkActive="active">Outliers</a>
-    <a style="color: darkorange;" mat-menu-item routerLink="/components/map2d" routerLinkActive="active">2D map</a>
+    <a mat-menu-item routerLink="/components/map2d" routerLinkActive="active">Operator Comparison</a>
   </mat-menu>
 
   <a class="nav-link white" href="https://github.com/nokia-wroclaw/innovativeprojects-healthiness-of-data/tree/devel">Github</a>
   <!--<a class="nav-link white" href="https://github.com/nokia-wroclaw/innovativeprojects-healthiness-of-data">Github</a>-->
-
-  <a class="nav-link white" style="cursor: pointer;" [matMenuTriggerFor]="apiMenu">ApiDocs</a>
-  <mat-menu #apiMenu="matMenu" [overlapTrigger]="false">
-    <a mat-menu-item href="http://healthiness-of-data.ovh/apidocs/#/">Apidocs</a>
-    <a mat-menu-item href="http://localhost:5000/apidocs/">local docs</a>
-  </mat-menu>
+  <a class="nav-link white" href="http://healthiness-of-data.ovh/apidocs/#/">Api Docs</a>
 </mat-toolbar>
