@@ -1,3 +1,7 @@
+<mat-card *ngIf="histogramChartLoading">
+  <mat-spinner></mat-spinner>
+</mat-card>
+
 <mat-card *ngIf="!histogramChartLoading">
   <mat-card-title-group>
     <mat-card-title>{{cordID}}, {{acronym}}, {{kpiBaseName}}
@@ -17,7 +21,4 @@
 <mat-card>
   <div *ngIf="problem">{{problemMessage}}</div>
   <canvas [id]="histogramChartId" width="600" height="300"></canvas>
-</mat-card>
-<mat-card *ngIf="histogramChartLoading">
-  <mat-spinner></mat-spinner>
 </mat-card>

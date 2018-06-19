@@ -49,12 +49,12 @@ def calculate_cluster_coverage(start_date, end_date, cord_id, acronyms, kpis, ga
                 for row in result:
                     dates.append(row.date)
                     values.append(row.value)
-                    if int((row.date - last_found_date).days) > gap_size:
+                    if int((row.date - last_found_date).days) >= gap_size:
                         gap = dict()
                         gap.update({
                             "gap_start": last_found_date.strftime('%Y-%m-%d'),
                             "gap_end": row.date.strftime('%Y-%m-%d'),
-                            "gap_size": (row.date - last_found_date).days
+                            "gap_size": (row.date - last_found_date).days -1
                         })
                         gaps.append(gap)
                     last_found_date = row.date

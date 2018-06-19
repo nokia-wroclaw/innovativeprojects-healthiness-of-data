@@ -39,5 +39,6 @@
   </mat-accordion>
 </mat-card>
 <mat-card>
+  <div *ngIf="problem">{{problemMessage}}</div>
   <canvas [id]="coverageChartId" width="1000" height="250"></canvas>
 </mat-card>

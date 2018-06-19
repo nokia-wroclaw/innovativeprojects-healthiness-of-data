@@ -92,9 +92,9 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
             data: this.fillGaps(this.datasetDatesFormatted[i], i),
             backgroundColor: rgb,
             borderColor: rgb,
-            borderWidth: 0,
+            borderWidth: 3,
             fill: false,
-            pointRadius: 1,
+            pointRadius: 3,
             pointBorderWidth: 0
           });
         }
