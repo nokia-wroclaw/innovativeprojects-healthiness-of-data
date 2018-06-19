@@ -34,6 +34,16 @@ export class ExamplesService {
     }
   ];
 
+  public EXAMPLES_COVERAGE = [
+    {
+      startDate: new Date('2016-09-01T00:00:00.000Z'),
+      endDate: new Date('2017-05-15T00:00:00.000Z'),
+      cordID: 'Mr. Mime',
+      chipsAcronyms: ['threarirzearr', 'toubrishik', 'threghix'],
+      chipsKpiBasenames: ['TRF_215', 'RNC_31']
+    }
+  ];
+
   public EXAMPLES_2DMAP = [{
     startDate: new Date('2017-06-01T00:00:00.000Z'),
     endDate: new Date('2017-09-01T00:00:00.000Z'),

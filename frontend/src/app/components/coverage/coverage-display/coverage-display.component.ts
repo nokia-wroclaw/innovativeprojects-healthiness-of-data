@@ -50,8 +50,8 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.coverageParams = this.params.coverageParams;
-    this.acronyms = this.params.acronyms;
-    this.kpiBaseNames = this.params.kpiBaseNames;
+    this.acronyms = JSON.parse(JSON.stringify(this.params.acronyms));
+    this.kpiBaseNames = JSON.parse(JSON.stringify(this.params.kpiBaseNames));
     this.coverageChartId = 'coverageChart' + this.id.toString();
   }
 
@@ -85,32 +85,33 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
         for (let i = 0; i < this.coverageData.length; i++) {
           this.datasetTitles.push(this.coverageData[i].acronym + ' ' + this.coverageData[i].kpi_basename);
           this.datasetDatesFormatted.push(this.formatDates(this.coverageData[i].dates));
+          const rgb = 'rgba(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',1)';
           this.datasets.push({
+
             label: this.datasetTitles[i],
             data: this.fillGaps(this.datasetDatesFormatted[i], i),
-            backgroundColor: 'rgba(0, 0, 160, 1)',
-            borderColor: 'rgba(0, 0, 160, 1)',
-            borderWidth: 1,
+            backgroundColor: rgb,
+            borderColor: rgb,
+            borderWidth: 0,
             fill: false,
-            pointRadius: 5,
-            pointBorderWidth: 1
+            pointRadius: 1,
+            pointBorderWidth: 0
           });
         }
-        console.log('titles');
-        console.log(this.datasetTitles);
-        console.log(this.datasetDatesFormatted);
-        console.log(this.datasets);
 
         this.generateCoverageChart();
         this.coverageTableLoaded = true;
       } else {
-        this.sharedFunctions.openSnackBar('Error ' + response.status + ': ' + response.data.error, 'OK');
+        this.problem = true;
+        this.problemMessage = 'Error: ' + response.status + ' - ' + response.data.error;
       }
       this.coverageTableLoading = false;
     }).catch((error) => {
       console.log('error');
       console.log(error);
-      this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
+      this.problem = true;
+      this.problemMessage = 'Error: backend error';
+      this.coverageTableLoading = false;
     });
   }
 

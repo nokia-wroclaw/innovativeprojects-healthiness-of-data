@@ -174,13 +174,9 @@ export class CoverageComponent implements OnInit {
     this.minEndDate = event.value;
   }
 
-  imLazy() {
-    this.coverageParams.patchValue({
-      startDate: new Date('2016-09-01T00:00:00.000Z'),
-      endDate: new Date('2018-03-01T00:00:00.000Z'),
-      cordID: 'Mr. Mime',
-    });
-    this.selectedAcronyms = ['threarirzearr', 'toubrishik', 'threghix'];
-    this.selectedKpiBasenames = ['TRF_215', 'RNC_31'];
+  exampleCase(example: any) {
+    this.coverageParams.patchValue(example);
+    this.selectedAcronyms = example.chipsAcronyms;
+    this.selectedKpiBasenames = example.chipsKpiBasenames;
   }
 }

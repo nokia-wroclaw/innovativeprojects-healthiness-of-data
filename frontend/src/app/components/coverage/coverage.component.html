@@ -108,6 +108,16 @@
     </mat-form-field>
 
     <button mat-raised-button color="primary" [type]="submit" [disabled]="!coverageParams.valid">Fetch data</button>
-    <button mat-raised-button color="accent" type="button" (click)="imLazy()">Demo</button>
+
+
+        <br><br>
+    <mat-form-field>
+      <mat-select placeholder="Select example">
+        <mat-option *ngFor="let example of examplesService.EXAMPLES_COVERAGE; let i = index "
+                    (click)="exampleCase(example)" [value]="example">
+          Test {{i+1}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </form>
 </mat-card>
