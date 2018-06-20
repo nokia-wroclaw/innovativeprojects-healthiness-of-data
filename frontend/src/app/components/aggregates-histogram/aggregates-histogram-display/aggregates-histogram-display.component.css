@@ -1,0 +1,5 @@
+.column-container div {
+  display: inline-block;
+  width: 15%;
+  text-align: center;
+}

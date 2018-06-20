@@ -14,7 +14,7 @@ export class RestService {
     return axios.get(url)
       .then(function (response) {
         return response;
-      }).catch(function (error) {
+      }).catch((error) => {
         if (error.message === 'Network Error') {
           return error;
         }

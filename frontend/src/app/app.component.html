@@ -1,28 +1,5 @@
-<mat-toolbar color="primary">
-  <img src="../assets/images/nokia-logo.png">
-  <a class="nav-link white" routerLink="/homepage" routerLinkActive="active">Home</a>
-  <a class="nav-link white" style="cursor: pointer;" [matMenuTriggerFor]="menu">Components</a>
-  <mat-menu #menu="matMenu" [overlapTrigger]="false">
-    <a style="color: green;" mat-menu-item routerLink="/aggregatesandhistogram" routerLinkActive="active">Aggregates &
-      Histogram</a>
-    <a style="color: green;" mat-menu-item routerLink="/coverage" routerLinkActive="active">Coverage</a>
-    <a style="color: green;" mat-menu-item routerLink="/decomposition" routerLinkActive="active">Decomposition</a>
-    <a style="color: darkorange;" mat-menu-item routerLink="/outliers" routerLinkActive="active">Outliers</a>
-    <a style="color: red;" mat-menu-item routerLink="/map2d" routerLinkActive="active">2D map</a>
-  </mat-menu>
-
-  <a class="nav-link white" href="https://github.com/nokia-wroclaw/innovativeprojects-healthiness-of-data/tree/devel">Github</a>
-  <!--<a class="nav-link white" href="https://github.com/nokia-wroclaw/innovativeprojects-healthiness-of-data">Github</a>-->
-
-  <a class="nav-link white" style="cursor: pointer;" [matMenuTriggerFor]="apiMenu">ApiDocs</a>
-  <mat-menu #apiMenu="matMenu" [overlapTrigger]="false">
-    <a mat-menu-item href="http://healthiness-of-data.ovh/apidocs/#/">Apidocs</a>
-    <a mat-menu-item href="http://localhost:5000/apidocs/">local docs</a>
-  </mat-menu>
-
-
-</mat-toolbar>
-<div style="min-height: 800px;  height: calc(100vh - 64px);">
+<app-navbar></app-navbar>
+<div class="main-content">
   <router-outlet></router-outlet>
 </div>
 <div class="fixed-bottom text-center">Healthiness of data 2018</div>

@@ -1,0 +1,17 @@
+<mat-toolbar color="primary">
+  <img src="../../../../assets/images/nokia-logo.png">
+  <a class="nav-link white" routerLink="/homepage" routerLinkActive="active">Home</a>
+  <a class="nav-link white" style="cursor: pointer;" [matMenuTriggerFor]="menu">Components</a>
+  <mat-menu #menu="matMenu" [overlapTrigger]="false">
+    <a mat-menu-item routerLink="/components/aggregatesandhistogram" routerLinkActive="active">Aggregates &
+      Histogram</a>
+    <a mat-menu-item routerLink="/components/coverage" routerLinkActive="active">Coverage</a>
+    <a mat-menu-item routerLink="/components/decomposition" routerLinkActive="active">Decomposition</a>
+    <a mat-menu-item routerLink="/components/outliers" routerLinkActive="active">Outliers</a>
+    <a mat-menu-item routerLink="/components/map2d" routerLinkActive="active">Operator Comparison</a>
+  </mat-menu>
+
+  <a class="nav-link white" target="_blank" href="https://github.com/nokia-wroclaw/innovativeprojects-healthiness-of-data/tree/devel">Github</a>
+  <!--<a class="nav-link white" href="https://github.com/nokia-wroclaw/innovativeprojects-healthiness-of-data">Github</a>-->
+  <a class="nav-link white" target="_blank" href="http://healthiness-of-data.ovh/apidocs/#/">Api Docs</a>
+</mat-toolbar>

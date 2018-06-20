@@ -1,7 +1,7 @@
 import {Map2dComponent} from './components/map2d/map2d.component';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-
+import {GridsterItemComponent, GridsterModule} from 'angular-gridster2';
 
 import {AppComponent} from './app.component';
 import {RestService} from './shared/services/rest.service';
@@ -15,6 +15,9 @@ import {ChartModule} from 'primeng/chart';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TabMenuModule} from 'primeng/tabmenu';
 import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
   MatAutocompleteModule,
   MatButtonModule,
   MatButtonToggleModule,
@@ -47,13 +50,23 @@ import {
   MatToolbarModule,
   MatTooltipModule
 } from '@angular/material';
-import {DraftComponent} from './components/draft/draft.component';
-import {AutocompleteChipsComponent} from './shared/components/autocomplete-chips/autocomplete-chips.component';
-import {CacheDataComponent} from './shared/components/cache-data/cache-data.component';
 import {AggregatesHistogramComponent} from './components/aggregates-histogram/aggregates-histogram.component';
 import {SharedFunctionsService} from './shared/services/shared.functions.service';
 import {NotfoundComponent} from './shared/components/notfound/notfound.component';
 import {DecompositionComponent} from './components/decomposition/decomposition.component';
+import {DecompositionDisplayComponent} from './components/decomposition/decomposition-display/decomposition-display.component';
+import {OutliersDisplayComponent} from './components/outliers/outliers-display/outliers-display.component';
+import {AggregatesHistogramDisplayComponent} from './components/aggregates-histogram/aggregates-histogram-display/aggregates-histogram-display.component';
+import {CoverageDisplayComponent} from './components/coverage/coverage-display/coverage-display.component';
+import {Map2DDisplayComponent} from './components/map2d/map2d-display/map2d-display.component';
+import {ExamplesService} from './shared/services/examples.service';
+import {CacheDataService} from './shared/services/cache.data.service';
+import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
+import {NavbarComponent} from './shared/components/navbar/navbar.component';
+import {CommonwealthComponent} from './components/commonwealth/commonwealth.component';
+import {RouterCommunicationService} from './shared/services/router-communication/router-communication.service';
+import {DynamicModule} from 'ng-dynamic-component';
+import {ResizableModule} from 'angular-resizable-element';
 
 
 @NgModule({
@@ -62,13 +75,17 @@ import {DecompositionComponent} from './components/decomposition/decomposition.c
     CoverageComponent,
     HomepageComponent,
     OutliersComponent,
-    DraftComponent,
-    AutocompleteChipsComponent,
-    CacheDataComponent,
     Map2dComponent,
     AggregatesHistogramComponent,
     NotfoundComponent,
-    DecompositionComponent
+    DecompositionComponent,
+    DecompositionDisplayComponent,
+    OutliersDisplayComponent,
+    AggregatesHistogramDisplayComponent,
+    CoverageDisplayComponent,
+    Map2DDisplayComponent,
+    NavbarComponent,
+    CommonwealthComponent
   ],
   imports: [
     BrowserModule,
@@ -108,7 +125,15 @@ import {DecompositionComponent} from './components/decomposition/decomposition.c
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    GridsterModule,
+    DynamicModule.withComponents([
+      AggregatesHistogramDisplayComponent,
+      CoverageDisplayComponent,
+      DecompositionDisplayComponent,
+      OutliersDisplayComponent,
+      Map2DDisplayComponent])
+    , ResizableModule
   ],
   exports: [
     RouterModule,
@@ -146,9 +171,39 @@ import {DecompositionComponent} from './components/decomposition/decomposition.c
     MatSortModule,
     MatPaginatorModule,
     MatNativeDateModule,
+    GridsterModule,
+    GridsterItemComponent,
+    DynamicModule,
+    AggregatesHistogramDisplayComponent,
+    CoverageDisplayComponent,
+    DecompositionDisplayComponent,
+    OutliersDisplayComponent,
+    Map2DDisplayComponent
   ],
-  providers: [RestService, CacheDataComponent, SharedFunctionsService],
-  bootstrap: [AppComponent]
+  providers: [RestService, SharedFunctionsService, ExamplesService, CacheDataService, RouterCommunicationService,
+    GridsterModule, {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'pl-PL'
+    }, {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE]
+    }, {
+      provide: MAT_DATE_FORMATS,
+      useValue: MAT_MOMENT_DATE_FORMATS
+    }],
+  bootstrap: [AppComponent],
+  entryComponents: [
+    AggregatesHistogramDisplayComponent,
+    CoverageDisplayComponent,
+    DecompositionDisplayComponent,
+    OutliersDisplayComponent,
+    Map2DDisplayComponent,
+    GridsterItemComponent
+  ]
 })
+
 export class AppModule {
 }
+
+

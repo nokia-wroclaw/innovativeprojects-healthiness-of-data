@@ -30,7 +30,11 @@ def parse_check_date(entry):
     :param entry: String with date
     :return: False if date not correct, else returns date
     """
-    year, month, day = map(int, entry.split('-'))
+    try:
+        year, month, day = map(int, entry.split('-'))
+    except AttributeError:
+        return False
+
     try:
         new_date = datetime.datetime(year, month, day)
         return new_date
@@ -55,7 +59,7 @@ def get_kpi_list():
     result = KpiUnits.objects.all()
     kpi_list = set()
     for row in result:
-        kpi_list.add(row.kpi_basename)
+        kpi_list.add(row.kpi_basename.upper())
 
     return list(kpi_list)
 

@@ -1,16 +1,30 @@
-import yaml
 from flasgger import Swagger, swag_from
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from backend.api_functions.utils import get_cord_id_list, get_cord_acronym_set, get_acronym_list, get_kpi_list
+
 from backend.api_functions.aggregates import calculate_operator_aggregates, calculate_cluster_aggregates
+from backend.api_functions.cluster_comparison import *
 from backend.api_functions.coverage import calculate_cluster_coverage
-from backend.api_functions.outliers import find_outliers
 from backend.api_functions.decomposition import calculate_cluster_decomposition
+from backend.api_functions.map2d_multi_cord import *
+from backend.api_functions.outliers import find_outliers
+from backend.api_functions.utils import get_cord_id_list, get_cord_acronym_set, get_acronym_list, get_kpi_list
 
 app = Flask(__name__)
 CORS(app)
 Swagger(app)
+
+
+# @swag_from('api_docs/comparison_clusters.yml', validation=True)
+@app.route('/api/clusters/map2D/<string:kpi_basename>', methods=['GET'])
+def get_map2D(kpi_basename):
+    date_start = request.args.get('date_start')
+    date_end = request.args.get('date_end')
+    cords = request.args.getlist('cord_id')
+    date_other = request.args.get('date_other')
+
+    data, status_code = get_map(date_start, date_end, kpi_basename, cords, date_other)
+    return jsonify(data), status_code
 
 
 @swag_from('api_docs/aggregates_operators.yml', validation=True)
@@ -21,11 +35,9 @@ def get_operator_aggregates(cord_id):
     kpi_basename = request.args.get('kpi_basename')
     histogram_bins = request.args.get('bins')  # DEFAULT 10
 
-    data = calculate_operator_aggregates(date_start, date_end, kpi_basename, cord_id, hist_bins=histogram_bins)
-    if not data:
-        return jsonify({"success": False})
-    else:
-        return jsonify(data)
+    data, status_code = calculate_operator_aggregates(date_start, date_end, kpi_basename, cord_id,
+                                                      hist_bins=histogram_bins)
+    return jsonify(data), status_code
 
 
 @swag_from('api_docs/aggregates_clusters.yml', validation=True)
@@ -36,11 +48,9 @@ def get_cluster_aggregates(cord_id, acronym):
     kpi_basename = request.args.get('kpi_basename')
     histogram_bins = request.args.get('bins')
 
-    data = calculate_cluster_aggregates(date_start, date_end, kpi_basename, cord_id, acronym, hist_bins=histogram_bins)
-    if not data:
-        return jsonify({"success": False})
-    else:
-        return jsonify(data)
+    data, status_code = calculate_cluster_aggregates(date_start, date_end, kpi_basename, cord_id, acronym,
+                                                     hist_bins=histogram_bins)
+    return jsonify(data), status_code
 
 
 @swag_from('api_docs/coverage_clusters.yml', validation=True)
@@ -50,12 +60,10 @@ def get_operator_coverages(cord_id):
     date_end = request.args.get('date_end')
     kpis = request.args.getlist('kpi_basename')
     acronyms = request.args.getlist('acronym')
+    gap_size = request.args.get('gap_size')
 
-    data = calculate_cluster_coverage(date_start, date_end, cord_id, acronyms, kpis)
-    if not data:
-        return jsonify({"success": False})
-    else:
-        return jsonify(data)
+    data, status_code = calculate_cluster_coverage(date_start, date_end, cord_id, acronyms, kpis, gap_size)
+    return jsonify(data), status_code
 
 
 @swag_from('api_docs/outliers_clusters.yml', validation=True)
@@ -65,12 +73,11 @@ def get_operator_outliers(cord_id, acronym):
     date_end = request.args.get('date_end')
     kpi_basename = request.args.get('kpi_basename')
     threshold = request.args.get('threshold')
+    window_size = request.args.get('window_size')
 
-    data = find_outliers(date_start, date_end, kpi_basename, cord_id, acronym, threshold)
-    if not data:
-        return jsonify({"success": False})
-    else:
-        return jsonify(data)
+    data, status_code = find_outliers(date_start, date_end, kpi_basename, cord_id, acronym, threshold=threshold,
+                                      window_size=window_size)
+    return jsonify(data), status_code
 
 
 @swag_from('api_docs/decomposition_clusters.yml', validation=True)
@@ -81,11 +88,8 @@ def get_cluster_decomposition(cord_id, acronym):
     kpi_basename = request.args.get('kpi_basename')
     frequency = request.args.get('frequency')
 
-    data = calculate_cluster_decomposition(date_start, date_end, kpi_basename, cord_id, acronym, frequency=frequency)
-    if not data:
-        return jsonify({"success": False})
-    else:
-        return jsonify(data)
+    data, status_code = calculate_cluster_decomposition(date_start, date_end, kpi_basename, cord_id, acronym, frequency)
+    return jsonify(data), status_code
 
 
 @swag_from('api_docs/fetch_kpi_basename.yml')

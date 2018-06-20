@@ -1,6 +1,62 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+/*@import "~@angular/material/prebuilt-themes/indigo-pink.css";*/
 
 body {
-	font-family: 'Lato', sans-serif;
+  font-family: 'Lato', sans-serif;
+}
+
+.rotate {
+  position: fixed;
+  transform: rotate(90deg);
+  transform-origin: left top;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.sidenav-container {
+  height: 100%;
+
+}
+
+.sidenav-form {
+  width: 250px;
+}
+
+.white {
+  color: white;
+}
+
+.nav-link {
+  line-height: 48px
+}
+
+.main-content {
+  min-height: 800px;
+  height: calc(100vh - 64px);
+}
+mwlResizable {
+  box-sizing: border-box;
+}
+
+.resize-handle {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  cursor: se-resize;
+}
+
+.rectangle {
+  position: relative;
+  top: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 150px;
+  background-color: #FD4140;
+  border: solid 1px #121621;
+  color: #121621;
+  margin: auto;
 }
