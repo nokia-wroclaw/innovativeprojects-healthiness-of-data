@@ -11,7 +11,7 @@
 
 
 # 1. Project overview
-The goal of this project is to process and visualize existing operator data provided by Nokia. This consists of multiple steps: cleaning up raw data, organizing kpi information, creating an API to provide data to front-end and finally creating a web application for users to view it. As a final result we would like to be able to create a complete map of operators by comparing their quality of services provided. This would allow everyone to clearly see which operators perform the best in comparison to all the others.
+The goal of this project is to process and visualize existing operator data provided by Nokia. This consists of multiple steps: cleaning up raw data, organizing kpi information, creating an API to provide data to front-end and finally creating a web application for users to view it. This project should ease future decisions and planning regarding analysed operator's services.
 
 Project can be seen over at http://healthiness-of-data.ovh
 
@@ -33,9 +33,7 @@ Currently we have finished and visualized these data endpoints:
 
 * Outliers - Detects outliers in the queried data set and creates a chart visualizing them. **This works only on cluster level (acronym has to be provided along with it's corresponding cord id).** Additionally, you can choose the threshold to specify the cutoff for outliers. The lower it is, the more outliers will be detected.
 
-And in the future we would like to add more:
-
-* 2D map - Our final goal of this project. This would create a map which indicates the relational performance of operators. It would allow to clearly see which operators provide the highest quality of services.
+* 2D map - This component generates a map which indicates the relational performance of operators. It allows to clearly see which operators behave similarly - provide similiar quality of services. It can also generate a heatmap that shows how the similiarities change over time.
 
 # 3. Technologies
 * Backend
@@ -43,7 +41,7 @@ And in the future we would like to add more:
   * Flask
   * Flasgger (Swagger)
 * Frontend
-  * Angular 5 https://angular.io/
+  * Angular 6 https://angular.io/
   * Angular Material https://material.angular.io/
   * Charts.js https://www.chartjs.org/
 * Cassandra
