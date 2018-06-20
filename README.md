@@ -11,7 +11,7 @@
 
 
 # 1. Project overview
-The goal of this project is to process and visualize existing operator data provided by Nokia. This consists of multiple steps: cleaning up raw data, organizing kpi information, creating an API to provide data to front-end and finally creating a web application for users to view it. As a final result we would like to be able to create a complete map of operators by comparing their quality of services provided. This would allow everyone to clearly see which operators perform the best in comparison to all the others.
+The goal of this project is to process and visualize existing operator data provided by Nokia. This consists of multiple steps: cleaning up raw data, organizing kpi information, creating an API to provide data to front-end and finally creating a web application for users to view it. This project should ease future decisions and planning regarding analysed operator's services.
 
 Project can be seen over at http://healthiness-of-data.ovh
 
@@ -41,7 +41,7 @@ Currently we have finished and visualized these data endpoints:
   * Flask
   * Flasgger (Swagger)
 * Frontend
-  * Angular 5 https://angular.io/
+  * Angular 6 https://angular.io/
   * Angular Material https://material.angular.io/
   * Charts.js https://www.chartjs.org/
 * Cassandra
