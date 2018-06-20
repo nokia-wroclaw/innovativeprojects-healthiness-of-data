@@ -4,16 +4,11 @@ Returns correlation list, matrix and 2 acronym sets for provided cord_id1, cord_
 tags:
   - Comparison
 parameters:
-  - name: cord_id1
+  - name: cord_id
     in: path
     type: integer
     required: true
-    description: Operator 1 identifier
-  - name: cord_id2
-    in: path
-    type: integer
-    required: true
-    description: Operator 2 identifier
+    description: Operators identifiers
   - name: date_start
     in: query
     type: string

@@ -26,6 +26,9 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
   outliersChart;
   fetchedIn: number;
 
+  problem = false;
+  problemMessage: any;
+
   startDate: any;
   endDate: any;
   cordID: string;
@@ -87,13 +90,16 @@ export class OutliersDisplayComponent implements OnInit, AfterViewInit {
         this.generateChart();
         this.outliersChartLoaded = true;
       } else {
-        this.sharedFunctions.openSnackBar('Error ' + response.status + ': ' + response.data.error, 'OK');
+        this.problem = true;
+        this.problemMessage = 'Error: ' + response.status + ' - ' + response.data.error;
       }
       this.outliersChartLoading = false;
     }).catch((error) => {
       console.log('error');
       console.log(error);
-      this.sharedFunctions.openSnackBar('Error: ' + 'backend error', 'OK');
+      this.problem = true;
+      this.problemMessage = 'Error: backend error';
+      this.outliersChartLoading = false;
     });
   }
 

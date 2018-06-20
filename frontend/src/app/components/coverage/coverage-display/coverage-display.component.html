@@ -1,6 +1,6 @@
 <mat-card>
   <mat-spinner *ngIf="coverageTableLoading"></mat-spinner>
-  <mat-card-title-group *ngIf="coverageTableLoaded && !coverageTableLoading">
+  <mat-card-title-group *ngIf="!coverageTableLoading">
     <mat-card-title>{{cordID}}</mat-card-title>
     <mat-card-subtitle>Data fetched in: {{fetchedIn/1000}} s</mat-card-subtitle>
     <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>

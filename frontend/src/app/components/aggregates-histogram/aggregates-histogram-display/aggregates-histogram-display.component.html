@@ -10,6 +10,8 @@
     </mat-card-subtitle>
     <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
   </mat-card-title-group>
+
+  <div *ngIf="problem">{{problemMessage}}</div>
   <div *ngIf="histogramChartLoaded && !histogramChartLoading" class="column-container">
     <div>MAX<br/> {{max}}</div>
     <div>MIN<br/> {{min}}</div>
@@ -19,6 +21,5 @@
   </div>
 </mat-card>
 <mat-card>
-  <div *ngIf="problem">{{problemMessage}}</div>
   <canvas [id]="histogramChartId" width="600" height="300"></canvas>
 </mat-card>
