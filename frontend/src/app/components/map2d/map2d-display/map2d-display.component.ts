@@ -128,6 +128,7 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
         this.problemMessage = 'Error: ' + response.status + ' - ' + response.data.error;
       }
       this.map2DLoading = false;
+      this.cdRef.detectChanges();
     }).catch((error) => {
       console.log('error');
       console.log(error);

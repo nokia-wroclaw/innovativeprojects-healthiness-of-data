@@ -96,6 +96,7 @@ export class AggregatesHistogramDisplayComponent implements OnInit, AfterViewIni
         this.problemMessage = 'Error: ' + response.status + ' - ' + response.data.error;
       }
       this.histogramChartLoading = false;
+      this.cdRef.detectChanges();
     }).catch((error) => {
       console.log('error');
       console.log(error);

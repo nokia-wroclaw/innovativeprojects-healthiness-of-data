@@ -1,10 +1,13 @@
 <mat-card>
-  <mat-spinner *ngIf="outliersChartLoading"></mat-spinner>
+  <div>
+    <mat-spinner *ngIf="outliersChartLoading"></mat-spinner>
+  </div>
+
   <mat-card-title-group *ngIf="!outliersChartLoading">
     <mat-card-title>{{cordID}}, {{acronym}}, {{kpiBaseName}}</mat-card-title>
     <mat-card-subtitle>Data fetched in: {{fetchedIn/1000}} s</mat-card-subtitle>
     <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
   </mat-card-title-group>
   <div *ngIf="problem">{{problemMessage}}</div>
-  <canvas [id]="outliersChartId" width="1000" height="300"></canvas>
+  <canvas [id]="outliersChartId" width="900" height="300"></canvas>
 </mat-card>

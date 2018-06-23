@@ -1,12 +1,17 @@
-import {Component, ComponentFactoryResolver, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, ComponentFactoryResolver, OnInit, Type, ViewChild, ViewContainerRef,
+  ViewEncapsulation
+} from '@angular/core';
 import {RouterCommunicationService} from '../../shared/services/router-communication/router-communication.service';
 
-import {CompactType, GridsterConfig, GridsterItem, GridsterItemComponent, GridsterPush, GridType} from 'angular-gridster2';
+import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridsterItemComponent, GridsterPush, GridType} from 'angular-gridster2';
 
 @Component({
   selector: 'app-commonwealth',
   templateUrl: './commonwealth.component.html',
-  styleUrls: ['./commonwealth.component.css']
+  styleUrls: ['./commonwealth.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class CommonwealthComponent implements OnInit {
 
@@ -14,10 +19,14 @@ export class CommonwealthComponent implements OnInit {
   @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
   components = [];
   component;
+  comp;
+  inputs;
+  outputs;
 
   options: GridsterConfig;
   dashboard: Array<GridsterItem>;
   itemToPush: GridsterItemComponent;
+
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
               private routerCommunicationService: RouterCommunicationService) {
@@ -29,19 +38,60 @@ export class CommonwealthComponent implements OnInit {
 
   ngOnInit() {
     this.options = {
-      gridType: GridType.Fit,
-      compactType: CompactType.None,
-      pushItems: true,
+      gridType: GridType.ScrollVertical,
+      compactType: CompactType.CompactUpAndLeft,
+      margin: 10,
+      outerMargin: true,
+      outerMarginTop: null,
+      outerMarginRight: null,
+      outerMarginBottom: null,
+      outerMarginLeft: null,
+      mobileBreakpoint: 640,
+      minCols: 1,
+      maxCols: 100,
+      minRows: 1,
+      maxRows: 100,
+      maxItemCols: 100,
+      minItemCols: 1,
+      maxItemRows: 100,
+      minItemRows: 1,
+      maxItemArea: 2500,
+      minItemArea: 1,
+      defaultItemCols: 2,
+      defaultItemRows: 1,
+      // fixedColWidth: 20,
+      // fixedRowHeight: 20,
+      keepFixedHeightInMobile: false,
+      keepFixedWidthInMobile: false,
+      scrollSensitivity: 10,
+      scrollSpeed: 20,
+      enableEmptyCellClick: false,
+      enableEmptyCellContextMenu: false,
+      enableEmptyCellDrop: false,
+      enableEmptyCellDrag: false,
+      emptyCellDragMaxCols: 50,
+      emptyCellDragMaxRows: 50,
+      ignoreMarginInRow: false,
       draggable: {
-        enabled: true
+        enabled: true,
       },
       resizable: {
-        enabled: true
-      }
+        enabled: true,
+      },
+      swap: false,
+      pushItems: true,
+      disablePushOnDrag: false,
+      disablePushOnResize: false,
+      pushDirections: {north: true, east: true, south: true, west: true},
+      pushResizeItems: false,
+      displayGrid: DisplayGrid.Always,
+      disableWindowResize: false,
+      disableWarnings: false,
+      scrollToNewItems: false
     };
 
     this.dashboard = [
-      {cols: 1, rows: 1, y: 0, x: 0, initCallback: this.initItem.bind(this)}
+      // {cols: 1, rows: 1, y: 0, x: 0, initCallback: this.initItem.bind(this)}
     ];
   }
 
@@ -62,7 +112,7 @@ export class CommonwealthComponent implements OnInit {
   }
 
   initItem(item: GridsterItem, itemComponent: GridsterItemComponent) {
-    console.log(this)
+    console.log(this);
     this.itemToPush = itemComponent;
   }
 
@@ -98,6 +148,32 @@ export class CommonwealthComponent implements OnInit {
   }
 
   removeComponent(dynamicChildClass: Type<any>, id: number) {
+    const component = this.components[id];
+    const componentIndex = this.components.indexOf(component);
+    if (componentIndex !== -1) {
+      this.container.remove(this.container.indexOf(component));
+    }
+  }
+
+  createComponent2(params: any, componentClass: Type<any>) {
+    this.inputs = {
+      id: this.id,
+      params: params
+    };
+    this.outputs = {
+      removeId: (id) => {
+        this.removeComponent2(id.removeId);
+        this.dashboard[id] = null;
+      }
+
+    };
+    this.comp = componentClass;
+    this.dashboard[this.id] = {cols: 2, rows: 1, y: 0, x: 0};
+    // this.dashboard.push({cols: 2, rows: 1, y: 0, x: 0});
+    this.id++;
+  }
+
+  removeComponent2(id: number) {
     const component = this.components[id];
     const componentIndex = this.components.indexOf(component);
     if (componentIndex !== -1) {

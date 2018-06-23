@@ -3,39 +3,38 @@
     <router-outlet></router-outlet>
   </mat-sidenav>
 
-  <mat-sidenav-content>
+  <mat-sidenav-content style="height: 100%;">
     <mat-card>
       <h3>Results</h3>
       <div class="rotate">
         <button mat-mini-fab color="accent" (click)="sidenav.toggle()">^</button>
       </div>
+
       <div>
         <ng-container #container></ng-container>
       </div>
     </mat-card>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-
-
-<!--<div class="options">-->
-<!--</div>-->
-<!--<div class="options-header">-->
-  <!--<button mat-raised-button color="accent" (click)="pushItem()" class="add-button cols-2">-->
-    <!--Resize first item and push others-->
-  <!--</button>-->
-  <!--<button mat-mini-fab (click)="addItem()" class="add-button cols-2">-->
-    <!--<mat-icon>add</mat-icon>-->
-  <!--</button>-->
-<!--</div>-->
-<!--<gridster [options]="options">-->
-  <!--<gridster-item [item]="item" *ngFor="let item of dashboard">-->
-    <!--<div #container></div>-->
+    <!--<div style="height: 100%;">-->
+    <!--<gridster [options]="options">-->
+    <!--<gridster-item [item]="item" *ngFor="let item of dashboard; let i of index;">-->
     <!--&lt;!&ndash;<div class="button-holder">&ndash;&gt;-->
     <!--&lt;!&ndash;<button mat-mini-fab (mousedown)="removeItem($event, item)"&ndash;&gt;-->
     <!--&lt;!&ndash;(touchstart)="removeItem($event, item)">&ndash;&gt;-->
     <!--&lt;!&ndash;<mat-icon>delete</mat-icon>&ndash;&gt;-->
     <!--&lt;!&ndash;</button>&ndash;&gt;-->
     <!--&lt;!&ndash;</div>&ndash;&gt;-->
-    <!--&lt;!&ndash;<ndc-dynamic [ndcDynamicComponent]="component"></ndc-dynamic>&ndash;&gt;-->
-  <!--</gridster-item>-->
-<!--</gridster>-->
+    <!--<ndc-dynamic *ngIf="item != null"-->
+    <!--[ndcDynamicComponent]="comp"-->
+    <!--[ndcDynamicInputs]="inputs"-->
+    <!--[ndcDynamicOutputs]="outputs"-->
+    <!--&gt;</ndc-dynamic>-->
+    <!--</gridster-item>-->
+    <!--</gridster>-->
+
+    <!--</div>-->
+
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+
