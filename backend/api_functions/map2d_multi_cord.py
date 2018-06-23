@@ -260,4 +260,6 @@ def fetch_data(start_date, end_date, cord_id, kpi_basename):
             data[row.acronym]["dates"].append(row.date)
             acronym_set.add(row.acronym)
 
+    print('fetched: ' + cord_id)
+
     return data, acronym_set
