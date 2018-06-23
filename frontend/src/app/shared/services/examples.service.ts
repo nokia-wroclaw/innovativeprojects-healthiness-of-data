@@ -4,13 +4,14 @@ import {FormGroup} from '@angular/forms';
 @Injectable()
 export class ExamplesService {
 
-  public EXAMPLES = [{
-    startDate: new Date('2016-06-01T00:00:00.000Z'),
-    endDate: new Date('2018-01-01T00:00:00.000Z'),
-    cordID: 'Skuntank',
-    acronym: 'dilfihess',
-    kpiBaseName: 'SGSN_2012'
-  },
+  public EXAMPLES = [
+    {
+      startDate: new Date('2016-06-01T00:00:00.000Z'),
+      endDate: new Date('2018-01-01T00:00:00.000Z'),
+      cordID: 'Skuntank',
+      acronym: 'dilfihess',
+      kpiBaseName: 'SGSN_2012'
+    },
     {
       startDate: new Date('2016-06-01T00:00:00.000Z'),
       endDate: new Date('2018-01-01T00:00:00.000Z'),
@@ -31,6 +32,13 @@ export class ExamplesService {
       cordID: 'Magby',
       acronym: 'thruphroxtron',
       kpiBaseName: 'TRF_215'
+    },
+    {
+      startDate: new Date('2015-06-01T00:00:00.000Z'),
+      endDate: new Date('2018-01-01T00:00:00.000Z'),
+      cordID: 'Skuntank',
+      acronym: 'dilfihess',
+      kpiBaseName: 'SGSN_2012'
     }
   ];
 
@@ -73,7 +81,7 @@ export class ExamplesService {
     endDate: new Date('2017-09-01T00:00:00.000Z'),
     kpiBaseName: 'RNC_31',
     otherDate: '',
-    chips: ['Mime Jr.', 'Muk', 'Skarmory',  'Galvantula', 'Popplio' , 'Sableye', 'Barboach', 'Staryu', 'Tyrogue', 'Pignite', 'Miltank', 'Krabby', 'Celesteela', 'Duosion', 'Mr. Mime', 'Aipom', 'Poliwag',  'Hariyama', 'Ivysaur', 'Delcatty',  'Helioptile', 'Huntail', 'Stantler', 'Dragalge', 'Nidoking', 'Vikavolt', 'Vanillite', 'Naganadel', 'Zeraora', 'Shiinotic', 'Pelipper', 'Shuckle', 'Cresselia', 'Baltoy', 'Snorlax', 'Excadrill', 'Primeape', 'Slowpoke', 'Kangaskhan', 'Sentret', 'Registeel',  'Lillipup', 'Quagsire', 'Lapras', 'Alomomola', 'Necrozma', 'Sawsbuck', 'Jellicent', 'Combee', 'Pyukumuku', 'Gorebyss', 'Eelektrik', 'Magnezone', 'Zygarde', 'Raikou', 'Ludicolo', 'Kartana',  'Cosmog', 'Tornadus', 'Cottonee', 'Audino', 'Spritzee', 'Piplup', 'Rotom', 'Vigoroth', 'Timburr', 'Raticate',  'Gurdurr', 'Kabutops', 'Noctowl',  'Blaziken', 'Gible', 'Skuntank', 'Metagross', 'Tympole', 'Vulpix']
+    chips: ['Mime Jr.', 'Muk', 'Skarmory', 'Galvantula', 'Popplio', 'Sableye', 'Barboach', 'Staryu', 'Tyrogue', 'Pignite', 'Miltank', 'Krabby', 'Celesteela', 'Duosion', 'Mr. Mime', 'Aipom', 'Poliwag', 'Hariyama', 'Ivysaur', 'Delcatty', 'Helioptile', 'Huntail', 'Stantler', 'Dragalge', 'Nidoking', 'Vikavolt', 'Vanillite', 'Naganadel', 'Zeraora', 'Shiinotic', 'Pelipper', 'Shuckle', 'Cresselia', 'Baltoy', 'Snorlax', 'Excadrill', 'Primeape', 'Slowpoke', 'Kangaskhan', 'Sentret', 'Registeel', 'Lillipup', 'Quagsire', 'Lapras', 'Alomomola', 'Necrozma', 'Sawsbuck', 'Jellicent', 'Combee', 'Pyukumuku', 'Gorebyss', 'Eelektrik', 'Magnezone', 'Zygarde', 'Raikou', 'Ludicolo', 'Kartana', 'Cosmog', 'Tornadus', 'Cottonee', 'Audino', 'Spritzee', 'Piplup', 'Rotom', 'Vigoroth', 'Timburr', 'Raticate', 'Gurdurr', 'Kabutops', 'Noctowl', 'Blaziken', 'Gible', 'Skuntank', 'Metagross', 'Tympole', 'Vulpix']
   }];
 
   constructor() {

@@ -106,10 +106,12 @@ export class DecompositionDisplayComponent implements OnInit, AfterViewInit {
       this.decompositionChartLoading = false;
       this.cdRef.detectChanges();
     }).catch((error) => {
+      this.decompositionChartLoading = false;
       console.log('error');
       console.log(error);
       this.problem = true;
       this.problemMessage = 'Error: ' + 'backend error';
+      this.cdRef.detectChanges();
     });
 
   }

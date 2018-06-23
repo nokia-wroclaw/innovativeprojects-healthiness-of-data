@@ -1,7 +1,7 @@
 import {Component, ComponentFactoryResolver, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
 import {RestService} from '../../shared/services/rest.service';
 import {Form, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatDatepickerInputEvent} from '@angular/material';
+import {MatAutocompleteSelectedEvent, MatAutocompleteTrigger, MatChipInputEvent, MatDatepickerInputEvent} from '@angular/material';
 
 import {COMMA, ENTER, TAB} from '@angular/cdk/keycodes';
 import {SharedFunctionsService} from '../../shared/services/shared.functions.service';
@@ -134,16 +134,16 @@ export class CoverageComponent implements OnInit {
   }
 
   // force add chip
-  // add(event: MatChipInputEvent): void {
-  //   let input = event.input;
-  //   let value = event.value;
-  //   if ((value || '').trim()) {
-  //     this.selectedAcronyms.push(value);
-  //   }
-  //   if (input) {
-  //     input.value = '';
-  //   }
-  // }
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+    if ((value || '').trim()) {
+      this.selectedAcronyms.push(value);
+    }
+    if (input) {
+      input.value = '';
+    }
+  }
 
   removeChipAcronym(chip: any): void {
     const index = this.selectedAcronyms.indexOf(chip);
