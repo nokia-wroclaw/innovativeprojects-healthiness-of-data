@@ -71,7 +71,7 @@ export class OutliersComponent implements OnInit {
       cordID: this.cordIDFormControl,
       acronym: this.acronymFormControl,
       kpiBaseName: this.kpiBasenameFormControl,
-      threshold: 3.5,
+      threshold: 3.3,
       windowSize: 20,
     });
   }

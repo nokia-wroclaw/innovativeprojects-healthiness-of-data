@@ -86,7 +86,13 @@ def find_outliers(start_date, end_date, kpi_basename, cord_id, acronym, **option
             closest_mean_index = (numpy.abs(numpy.array(temp_mean_array)-ready_data['values'][i])).argmin()
             moving_mean.append(temp_mean_array[closest_mean_index])
 
-            moving_standard_deviation.append(numpy.std(ready_data['values'][i - window_size: i + window_size]))
+            temp_std1 = numpy.std(ready_data['values'][i - window_size: i])
+            temp_std2 = numpy.std(ready_data['values'][i - window_size//2: i + window_size//2])
+            temp_std3 = numpy.std(ready_data['values'][i: i + window_size])
+
+            temp_std_array = [temp_std1, temp_std2, temp_std3]
+            
+            moving_standard_deviation.append(min(temp_std_array))
 
         modified_z_scores = []
         x = 0
