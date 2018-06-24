@@ -128,6 +128,7 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
         this.problemMessage = 'Error: ' + response.status + ' - ' + response.data.error;
       }
       this.map2DLoading = false;
+      this.cdRef.detectChanges();
     }).catch((error) => {
       console.log('error');
       console.log(error);
@@ -192,8 +193,8 @@ export class Map2DDisplayComponent implements OnInit, AfterViewInit {
         }],
         backgroundColor: rgb1,
         borderColor: rgb2,
-        borderWidth: 3,
-        radius: 10,
+        borderWidth: 2,
+        radius: 6,
         hoverRadius: 15, // nie dziala
         hitRadius: 20 // nie dziala
       };

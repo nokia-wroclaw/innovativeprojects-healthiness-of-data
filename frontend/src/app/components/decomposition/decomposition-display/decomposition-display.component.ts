@@ -99,17 +99,19 @@ export class DecompositionDisplayComponent implements OnInit, AfterViewInit {
         this.generateTrendChart();
         this.generateSeasonalChart();
         this.decompositionChartLoaded = true;
-        this.decompositionChartLoading = false;
       } else {
         this.problem = true;
         this.problemMessage = 'Error: ' + response.status + ' - ' + response.data.error;
       }
-
+      this.decompositionChartLoading = false;
+      this.cdRef.detectChanges();
     }).catch((error) => {
+      this.decompositionChartLoading = false;
       console.log('error');
       console.log(error);
       this.problem = true;
       this.problemMessage = 'Error: ' + 'backend error';
+      this.cdRef.detectChanges();
     });
 
   }

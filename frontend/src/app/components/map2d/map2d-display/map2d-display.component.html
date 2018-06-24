@@ -6,26 +6,23 @@
     <button mat-mini-fab color="warn" (click)="removeComponent()">X</button>
   </mat-card-title-group>
   <!--<div>-->
-  <!--<table border="1" style="border-collapse: collapse;">-->
-  <!--<tr>-->
-  <!--<th>x\y</th>-->
-  <!--<th *ngFor="let cord of cordIds">{{cord}}</th>-->
-  <!--</tr>-->
-  <!--<tr *ngFor="let cord of cordIds; let i = index;">-->
-  <!--<td>{{cord}}</td>-->
-  <!--<td *ngFor="let cord of cordIds; let j = index;">-->
-  <!--{{matrixTotals[i][j]}}-->
-  <!--</td>-->
-  <!--</tr>-->
-  <!--</table>-->
+    <!--<table border="1" style="border-collapse: collapse;">-->
+      <!--<tr>-->
+        <!--<th>x\y</th>-->
+        <!--<th *ngFor="let cord of cordIds">{{cord}}</th>-->
+      <!--</tr>-->
+      <!--<tr *ngFor="let cord of cordIds; let i = index;">-->
+        <!--<td>{{cord}}</td>-->
+        <!--<td *ngFor="let cord of cordIds; let j = index;">-->
+          <!--{{matrixTotals[i][j]}}-->
+        <!--</td>-->
+      <!--</tr>-->
+    <!--</table>-->
   <!--</div>-->
   <div *ngIf="problem">{{problemMessage}}</div>
 </mat-card>
 <mat-card>
-
   <mat-spinner *ngIf="map2DLoading"></mat-spinner>
-
-
   <canvas [id]="map2DChartId" width="1000" height="500"></canvas>
 </mat-card>
 <mat-card *ngIf="!map2DLoading && showHeatmap">

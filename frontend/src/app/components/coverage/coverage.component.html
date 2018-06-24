@@ -60,9 +60,10 @@
                [matAutocomplete]="autoAcr"
                #chipInputAcronym
                matInput
+               (matChipInputTokenEnd)="add($event)"
                (focus)="inputFocus()"
         />
-        <!--(matChipInputTokenEnd)="add($event)"-->
+
 
 
       </mat-chip-list>

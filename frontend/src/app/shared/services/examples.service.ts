@@ -4,13 +4,14 @@ import {FormGroup} from '@angular/forms';
 @Injectable()
 export class ExamplesService {
 
-  public EXAMPLES = [{
-    startDate: new Date('2016-06-01T00:00:00.000Z'),
-    endDate: new Date('2018-01-01T00:00:00.000Z'),
-    cordID: 'Skuntank',
-    acronym: 'dilfihess',
-    kpiBaseName: 'SGSN_2012'
-  },
+  public EXAMPLES = [
+    {
+      startDate: new Date('2016-06-01T00:00:00.000Z'),
+      endDate: new Date('2018-01-01T00:00:00.000Z'),
+      cordID: 'Skuntank',
+      acronym: 'dilfihess',
+      kpiBaseName: 'SGSN_2012'
+    },
     {
       startDate: new Date('2016-06-01T00:00:00.000Z'),
       endDate: new Date('2018-01-01T00:00:00.000Z'),
@@ -31,6 +32,13 @@ export class ExamplesService {
       cordID: 'Magby',
       acronym: 'thruphroxtron',
       kpiBaseName: 'TRF_215'
+    },
+    {
+      startDate: new Date('2015-06-01T00:00:00.000Z'),
+      endDate: new Date('2018-01-01T00:00:00.000Z'),
+      cordID: 'Skuntank',
+      acronym: 'dilfihess',
+      kpiBaseName: 'SGSN_2012'
     }
   ];
 
@@ -68,6 +76,12 @@ export class ExamplesService {
     kpiBaseName: 'RNC_31',
     otherDate: new Date('2017-03-01T00:00:00.000Z'),
     chips: ['Dragalge', 'Pelipper', 'Rotom', 'Vigoroth', 'Timburr', 'Raticate']
+  }, {
+    startDate: new Date('2017-06-01T00:00:00.000Z'),
+    endDate: new Date('2017-09-01T00:00:00.000Z'),
+    kpiBaseName: 'RNC_31',
+    otherDate: '',
+    chips: ['Mime Jr.', 'Muk', 'Skarmory', 'Galvantula', 'Popplio', 'Sableye', 'Barboach', 'Staryu', 'Tyrogue', 'Pignite', 'Miltank', 'Krabby', 'Celesteela', 'Duosion', 'Mr. Mime', 'Aipom', 'Poliwag', 'Hariyama', 'Ivysaur', 'Delcatty', 'Helioptile', 'Huntail', 'Stantler', 'Dragalge', 'Nidoking', 'Vikavolt', 'Vanillite', 'Naganadel', 'Zeraora', 'Shiinotic', 'Pelipper', 'Shuckle', 'Cresselia', 'Baltoy', 'Snorlax', 'Excadrill', 'Primeape', 'Slowpoke', 'Kangaskhan', 'Sentret', 'Registeel', 'Lillipup', 'Quagsire', 'Lapras', 'Alomomola', 'Necrozma', 'Sawsbuck', 'Jellicent', 'Combee', 'Pyukumuku', 'Gorebyss', 'Eelektrik', 'Magnezone', 'Zygarde', 'Raikou', 'Ludicolo', 'Kartana', 'Cosmog', 'Tornadus', 'Cottonee', 'Audino', 'Spritzee', 'Piplup', 'Rotom', 'Vigoroth', 'Timburr', 'Raticate', 'Gurdurr', 'Kabutops', 'Noctowl', 'Blaziken', 'Gible', 'Skuntank', 'Metagross', 'Tympole', 'Vulpix']
   }];
 
   constructor() {
@@ -78,5 +92,3 @@ export class ExamplesService {
   }
 
 }
-
-// 'Rapidash', 'Mime Jr.', 'Torkoal', 'Oricorio', 'Muk', 'Skarmory', 'Zekrom', 'Galvantula', 'Litleo', 'Popplio', 'Oddish', 'Sableye', 'Cranidos', 'Barboach', 'Ducklett', 'Staryu', 'Tyrogue', 'Pignite', 'Miltank', 'Krabby', 'Kricketune', 'Kricketot', 'Celesteela', 'Chimecho', 'Duosion', 'Mr. Mime', 'Aipom', 'Poliwag', 'Froakie', 'Hariyama', 'Binacle', 'Ivysaur', 'Brionne', 'Nidoqueen', 'Stoutland', 'Delcatty', 'Mienshao', 'Helioptile', 'Huntail', 'Carbink', 'Stantler', 'Alakazam', 'Dragalge', 'Maractus', 'Nidoking', 'Vikavolt', 'Dewott', 'Vanillite', 'Naganadel', 'Zeraora', 'Shiinotic', 'Pelipper', 'Shuckle', 'Cresselia', 'Baltoy', 'Snorlax', 'Excadrill', 'Primeape', 'Slowpoke', 'Kangaskhan', 'Torchic', 'Zangoose', 'Loudred', 'Haunter', 'Sentret', 'Registeel', 'Duskull', 'Lillipup', 'Quagsire', 'Lapras', 'Qwilfish', 'Togepi', 'Alomomola', 'Magby', 'Necrozma', 'Shellder', 'Sawsbuck', 'Braviary', 'Jellicent', 'Combee', 'Pyukumuku', 'Gorebyss', 'Eelektrik', 'Magnezone', 'Zygarde', 'Raikou', 'Ludicolo', 'Kartana', 'Omanyte', 'Jangmo-o', 'Cosmog', 'Tornadus', 'Cottonee', 'Audino', 'Spritzee', 'Piplup', 'Rotom', 'Braixen', 'Vigoroth', 'Timburr', 'Raticate', 'Carnivine', 'Gurdurr', 'Kabutops', 'Phione', 'Noctowl', 'Victreebel', 'Blaziken', 'Gible', 'Skuntank', 'Metagross', 'Tympole', 'Vulpix'}

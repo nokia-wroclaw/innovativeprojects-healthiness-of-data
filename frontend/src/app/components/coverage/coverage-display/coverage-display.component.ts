@@ -106,6 +106,7 @@ export class CoverageDisplayComponent implements OnInit, AfterViewInit {
         this.problemMessage = 'Error: ' + response.status + ' - ' + response.data.error;
       }
       this.coverageTableLoading = false;
+      this.cdRef.detectChanges();
     }).catch((error) => {
       console.log('error');
       console.log(error);
