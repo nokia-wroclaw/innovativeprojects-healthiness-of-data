@@ -53,7 +53,7 @@ export class CoverageComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private sharedFunctions: SharedFunctionsService,
               private cacheDataService: CacheDataService,
-              private examplesService: ExamplesService,
+              public examplesService: ExamplesService,
               private routerCommunicationService: RouterCommunicationService) {
     this.fullKpiBasenamesList = this.cacheDataService.getKpiBasenamesList();
     this.fullCordIDsList = this.cacheDataService.getFullCordIDsList();

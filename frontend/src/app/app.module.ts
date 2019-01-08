@@ -67,6 +67,7 @@ import {CommonwealthComponent} from './components/commonwealth/commonwealth.comp
 import {RouterCommunicationService} from './shared/services/router-communication/router-communication.service';
 import {DynamicModule} from 'ng-dynamic-component';
 import {ResizableModule} from 'angular-resizable-element';
+import {TranslatePipe} from './shared/pipes/translate.pipe';
 
 
 @NgModule({
@@ -85,7 +86,8 @@ import {ResizableModule} from 'angular-resizable-element';
     CoverageDisplayComponent,
     Map2DDisplayComponent,
     NavbarComponent,
-    CommonwealthComponent
+    CommonwealthComponent,
+    TranslatePipe
   ],
   imports: [
     BrowserModule,
