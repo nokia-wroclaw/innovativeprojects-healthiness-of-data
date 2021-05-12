@@ -29,7 +29,7 @@
     "angular-resizable-element": "^3.0.0",
     "bootstrap": "^4.0.0",
     "chart.heatmap.js": "0.0.1-alpha",
-    "chart.js": "^2.7.2",
+    "chart.js": "^2.9.4",
     "chartjs-plugin-zoom": "^0.6.3",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
